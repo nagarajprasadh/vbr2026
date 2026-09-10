@@ -50,11 +50,12 @@
   }
 
   /* ── HERO ── */
-  @media (max-width: 600px) { .hero img { max-height: 180px; } }
+  .hero { width: 100%; background: #fff; line-height: 0; }
   .hero img {
     width: 100%; display: block;
-    max-height: 300px; object-fit: cover; object-position: 65% top;
+    max-height: 200px; object-fit: cover; object-position: 65% top;
   }
+  @media (max-width: 600px) { .hero img { max-height: 120px; } }
 
 
   /* ── EVENT STRIP ── */
