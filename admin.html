@@ -5,125 +5,122 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VBR 2026 — Admin</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
   :root {
-    --saffron: #FF6600; --saffron-dark: #CC5200; --saffron-light: #FFF0E6;
-    --india-green: #138808; --india-green-light: #E8F5E9;
-    --navy: #0A1E3C; --navy-mid: #1A3A5C;
-    --white: #FFFFFF; --grey-50: #F8F9FA; --grey-100: #F1F3F5;
-    --grey-300: #CED4DA; --grey-500: #6C757D; --grey-700: #343A40;
-    --error: #C0392B; --radius: 10px; --shadow: 0 2px 14px rgba(10,30,60,0.09);
+    --saffron:#E8500A; --saffron-dark:#B83E08; --saffron-light:#FDF1EB;
+    --green:#1A6B2F; --green-light:#EBF5EE;
+    --navy:#0C1F3F; --navy-mid:#162E58;
+    --ink:#1C2333; --mist:#F4F6F9; --line:#E4E8EF;
+    --text-sec:#5C6478; --white:#FFFFFF; --error:#C0392B;
+    --warn:#92400E; --warn-bg:#FEF3C7;
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', sans-serif; background: var(--grey-50); color: var(--grey-700); }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--mist);color:var(--ink);-webkit-font-smoothing:antialiased}
 
-  header {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-    color: var(--white); padding: 20px 24px 18px; position: relative;
-  }
-  header::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-    background: linear-gradient(90deg, var(--saffron) 33.3%, var(--white) 33.3%, var(--white) 66.6%, var(--india-green) 66.6%);
-  }
-  header h1 { font-family: 'Noto Serif', serif; font-size: 1.1rem; font-weight: 700; }
-  header p { font-size: 0.78rem; opacity: 0.75; margin-top: 2px; }
+  header{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:var(--white);padding:18px 24px;position:relative}
+  header::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
+  header h1{font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400}
+  header p{font-size:.75rem;opacity:.65;margin-top:2px}
 
-  main { max-width: 860px; margin: 28px auto; padding: 0 16px 60px; }
+  main{max-width:1000px;margin:24px auto;padding:0 16px 60px;display:flex;flex-direction:column;gap:16px}
 
-  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px; margin-bottom: 16px; }
-  .card h3 { font-size: 0.92rem; font-weight: 600; color: var(--navy); margin-bottom: 14px; border-bottom: 1px solid var(--grey-100); padding-bottom: 10px; }
+  .card{background:var(--white);border-radius:12px;box-shadow:0 4px 20px rgba(12,31,63,.08);overflow:hidden}
+  .card-head{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .card-head h3{font-size:.82rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em}
+  .card-body{padding:20px 22px}
 
-  .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 520px) { .config-grid { grid-template-columns: 1fr; } }
+  /* CONFIG */
+  .cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:520px){.cfg-grid{grid-template-columns:1fr}}
+  .cfg-lbl{display:block;font-size:.78rem;font-weight:600;color:var(--ink);margin-bottom:5px}
+  .cfg-input{width:100%;padding:9px 12px;border:1.5px solid var(--line);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink)}
+  .cfg-input:focus{outline:none;border-color:var(--saffron)}
+  .cfg-hint{font-size:.73rem;color:var(--text-sec);margin-top:4px}
 
-  .cfg-item { }
-  .cfg-item label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--grey-700); margin-bottom: 6px; }
-  .cfg-item input, .cfg-item select {
-    width: 100%; padding: 9px 12px; border: 1.5px solid var(--grey-300);
-    border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.9rem;
-  }
-  .cfg-item input:focus, .cfg-item select:focus { outline: none; border-color: var(--saffron); }
-  .cfg-item .hint { font-size: 0.75rem; color: var(--grey-500); margin-top: 4px; }
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line)}
+  .toggle-row:last-child{border-bottom:none}
+  .toggle-lbl{font-size:.88rem;font-weight:500}
+  .toggle-lbl span{display:block;font-size:.75rem;color:var(--text-sec);margin-top:2px;font-weight:400}
+  .tog{position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0}
+  .tog input{opacity:0;width:0;height:0}
+  .tog-sl{position:absolute;inset:0;background:var(--line);border-radius:24px;transition:background .2s}
+  .tog-sl::before{content:'';position:absolute;height:18px;width:18px;border-radius:50%;background:var(--white);left:3px;top:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+  .tog input:checked+.tog-sl{background:var(--green)}
+  .tog input:checked+.tog-sl::before{transform:translateX(20px)}
 
-  .toggle-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 0; border-bottom: 1px solid var(--grey-100);
-  }
-  .toggle-row:last-child { border-bottom: none; }
-  .toggle-label { font-size: 0.88rem; }
-  .toggle-label span { display: block; font-size: 0.75rem; color: var(--grey-500); margin-top: 2px; }
-  .toggle {
-    position: relative; width: 44px; height: 24px;
-    cursor: pointer; flex-shrink: 0;
-  }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .slider {
-    position: absolute; inset: 0; background: var(--grey-300);
-    border-radius: 24px; transition: background 0.2s;
-  }
-  .slider::before {
-    content: ''; position: absolute; height: 18px; width: 18px;
-    border-radius: 50%; background: var(--white);
-    left: 3px; top: 3px; transition: transform 0.2s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-  }
-  .toggle input:checked + .slider { background: var(--india-green); }
-  .toggle input:checked + .slider::before { transform: translateX(20px); }
+  .btn-save{background:var(--saffron);color:var(--white);border:none;border-radius:7px;padding:10px 22px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;margin-top:16px}
+  .btn-save:hover{background:var(--saffron-dark)}
+  .cfg-msg{font-size:.8rem;margin-top:10px;padding:9px 12px;border-radius:7px;display:none}
+  .cfg-msg.ok{background:var(--green-light);color:var(--green);border-left:3px solid var(--green);display:block}
+  .cfg-msg.err{background:#FDECEA;color:var(--error);border-left:3px solid var(--error);display:block}
 
-  .btn-save {
-    background: var(--saffron); color: var(--white); border: none;
-    border-radius: 7px; padding: 10px 22px; font-size: 0.9rem; font-weight: 600;
-    cursor: pointer; font-family: 'Inter', sans-serif; margin-top: 16px;
-  }
-  .btn-save:hover { background: var(--saffron-dark); }
+  /* FILTER ROW */
+  .filter-row{display:flex;gap:8px;flex-wrap:wrap}
+  .filter-row input{flex:1;min-width:160px;padding:9px 12px;border:1.5px solid var(--line);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--ink)}
+  .filter-row input:focus{outline:none;border-color:var(--saffron)}
+  .filter-row select{padding:9px 10px;border:1.5px solid var(--line);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:.85rem;background:var(--white);color:var(--ink)}
+  .btn-csv{background:var(--navy);color:var(--white);border:none;border-radius:7px;padding:9px 16px;font-size:.83rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+  .btn-csv:hover{background:var(--navy-mid)}
 
-  .alert { padding: 10px 14px; border-radius: 7px; font-size: 0.82rem; margin-top: 10px; display: none; }
-  .alert-success { background: var(--india-green-light); color: var(--india-green); border-left: 3px solid var(--india-green); display: block; }
-  .alert-error { background: #FDECEA; color: var(--error); border-left: 3px solid var(--error); display: block; }
+  /* TABLE */
+  .tbl-wrap{overflow-x:auto;margin-top:14px}
+  table{width:100%;border-collapse:collapse;font-size:.8rem}
+  thead tr{background:var(--mist)}
+  th{text-align:left;padding:9px 10px;font-size:.72rem;font-weight:700;color:var(--text-sec);text-transform:uppercase;letter-spacing:.05em;border-bottom:1.5px solid var(--line);white-space:nowrap}
+  td{padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--mist)}
 
-  /* Registrations table */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-  thead tr { background: var(--grey-50); }
-  th { text-align: left; padding: 9px 10px; font-size: 0.75rem; font-weight: 600; color: var(--grey-500); text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1.5px solid var(--grey-100); }
-  td { padding: 9px 10px; border-bottom: 1px solid var(--grey-100); vertical-align: middle; }
-  tr:hover td { background: var(--grey-50); }
-  .badge { font-size: 0.72rem; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
-  .badge-pending { background: var(--saffron-light); color: var(--saffron-dark); }
-  .badge-done { background: var(--india-green-light); color: var(--india-green); }
+  .badge{font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;display:inline-block}
+  .badge-pend{background:var(--saffron-light);color:var(--saffron-dark)}
+  .badge-done{background:var(--green-light);color:var(--green)}
 
-  .csv-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .btn-csv {
-    background: var(--navy); color: var(--white); border: none;
-    border-radius: 7px; padding: 9px 18px; font-size: 0.85rem; font-weight: 600;
-    cursor: pointer; font-family: 'Inter', sans-serif;
-  }
-  .btn-csv:hover { background: var(--navy-mid); }
+  /* ACTION BUTTONS in table */
+  .act-btns{display:flex;flex-direction:column;gap:5px;min-width:90px}
+  .btn-act{border:none;border-radius:6px;padding:5px 10px;font-size:.73rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;text-align:center;white-space:nowrap}
+  .btn-undo{background:var(--warn-bg);color:var(--warn)}
+  .btn-undo:hover{background:#FDE68A}
+  .btn-del{background:#FDECEA;color:var(--error)}
+  .btn-del:hover{background:#FECACA}
+  .btn-act:disabled{opacity:.45;cursor:not-allowed}
 
-  .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-  .filter-row input {
-    flex: 1; min-width: 180px; padding: 8px 12px; border: 1.5px solid var(--grey-300);
-    border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.85rem;
-  }
-  .filter-row input:focus { outline: none; border-color: var(--saffron); }
-  .filter-row select {
-    padding: 8px 10px; border: 1.5px solid var(--grey-300);
-    border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.85rem; background: var(--white);
-  }
+  .tbl-count{font-size:.73rem;color:var(--text-sec);padding:10px 0 2px}
 
-  .footer-nav { text-align: center; margin-top: 20px; display: flex; justify-content: center; gap: 20px; font-size: 0.8rem; }
-  .footer-nav a { color: var(--grey-500); text-decoration: none; }
-  .footer-nav a:hover { color: var(--saffron); }
-  .footer-nav a.active { color: var(--saffron); font-weight: 600; }
+  /* FOOTER */
+  .footer-nav{text-align:center;display:flex;justify-content:center;gap:20px;font-size:.8rem}
+  .footer-nav a{color:var(--text-sec);text-decoration:none}
+  .footer-nav a:hover{color:var(--saffron)}
+  .footer-nav a.active{color:var(--saffron);font-weight:600}
 
-
+  /* CONFIRM MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(12,31,63,.55);display:none;align-items:center;justify-content:center;z-index:200}
+  .modal-overlay.show{display:flex}
+  .modal-box{background:var(--white);border-radius:14px;padding:28px 26px;max-width:360px;width:90%;box-shadow:0 12px 48px rgba(0,0,0,.18)}
+  .modal-box h3{font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:400;color:var(--navy);margin-bottom:8px}
+  .modal-box p{font-size:.85rem;color:var(--text-sec);line-height:1.6;margin-bottom:20px}
+  .modal-btns{display:flex;gap:10px;justify-content:flex-end}
+  .btn-cancel{background:var(--mist);color:var(--ink);border:1.5px solid var(--line);border-radius:7px;padding:9px 18px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+  .btn-confirm{border:none;border-radius:7px;padding:9px 18px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--white)}
+  .btn-confirm.danger{background:var(--error)}
+  .btn-confirm.warn{background:var(--warn)}
 </style>
 </head>
 <body>
 
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <h3 id="modalTitle">Confirm</h3>
+    <p id="modalMsg"></p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" id="modalConfirm" onclick="confirmAction()">Confirm</button>
+    </div>
+  </div>
+</div>
 
 <header>
-  <h1>⚙️ Viksit Bharat Run 2026 — Admin</h1>
+  <h1>Viksit Bharat Run 2026 — Admin</h1>
   <p>Authorised personnel only · Firebase node: vbr2026</p>
 </header>
 
@@ -131,78 +128,64 @@
 
   <!-- CONFIG -->
   <div class="card">
-    <h3>Event Configuration</h3>
-    <div class="config-grid">
-      <div class="cfg-item">
-        <label>Maximum Registrations</label>
-        <input type="number" id="cfgMaxReg" value="500" min="1">
-        <p class="hint">Hard cap on total participants. Increase here and in Firebase rules if needed.</p>
-      </div>
-      <div class="cfg-item">
-        <label>Event Date</label>
-        <input type="text" value="Wednesday, 30 September 2026" disabled style="background:var(--grey-50);color:var(--grey-500);">
-      </div>
-    </div>
-
-    <div style="margin-top:16px;">
-      <div class="toggle-row">
-        <div class="toggle-label">
-          Registration Open
-          <span>When off, the registration form is hidden and replaced with a closed banner.</span>
+    <div class="card-head"><h3>Event Configuration</h3></div>
+    <div class="card-body">
+      <div class="cfg-grid" style="margin-bottom:16px">
+        <div>
+          <label class="cfg-lbl">Maximum Registrations</label>
+          <input type="number" class="cfg-input" id="cfgMaxReg" value="500" min="1">
+          <p class="cfg-hint">Hard cap on total participants.</p>
         </div>
-        <label class="toggle">
-          <input type="checkbox" id="cfgRegOpen" checked>
-          <span class="slider"></span>
-        </label>
+        <div>
+          <label class="cfg-lbl">Event Date</label>
+          <input type="text" class="cfg-input" value="Wednesday, 30 September 2026" disabled style="background:var(--mist);color:var(--text-sec)">
+        </div>
       </div>
       <div class="toggle-row">
-        <div class="toggle-label">
-          Show Pass on Success
-          <span>Display downloadable pass after successful registration.</span>
-        </div>
-        <label class="toggle">
-          <input type="checkbox" id="cfgShowPass" checked>
-          <span class="slider"></span>
-        </label>
+        <div class="toggle-lbl">Registration Open<span>When off, the form is replaced with a closed banner.</span></div>
+        <label class="tog"><input type="checkbox" id="cfgRegOpen" checked><span class="tog-sl"></span></label>
       </div>
+      <button class="btn-save" onclick="saveConfig()">Save Configuration</button>
+      <div class="cfg-msg" id="cfgMsg"></div>
     </div>
-
-    <button class="btn-save" onclick="saveConfig()">Save Configuration</button>
-    <div class="alert" id="cfgAlert"></div>
   </div>
 
-  <!-- REGISTRATIONS TABLE -->
+  <!-- REGISTRATIONS -->
   <div class="card">
-    <h3>All Registrations</h3>
-    <div class="filter-row">
-      <input type="text" id="filterInput" placeholder="Filter by name or email…" oninput="applyFilter()">
-      <select id="filterStatus" onchange="applyFilter()">
-        <option value="">All statuses</option>
-        <option value="pending">Pending check-in</option>
-        <option value="checked">Checked in</option>
-      </select>
-      <div class="csv-row">
-        <button class="btn-csv" onclick="exportCSV()">⬇ Export CSV</button>
+    <div class="card-head">
+      <h3>All Registrations</h3>
+      <button class="btn-csv" onclick="exportCSV()">Export CSV</button>
+    </div>
+    <div class="card-body">
+      <div class="filter-row">
+        <input type="text" id="filterInput" placeholder="Filter by name or email…" oninput="applyFilter()">
+        <select id="filterStatus" onchange="applyFilter()">
+          <option value="">All statuses</option>
+          <option value="pending">Pending check-in</option>
+          <option value="checked">Checked in</option>
+        </select>
       </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email / Mobile</th>
+              <th>ID</th>
+              <th>Size</th>
+              <th>Registered</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tBody">
+            <tr><td colspan="8" style="text-align:center;color:var(--text-sec);padding:24px">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl-count" id="tCount"></div>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Email</th>
-            <th>Participants</th>
-            <th>Registered</th>
-            <th>Status</th>
-            <th>Check-in time</th>
-          </tr>
-        </thead>
-        <tbody id="regTableBody">
-          <tr><td colspan="6" style="text-align:center;color:var(--grey-500);padding:20px;">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="font-size:0.75rem;color:var(--grey-500);margin-top:10px;" id="tableCount"></p>
   </div>
 
   <div class="footer-nav">
@@ -211,127 +194,180 @@
     <a href="dashboard.html">Dashboard</a>
     <a href="admin.html" class="active">Admin</a>
   </div>
+
 </main>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
-    authDomain: "viksitbharatrunbkk2026.firebaseapp.com",
-    databaseURL: "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "viksitbharatrunbkk2026",
-    storageBucket: "viksitbharatrunbkk2026.firebasestorage.app",
-    messagingSenderId: "732438557121",
-    appId: "1:732438557121:web:c41053238a31f5c2af3f40"
-  };
+const app = initializeApp({
+  apiKey:            "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
+  authDomain:        "viksitbharatrunbkk2026.firebaseapp.com",
+  databaseURL:       "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "viksitbharatrunbkk2026",
+  storageBucket:     "viksitbharatrunbkk2026.firebasestorage.app",
+  messagingSenderId: "732438557121",
+  appId:             "1:732438557121:web:c41053238a31f5c2af3f40"
+});
+const db = getDatabase(app);
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+let allRegs = [];
+let pendingAction = null; // { type: 'undo'|'delete', regId }
 
-  let allRegs = [];
+// ── Config ──
+get(ref(db, 'vbr2026/config')).then(snap => {
+  const c = snap.val() || {};
+  if (c.maxReg) document.getElementById('cfgMaxReg').value = c.maxReg;
+  if (c.regOpen === false) document.getElementById('cfgRegOpen').checked = false;
+});
 
-  loadConfig();
-  loadRegs();
-
-  function loadConfig() {
-    get(ref(db, 'vbr2026/config')).then(snap => {
-      const cfg = snap.val() || {};
-      if (cfg.maxReg) document.getElementById('cfgMaxReg').value = cfg.maxReg;
-      if (cfg.regOpen === false) document.getElementById('cfgRegOpen').checked = false;
-      if (cfg.showPass === false) document.getElementById('cfgShowPass').checked = false;
+window.saveConfig = async function() {
+  const msg = document.getElementById('cfgMsg');
+  msg.className = 'cfg-msg';
+  try {
+    await set(ref(db, 'vbr2026/config'), {
+      maxReg:  parseInt(document.getElementById('cfgMaxReg').value) || 500,
+      regOpen: document.getElementById('cfgRegOpen').checked,
     });
+    msg.textContent = 'Configuration saved.';
+    msg.classList.add('ok');
+  } catch(e) {
+    msg.textContent = 'Save failed: ' + e.message;
+    msg.classList.add('err');
   }
+};
 
-  window.saveConfig = async function() {
-    const al = document.getElementById('cfgAlert');
-    al.className = 'alert'; al.style.display = 'none';
+// ── Load registrations (live) ──
+onValue(ref(db, 'vbr2026/registrations'), snap => {
+  const raw = snap.val() || {};
+  allRegs = Object.entries(raw).map(([k,v]) => ({ ...v, id: k }));
+  applyFilter();
+});
+
+// ── Render table ──
+function renderTable(regs) {
+  const tbody = document.getElementById('tBody');
+  if (!regs.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-sec);padding:24px">No registrations found.</td></tr>`;
+    document.getElementById('tCount').textContent = '';
+    return;
+  }
+  tbody.innerHTML = regs.map((r, i) => {
+    const p       = r.participant || {};
+    const regDate = r.registeredAt ? new Date(r.registeredAt).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
+    const chkTime = r.checkedInAt  ? new Date(r.checkedInAt).toLocaleString('en-GB', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
+    const done    = !!r.checkedIn;
+    const esc     = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return `<tr id="row-${r.id}">
+      <td style="color:var(--text-sec);width:32px">${i+1}</td>
+      <td><div style="font-weight:600">${esc(p.name||'—')}</div></td>
+      <td>
+        <div style="font-size:.78rem">${esc(r.email||'')}</div>
+        <div style="font-size:.73rem;color:var(--text-sec)">${esc(r.mobile||'')}</div>
+      </td>
+      <td style="font-size:.75rem;color:var(--text-sec)">${esc(p.idType||'')} ${esc(p.idNumber||'')}</td>
+      <td><strong>${p.size||'—'}</strong></td>
+      <td style="white-space:nowrap;font-size:.78rem;color:var(--text-sec)">${regDate}</td>
+      <td>
+        <span class="badge ${done?'badge-done':'badge-pend'}" id="badge-${r.id}">${done?'✓ Checked In':'Pending'}</span>
+        ${done ? `<div style="font-size:.7rem;color:var(--text-sec);margin-top:3px">${chkTime}</div>` : ''}
+      </td>
+      <td>
+        <div class="act-btns">
+          ${done
+            ? `<button class="btn-act btn-undo" onclick="askUndo('${r.id}','${esc(p.name||'?')}')">Undo Check-in</button>`
+            : `<button class="btn-act btn-undo" disabled style="opacity:.3;cursor:default">Undo Check-in</button>`
+          }
+          <button class="btn-act btn-del" onclick="askDelete('${r.id}','${esc(p.name||'?')}')">Delete</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tCount').textContent = `Showing ${regs.length} of ${allRegs.length} registration${allRegs.length!==1?'s':''}`;
+}
+
+// ── Filter ──
+window.applyFilter = function() {
+  const q      = document.getElementById('filterInput').value.toLowerCase();
+  const status = document.getElementById('filterStatus').value;
+  const filtered = allRegs.filter(r => {
+    const p         = r.participant || {};
+    const nameMatch = (p.name||'').toLowerCase().includes(q);
+    const emailMatch= (r.email||'').toLowerCase().includes(q);
+    const statusOk  = !status
+      || (status === 'checked' && r.checkedIn)
+      || (status === 'pending' && !r.checkedIn);
+    return (nameMatch || emailMatch || !q) && statusOk;
+  });
+  renderTable(filtered);
+};
+
+// ── Modal ──
+window.closeModal = function() {
+  document.getElementById('modal').classList.remove('show');
+  pendingAction = null;
+};
+
+window.askUndo = function(regId, name) {
+  pendingAction = { type: 'undo', regId };
+  document.getElementById('modalTitle').textContent = 'Undo Check-in';
+  document.getElementById('modalMsg').textContent   = `Remove check-in status for ${name}? They will show as Pending again.`;
+  const btn = document.getElementById('modalConfirm');
+  btn.textContent = 'Undo Check-in';
+  btn.className   = 'btn-confirm warn';
+  document.getElementById('modal').classList.add('show');
+};
+
+window.askDelete = function(regId, name) {
+  pendingAction = { type: 'delete', regId };
+  document.getElementById('modalTitle').textContent = 'Delete Registration';
+  document.getElementById('modalMsg').textContent   = `Permanently delete the registration for ${name}? This cannot be undone.`;
+  const btn = document.getElementById('modalConfirm');
+  btn.textContent = 'Delete';
+  btn.className   = 'btn-confirm danger';
+  document.getElementById('modal').classList.add('show');
+};
+
+window.confirmAction = async function() {
+  if (!pendingAction) return;
+  const { type, regId } = pendingAction;
+  closeModal();
+
+  if (type === 'undo') {
     try {
-      await set(ref(db, 'vbr2026/config'), {
-        maxReg: parseInt(document.getElementById('cfgMaxReg').value) || 500,
-        regOpen: document.getElementById('cfgRegOpen').checked,
-        showPass: document.getElementById('cfgShowPass').checked,
-      });
-      al.textContent = 'Configuration saved.';
-      al.classList.add('alert-success');
-    } catch(e) {
-      al.textContent = 'Save failed: ' + e.message;
-      al.classList.add('alert-error');
-    }
-  };
-
-  function loadRegs() {
-    onValue(ref(db, 'vbr2026/registrations'), snap => {
-      const raw = snap.val() || {};
-      allRegs = Object.entries(raw).map(([k, v]) => ({ ...v, id: k }));
-      renderTable(allRegs);
-    });
+      await set(ref(db, `vbr2026/registrations/${regId}/checkedIn`), false);
+      await set(ref(db, `vbr2026/registrations/${regId}/checkedInAt`), null);
+    } catch(e) { alert('Undo failed: ' + e.message); }
   }
 
-  function renderTable(regs) {
-    const tbody = document.getElementById('regTableBody');
-    if (!regs.length) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--grey-500);padding:20px;">No registrations yet.</td></tr>';
-      document.getElementById('tableCount').textContent = '';
-      return;
-    }
-    tbody.innerHTML = regs.map((r, i) => {
-      const p = r.participant || {};
-      const regDate = r.registeredAt ? new Date(r.registeredAt).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
-      const chkTime = r.checkedInAt  ? new Date(r.checkedInAt).toLocaleString('en-GB',  { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
-      return `<tr>
-        <td style="color:var(--grey-500)">${i + 1}</td>
-        <td>${sanitize(r.email || '')}<div style="font-size:0.72rem;color:var(--grey-500);">${r.id}</div></td>
-        <td>
-          <div style="font-size:0.85rem;font-weight:500;">${sanitize(p.name || '—')}</div>
-          <div style="font-size:0.75rem;color:var(--grey-500);">${sanitize(p.idType || '')} ${sanitize(p.idNumber || '')} · ${p.size || ''}</div>
-          <div style="font-size:0.75rem;color:var(--grey-500);">${sanitize(r.mobile || '')}</div>
-        </td>
-        <td style="white-space:nowrap;font-size:0.8rem;">${regDate}</td>
-        <td><span class="badge ${r.checkedIn ? 'badge-done' : 'badge-pending'}">${r.checkedIn ? '✓ Checked In' : 'Pending'}</span></td>
-        <td style="font-size:0.8rem;color:var(--grey-500);">${chkTime}</td>
-      </tr>`;
-    }).join('');
-    document.getElementById('tableCount').textContent = `Showing ${regs.length} of ${allRegs.length} registrations`;
+  if (type === 'delete') {
+    try {
+      await remove(ref(db, `vbr2026/registrations/${regId}`));
+      // Decrement counter
+      const cSnap = await get(ref(db, 'vbr2026/counter'));
+      const cur   = cSnap.val() || 0;
+      if (cur > 0) await set(ref(db, 'vbr2026/counter'), cur - 1);
+    } catch(e) { alert('Delete failed: ' + e.message); }
   }
+};
 
-  function sanitize(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  window.applyFilter = function() {
-    const q = document.getElementById('filterInput').value.toLowerCase();
-    const status = document.getElementById('filterStatus').value;
-    let filtered = allRegs.filter(r => {
-      const nameMatch = (r.participants || []).some(p => p.name.toLowerCase().includes(q));
-      const emailMatch = (r.email || '').toLowerCase().includes(q);
-      const statusMatch = !status ||
-        (status === 'checked' && r.checkedIn) ||
-        (status === 'pending' && !r.checkedIn);
-      return (nameMatch || emailMatch) && statusMatch;
-    });
-    renderTable(filtered);
-  };
-
-  window.exportCSV = function() {
-    const rows = [['Reg ID','Email','Mobile','Name','ID Type','ID Number','Size','Registered At','Checked In','Check-in Time']];
-    allRegs.forEach(r => {
-      const p = r.participant || {};
-      const safeEmail  = String(r.email  || '').replace(/^[=+\-@]/, "'$&");
-      const safeMobile = String(r.mobile || '').replace(/^[=+\-@]/, "'$&");
-      const safeName   = String(p.name   || '').replace(/^[=+\-@]/, "'$&");
-      rows.push([r.id, safeEmail, safeMobile, safeName, p.idType || '', p.idNumber || '', p.size || '', r.registeredAt || '', r.checkedIn ? 'Yes' : 'No', r.checkedInAt || '']);
-    });
-    const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `VBR2026_registrations_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+// ── CSV export ──
+window.exportCSV = function() {
+  const rows = [['Reg ID','Name','Email','Mobile','ID Type','ID Number','Size','Registered At','Checked In','Check-in Time']];
+  allRegs.forEach(r => {
+    const p = r.participant || {};
+    const safe = s => String(s||'').replace(/^[=+\-@]/,"'$&");
+    rows.push([r.id, safe(p.name), safe(r.email), safe(r.mobile), p.idType||'', p.idNumber||'', p.size||'', r.registeredAt||'', r.checkedIn?'Yes':'No', r.checkedInAt||'']);
+  });
+  const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type:'text/csv' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `VBR2026_registrations_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
 </script>
 </body>
 </html>

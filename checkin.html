@@ -9,7 +9,7 @@
   :root {
     --saffron:#E8500A; --saffron-dark:#B83E08; --saffron-light:#FDF1EB;
     --green:#1A6B2F; --green-light:#EBF5EE;
-    --navy:#0C1F3F; --navy-mid:#162E58; --navy-light:#EEF1F6;
+    --navy:#0C1F3F; --navy-mid:#162E58;
     --ink:#1C2333; --mist:#F4F6F9; --line:#E4E8EF;
     --text-sec:#5C6478; --white:#FFFFFF; --error:#C0392B;
   }
@@ -33,42 +33,44 @@
   .tabs{display:flex;border-bottom:1px solid var(--line);background:var(--mist)}
   .tab{flex:1;padding:13px;text-align:center;font-size:.82rem;font-weight:600;color:var(--text-sec);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none}
   .tab.active{color:var(--saffron);border-bottom-color:var(--saffron);background:var(--white)}
-
   .tab-panel{display:none}
   .tab-panel.active{display:block}
 
-  /* Scanner panel */
-  .scan-wrap{padding:18px 20px 14px}
+  .scan-wrap{padding:18px 20px 0}
   .scan-wrap h2{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:3px}
   .scan-wrap p{font-size:.78rem;color:var(--text-sec);margin-bottom:14px}
 
-  /* Html5Qrcode renders its own video inside #qr-reader */
-  #qr-reader{width:100%;max-width:420px;margin:0 auto 14px;border-radius:10px;overflow:hidden;background:#000}
-  /* Override Html5Qrcode internal styles for cleaner look */
+  /* Html5QrcodeScanner renders inside #qr-reader */
+  #qr-reader{width:100%;max-width:460px;margin:0 auto}
+  /* Tidy up the library's default UI */
+  #qr-reader__status_span{font-family:'DM Sans',sans-serif!important;font-size:.8rem!important}
+  #qr-reader__dashboard_section_csr button,
+  #qr-reader__dashboard_section_fsr button{
+    font-family:'DM Sans',sans-serif!important;font-size:.85rem!important;
+    background:var(--saffron)!important;color:#fff!important;
+    border:none!important;border-radius:7px!important;
+    padding:9px 18px!important;cursor:pointer!important;margin-top:6px!important
+  }
+  #qr-reader__camera_selection{
+    font-family:'DM Sans',sans-serif!important;font-size:.82rem!important;
+    padding:7px 10px!important;border:1.5px solid var(--line)!important;
+    border-radius:7px!important;width:100%!important;margin-bottom:8px!important
+  }
   #qr-reader img[alt="Info icon"]{display:none!important}
-  #qr-reader select{font-family:'DM Sans',sans-serif!important;font-size:.82rem!important;padding:6px 8px!important;border:1.5px solid var(--line)!important;border-radius:6px!important;margin-bottom:10px!important}
 
-  .btn-scan{display:block;width:100%;max-width:420px;margin:0 auto;background:var(--saffron);color:var(--white);border:none;border-radius:8px;padding:13px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
-  .btn-scan:hover{background:var(--saffron-dark)}
-  .btn-scan:disabled{background:var(--line);color:var(--text-sec);cursor:not-allowed}
-  .btn-scan.stop{background:var(--navy)}
-  .btn-scan.stop:hover{background:var(--navy-mid)}
-
-  .scan-status{text-align:center;margin-top:10px;font-size:.8rem;color:var(--text-sec);min-height:18px;padding:0 10px}
+  .scan-status{text-align:center;margin:10px 0 16px;font-size:.8rem;color:var(--text-sec);min-height:18px;padding:0 10px}
   .scan-status.ok{color:var(--green);font-weight:600}
   .scan-status.err{color:var(--error);font-weight:600}
 
-  /* Search panel */
   .search-wrap{padding:18px 20px 14px}
   .search-wrap h2{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:3px}
   .search-wrap p{font-size:.78rem;color:var(--text-sec);margin-bottom:14px}
   .search-row{display:flex;gap:8px}
   .search-row input{flex:1;padding:11px 13px;border:1.5px solid var(--line);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink)}
   .search-row input:focus{outline:none;border-color:var(--saffron)}
-  .btn-srch{background:var(--saffron);color:var(--white);border:none;border-radius:8px;padding:11px 16px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:background .15s}
+  .btn-srch{background:var(--saffron);color:var(--white);border:none;border-radius:8px;padding:11px 16px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
   .btn-srch:hover{background:var(--saffron-dark)}
 
-  /* Result */
   .divider{height:1px;background:var(--line)}
   .result{padding:0 20px 18px;display:none}
   .result.show{display:block}
@@ -120,24 +122,23 @@
       <div class="tab" id="tab-search" onclick="switchTab('search')">Search</div>
     </div>
 
-    <!-- SCAN -->
+    <!-- SCAN TAB -->
     <div class="tab-panel active" id="panel-scan">
       <div class="scan-wrap">
-        <h2>Scan participant's QR code</h2>
-        <p>Opens rear camera automatically on mobile. Allow camera access when prompted. Open via the live website URL only.</p>
+        <h2>Scan participant's pass QR code</h2>
+        <p>Click "Start Scanning" below. Allow camera access when prompted. Use rear camera on mobile for best results. Must be opened via the live website URL.</p>
         <div id="qr-reader"></div>
-        <button class="btn-scan" id="btnScan" onclick="toggleScanner()">Start Scanner</button>
-        <div class="scan-status" id="scanStatus">Press Start Scanner to begin</div>
+        <div class="scan-status" id="scanStatus"></div>
       </div>
       <div class="divider"></div>
       <div class="result" id="scanResult"></div>
     </div>
 
-    <!-- SEARCH -->
+    <!-- SEARCH TAB -->
     <div class="tab-panel" id="panel-search">
       <div class="search-wrap">
         <h2>Search Registration</h2>
-        <p>Search by email address or registration ID.</p>
+        <p>Search by email address or full registration ID.</p>
         <div class="search-row">
           <input type="text" id="searchInput" placeholder="Email or Registration ID" onkeydown="if(event.key==='Enter')doSearch()">
           <button class="btn-srch" onclick="doSearch()">Search</button>
@@ -151,6 +152,7 @@
   </div>
 </main>
 
+<!-- Html5QrcodeScanner — handles all camera selection natively -->
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <script type="module">
@@ -158,13 +160,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const app = initializeApp({
-  apiKey: "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
-  authDomain: "viksitbharatrunbkk2026.firebaseapp.com",
-  databaseURL: "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "viksitbharatrunbkk2026",
-  storageBucket: "viksitbharatrunbkk2026.firebasestorage.app",
+  apiKey:            "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
+  authDomain:        "viksitbharatrunbkk2026.firebaseapp.com",
+  databaseURL:       "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "viksitbharatrunbkk2026",
+  storageBucket:     "viksitbharatrunbkk2026.firebasestorage.app",
   messagingSenderId: "732438557121",
-  appId: "1:732438557121:web:c41053238a31f5c2af3f40"
+  appId:             "1:732438557121:web:c41053238a31f5c2af3f40"
 });
 const db = getDatabase(app);
 
@@ -206,10 +208,10 @@ function renderResult(containerId, regId, data) {
       </div>
       <div class="reg-body">
         <div class="drow"><span class="dlbl">Mobile</span><span class="dval">${data.mobile || '—'}</span></div>
-        <div class="drow"><span class="dlbl">ID</span><span class="dval">${(p.idType||'')} ${(p.idNumber||'')}</span></div>
-        <div class="drow"><span class="dlbl">T-Shirt</span><span class="dval">${p.size || '—'}</span></div>
+        <div class="drow"><span class="dlbl">ID</span><span class="dval">${p.idType||''} ${p.idNumber||''}</span></div>
+        <div class="drow"><span class="dlbl">T-Shirt</span><span class="dval">${p.size||'—'}</span></div>
         ${done && data.checkedInAt
-          ? `<div class="drow"><span class="dlbl">Checked in</span><span class="dval">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>`
+          ? `<div class="drow"><span class="dlbl">Time</span><span class="dval">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>`
           : ''}
       </div>
     </div>
@@ -230,12 +232,12 @@ window._ci = async function(regId) {
     const badge = document.getElementById('badge-' + regId);
     if (badge) { badge.textContent = '✓ Checked In'; badge.className = 'badge badge-done'; }
     setStatus('✓ Checked in — ready for next scan', 'ok');
-    // Auto-clear after 4 seconds
+    // Auto-clear result after 4s for next participant
     setTimeout(() => {
       const r = document.getElementById('scanResult');
       if (r) { r.classList.remove('show'); r.innerHTML = ''; }
       lastScanned = null;
-      setStatus('Scanning — point at next QR code', 'ok');
+      setStatus('', '');
     }, 4000);
   } catch(e) {
     if (btn) { btn.disabled = false; btn.textContent = '✓ Confirm Check-in'; }
@@ -243,83 +245,36 @@ window._ci = async function(regId) {
   }
 };
 
-// ── QR Scanner ──
-let scanner     = null;
-let running     = false;
+// ── QR Scanner using Html5QrcodeScanner ──
+// This is the HIGH-LEVEL API — handles camera selection, permissions,
+// and scanning loop internally. Much more reliable on mobile than the low-level API.
+let qrScanner  = null;
 let lastScanned = null;
 
-window.toggleScanner = async function() {
-  if (running) { await stopScanner(); } else { await startScanner(); }
-};
+function initScanner() {
+  if (qrScanner) return; // already initialised
 
-async function startScanner() {
-  const btn = document.getElementById('btnScan');
-  btn.disabled = true;
-  setStatus('Starting camera…', '');
+  qrScanner = new Html5QrcodeScanner(
+    'qr-reader',
+    {
+      fps: 10,
+      qrbox: { width: 240, height: 240 },
+      rememberLastUsedCamera: true,
+      showTorchButtonIfSupported: true,
+      // Prefer rear camera on mobile
+      videoConstraints: { facingMode: { ideal: 'environment' } }
+    },
+    /* verbose= */ false
+  );
 
-  try {
-    scanner = new Html5Qrcode('qr-reader');
-
-    // Get cameras, prefer rear
-    let camId;
-    try {
-      const devices = await Html5Qrcode.getCameras();
-      if (!devices || devices.length === 0) throw new Error('No camera found');
-      const rear = devices.find(d => /back|rear|environment/i.test(d.label));
-      camId = (rear || devices[devices.length - 1]).id;
-    } catch(e) {
-      // Fallback: let Html5Qrcode pick via facingMode
-      camId = { facingMode: 'environment' };
-    }
-
-    await scanner.start(
-      camId,
-      { fps: 10, qrbox: { width: 240, height: 240 } },
-      onScan,
-      () => {} // silent per-frame errors
-    );
-
-    running = true;
-    lastScanned = null;
-    btn.textContent = 'Stop Scanner';
-    btn.classList.add('stop');
-    btn.disabled = false;
-    const r = document.getElementById('scanResult');
-    r.classList.remove('show'); r.innerHTML = '';
-    setStatus('Scanning — point camera at the QR code on the pass', 'ok');
-
-  } catch(e) {
-    btn.disabled = false;
-    scanner = null;
-    const msg = String(e);
-    if (/permission|denied|notallowed/i.test(msg)) {
-      setStatus('Camera permission denied. In your browser: Settings → Site permissions → Camera → Allow this site. Then try again.', 'err');
-    } else if (/notfound|no.*camera/i.test(msg)) {
-      setStatus('No camera found on this device. Use Search instead.', 'err');
-    } else {
-      setStatus('Could not start camera: ' + msg + '. Use Search instead.', 'err');
-    }
-  }
+  qrScanner.render(onScanSuccess, onScanError);
 }
 
-async function stopScanner() {
-  if (scanner && running) {
-    try { await scanner.stop(); } catch(e) {}
-    try { scanner.clear(); } catch(e) {}
-    scanner = null;
-  }
-  running = false;
-  const btn = document.getElementById('btnScan');
-  btn.textContent = 'Start Scanner';
-  btn.classList.remove('stop');
-  btn.disabled = false;
-  setStatus('Scanner stopped.', '');
-}
-
-async function onScan(regId) {
+async function onScanSuccess(regId) {
   if (!regId || regId === lastScanned) return;
   lastScanned = regId;
   if (navigator.vibrate) navigator.vibrate(120);
+
   setStatus('QR detected — looking up…', '');
   const r = document.getElementById('scanResult');
   r.classList.remove('show'); r.innerHTML = '';
@@ -327,7 +282,7 @@ async function onScan(regId) {
   try {
     const snap = await get(ref(db, `vbr2026/registrations/${regId}`));
     if (!snap.exists()) {
-      setStatus('No registration found. Make sure you are scanning the correct pass.', 'err');
+      setStatus('No registration found for this QR. Please check the pass.', 'err');
       setTimeout(() => { lastScanned = null; }, 3000);
       return;
     }
@@ -339,9 +294,13 @@ async function onScan(regId) {
   }
 }
 
+function onScanError() {
+  // Per-frame errors are normal (no QR in frame) — ignore silently
+}
+
 // ── Search ──
 window.doSearch = async function() {
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const q  = document.getElementById('searchInput').value.trim().toLowerCase();
   if (!q) return;
   const sl = document.getElementById('searchLoader');
   const sr = document.getElementById('searchResult');
@@ -357,7 +316,7 @@ window.doSearch = async function() {
     sl.classList.remove('show');
     if (!hit) {
       sr.classList.add('show');
-      sr.innerHTML = `<div class="alert alert-err">No registration found for "${q}".</div>`;
+      sr.innerHTML = `<div class="alert alert-err">No registration found for "${document.getElementById('searchInput').value.trim()}".</div>`;
       return;
     }
     renderResult('searchResult', hit[0], hit[1]);
@@ -369,13 +328,17 @@ window.doSearch = async function() {
 };
 
 // ── Tab switch ──
-window.switchTab = async function(tab) {
+window.switchTab = function(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   document.getElementById('panel-' + tab).classList.add('active');
-  if (tab !== 'scan' && running) await stopScanner();
+  // Initialise scanner when scan tab is shown
+  if (tab === 'scan') initScanner();
 };
+
+// Auto-init scanner on load (scan tab is active by default)
+initScanner();
 </script>
 </body>
 </html>
