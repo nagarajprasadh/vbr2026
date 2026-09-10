@@ -50,9 +50,10 @@
   }
 
   /* ── HERO ── */
-  .hero { width: 100%; background: #0C1F3F; line-height: 0; }
+  @media (max-width: 600px) { .hero img { max-height: 180px; } }
   .hero img {
-    width: 100%; display: block; object-fit: contain; background: #fff;
+    width: 100%; display: block;
+    max-height: 300px; object-fit: cover; object-position: 65% top;
   }
 
 
