@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VBR 2026 — Admin</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:wght@700&display=swap');
+  :root {
+    --saffron: #FF6600; --saffron-dark: #CC5200; --saffron-light: #FFF0E6;
+    --india-green: #138808; --india-green-light: #E8F5E9;
+    --navy: #0A1E3C; --navy-mid: #1A3A5C;
+    --white: #FFFFFF; --grey-50: #F8F9FA; --grey-100: #F1F3F5;
+    --grey-300: #CED4DA; --grey-500: #6C757D; --grey-700: #343A40;
+    --error: #C0392B; --radius: 10px; --shadow: 0 2px 14px rgba(10,30,60,0.09);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--grey-50); color: var(--grey-700); }
+
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: var(--white); padding: 20px 24px 18px; position: relative;
+  }
+  header::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--saffron) 33.3%, var(--white) 33.3%, var(--white) 66.6%, var(--india-green) 66.6%);
+  }
+  header h1 { font-family: 'Noto Serif', serif; font-size: 1.1rem; font-weight: 700; }
+  header p { font-size: 0.78rem; opacity: 0.75; margin-top: 2px; }
+
+  main { max-width: 860px; margin: 28px auto; padding: 0 16px 60px; }
+
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px; margin-bottom: 16px; }
+  .card h3 { font-size: 0.92rem; font-weight: 600; color: var(--navy); margin-bottom: 14px; border-bottom: 1px solid var(--grey-100); padding-bottom: 10px; }
+
+  .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 520px) { .config-grid { grid-template-columns: 1fr; } }
+
+  .cfg-item { }
+  .cfg-item label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--grey-700); margin-bottom: 6px; }
+  .cfg-item input, .cfg-item select {
+    width: 100%; padding: 9px 12px; border: 1.5px solid var(--grey-300);
+    border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.9rem;
+  }
+  .cfg-item input:focus, .cfg-item select:focus { outline: none; border-color: var(--saffron); }
+  .cfg-item .hint { font-size: 0.75rem; color: var(--grey-500); margin-top: 4px; }
+
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--grey-100);
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { font-size: 0.88rem; }
+  .toggle-label span { display: block; font-size: 0.75rem; color: var(--grey-500); margin-top: 2px; }
+  .toggle {
+    position: relative; width: 44px; height: 24px;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; inset: 0; background: var(--grey-300);
+    border-radius: 24px; transition: background 0.2s;
+  }
+  .slider::before {
+    content: ''; position: absolute; height: 18px; width: 18px;
+    border-radius: 50%; background: var(--white);
+    left: 3px; top: 3px; transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .toggle input:checked + .slider { background: var(--india-green); }
+  .toggle input:checked + .slider::before { transform: translateX(20px); }
+
+  .btn-save {
+    background: var(--saffron); color: var(--white); border: none;
+    border-radius: 7px; padding: 10px 22px; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; font-family: 'Inter', sans-serif; margin-top: 16px;
+  }
+  .btn-save:hover { background: var(--saffron-dark); }
+
+  .alert { padding: 10px 14px; border-radius: 7px; font-size: 0.82rem; margin-top: 10px; display: none; }
+  .alert-success { background: var(--india-green-light); color: var(--india-green); border-left: 3px solid var(--india-green); display: block; }
+  .alert-error { background: #FDECEA; color: var(--error); border-left: 3px solid var(--error); display: block; }
+
+  /* Registrations table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  thead tr { background: var(--grey-50); }
+  th { text-align: left; padding: 9px 10px; font-size: 0.75rem; font-weight: 600; color: var(--grey-500); text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1.5px solid var(--grey-100); }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--grey-100); vertical-align: middle; }
+  tr:hover td { background: var(--grey-50); }
+  .badge { font-size: 0.72rem; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+  .badge-pending { background: var(--saffron-light); color: var(--saffron-dark); }
+  .badge-done { background: var(--india-green-light); color: var(--india-green); }
+
+  .csv-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn-csv {
+    background: var(--navy); color: var(--white); border: none;
+    border-radius: 7px; padding: 9px 18px; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+  .btn-csv:hover { background: var(--navy-mid); }
+
+  .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .filter-row input {
+    flex: 1; min-width: 180px; padding: 8px 12px; border: 1.5px solid var(--grey-300);
+    border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.85rem;
+  }
+  .filter-row input:focus { outline: none; border-color: var(--saffron); }
+  .filter-row select {
+    padding: 8px 10px; border: 1.5px solid var(--grey-300);
+    border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 0.85rem; background: var(--white);
+  }
+
+  .footer-nav { text-align: center; margin-top: 20px; display: flex; justify-content: center; gap: 20px; font-size: 0.8rem; }
+  .footer-nav a { color: var(--grey-500); text-decoration: none; }
+  .footer-nav a:hover { color: var(--saffron); }
+  .footer-nav a.active { color: var(--saffron); font-weight: 600; }
+
+
+</style>
+</head>
+<body>
+
+
+<header>
+  <h1>⚙️ Viksit Bharat Run 2026 — Admin</h1>
+  <p>Authorised personnel only · Firebase node: vbr2026</p>
+</header>
+
+<main>
+
+  <!-- CONFIG -->
+  <div class="card">
+    <h3>Event Configuration</h3>
+    <div class="config-grid">
+      <div class="cfg-item">
+        <label>Maximum Registrations</label>
+        <input type="number" id="cfgMaxReg" value="500" min="1">
+        <p class="hint">Hard cap on total participants. Increase here and in Firebase rules if needed.</p>
+      </div>
+      <div class="cfg-item">
+        <label>Event Date</label>
+        <input type="text" value="Wednesday, 30 September 2026" disabled style="background:var(--grey-50);color:var(--grey-500);">
+      </div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div class="toggle-row">
+        <div class="toggle-label">
+          Registration Open
+          <span>When off, the registration form is hidden and replaced with a closed banner.</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="cfgRegOpen" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-label">
+          Show Pass on Success
+          <span>Display downloadable pass after successful registration.</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="cfgShowPass" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-save" onclick="saveConfig()">Save Configuration</button>
+    <div class="alert" id="cfgAlert"></div>
+  </div>
+
+  <!-- REGISTRATIONS TABLE -->
+  <div class="card">
+    <h3>All Registrations</h3>
+    <div class="filter-row">
+      <input type="text" id="filterInput" placeholder="Filter by name or email…" oninput="applyFilter()">
+      <select id="filterStatus" onchange="applyFilter()">
+        <option value="">All statuses</option>
+        <option value="pending">Pending check-in</option>
+        <option value="checked">Checked in</option>
+      </select>
+      <div class="csv-row">
+        <button class="btn-csv" onclick="exportCSV()">⬇ Export CSV</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Email</th>
+            <th>Participants</th>
+            <th>Registered</th>
+            <th>Status</th>
+            <th>Check-in time</th>
+          </tr>
+        </thead>
+        <tbody id="regTableBody">
+          <tr><td colspan="6" style="text-align:center;color:var(--grey-500);padding:20px;">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:0.75rem;color:var(--grey-500);margin-top:10px;" id="tableCount"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a href="index.html">Registration</a>
+    <a href="checkin.html">Check-in</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="admin.html" class="active">Admin</a>
+  </div>
+</main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
+    authDomain: "viksitbharatrunbkk2026.firebaseapp.com",
+    databaseURL: "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "viksitbharatrunbkk2026",
+    storageBucket: "viksitbharatrunbkk2026.firebasestorage.app",
+    messagingSenderId: "732438557121",
+    appId: "1:732438557121:web:c41053238a31f5c2af3f40"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  let allRegs = [];
+
+  loadConfig();
+  loadRegs();
+
+  function loadConfig() {
+    get(ref(db, 'vbr2026/config')).then(snap => {
+      const cfg = snap.val() || {};
+      if (cfg.maxReg) document.getElementById('cfgMaxReg').value = cfg.maxReg;
+      if (cfg.regOpen === false) document.getElementById('cfgRegOpen').checked = false;
+      if (cfg.showPass === false) document.getElementById('cfgShowPass').checked = false;
+    });
+  }
+
+  window.saveConfig = async function() {
+    const al = document.getElementById('cfgAlert');
+    al.className = 'alert'; al.style.display = 'none';
+    try {
+      await set(ref(db, 'vbr2026/config'), {
+        maxReg: parseInt(document.getElementById('cfgMaxReg').value) || 500,
+        regOpen: document.getElementById('cfgRegOpen').checked,
+        showPass: document.getElementById('cfgShowPass').checked,
+      });
+      al.textContent = 'Configuration saved.';
+      al.classList.add('alert-success');
+    } catch(e) {
+      al.textContent = 'Save failed: ' + e.message;
+      al.classList.add('alert-error');
+    }
+  };
+
+  function loadRegs() {
+    onValue(ref(db, 'vbr2026/registrations'), snap => {
+      const raw = snap.val() || {};
+      allRegs = Object.entries(raw).map(([k, v]) => ({ ...v, id: k }));
+      renderTable(allRegs);
+    });
+  }
+
+  function renderTable(regs) {
+    const tbody = document.getElementById('regTableBody');
+    if (!regs.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--grey-500);padding:20px;">No registrations yet.</td></tr>';
+      document.getElementById('tableCount').textContent = '';
+      return;
+    }
+    tbody.innerHTML = regs.map((r, i) => {
+      const p = r.participant || {};
+      const regDate = r.registeredAt ? new Date(r.registeredAt).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
+      const chkTime = r.checkedInAt  ? new Date(r.checkedInAt).toLocaleString('en-GB',  { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
+      return `<tr>
+        <td style="color:var(--grey-500)">${i + 1}</td>
+        <td>${sanitize(r.email || '')}<div style="font-size:0.72rem;color:var(--grey-500);">${r.id}</div></td>
+        <td>
+          <div style="font-size:0.85rem;font-weight:500;">${sanitize(p.name || '—')}</div>
+          <div style="font-size:0.75rem;color:var(--grey-500);">${sanitize(p.idType || '')} ${sanitize(p.idNumber || '')} · ${p.size || ''}</div>
+          <div style="font-size:0.75rem;color:var(--grey-500);">${sanitize(r.mobile || '')}</div>
+        </td>
+        <td style="white-space:nowrap;font-size:0.8rem;">${regDate}</td>
+        <td><span class="badge ${r.checkedIn ? 'badge-done' : 'badge-pending'}">${r.checkedIn ? '✓ Checked In' : 'Pending'}</span></td>
+        <td style="font-size:0.8rem;color:var(--grey-500);">${chkTime}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('tableCount').textContent = `Showing ${regs.length} of ${allRegs.length} registrations`;
+  }
+
+  function sanitize(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  window.applyFilter = function() {
+    const q = document.getElementById('filterInput').value.toLowerCase();
+    const status = document.getElementById('filterStatus').value;
+    let filtered = allRegs.filter(r => {
+      const nameMatch = (r.participants || []).some(p => p.name.toLowerCase().includes(q));
+      const emailMatch = (r.email || '').toLowerCase().includes(q);
+      const statusMatch = !status ||
+        (status === 'checked' && r.checkedIn) ||
+        (status === 'pending' && !r.checkedIn);
+      return (nameMatch || emailMatch) && statusMatch;
+    });
+    renderTable(filtered);
+  };
+
+  window.exportCSV = function() {
+    const rows = [['Reg ID','Email','Mobile','Name','ID Type','ID Number','Size','Registered At','Checked In','Check-in Time']];
+    allRegs.forEach(r => {
+      const p = r.participant || {};
+      const safeEmail  = String(r.email  || '').replace(/^[=+\-@]/, "'$&");
+      const safeMobile = String(r.mobile || '').replace(/^[=+\-@]/, "'$&");
+      const safeName   = String(p.name   || '').replace(/^[=+\-@]/, "'$&");
+      rows.push([r.id, safeEmail, safeMobile, safeName, p.idType || '', p.idNumber || '', p.size || '', r.registeredAt || '', r.checkedIn ? 'Yes' : 'No', r.checkedInAt || '']);
+    });
+    const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `VBR2026_registrations_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+</script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VBR 2026 — Event Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:wght@400;700&display=swap');
+  :root {
+    --saffron: #FF6600; --saffron-dark: #CC5200; --saffron-light: #FFF0E6;
+    --india-green: #138808; --india-green-light: #E8F5E9;
+    --navy: #0A1E3C; --navy-mid: #1A3A5C;
+    --white: #FFFFFF; --grey-50: #F8F9FA; --grey-100: #F1F3F5;
+    --grey-300: #CED4DA; --grey-500: #6C757D; --grey-700: #343A40;
+    --radius: 10px; --shadow: 0 2px 14px rgba(10,30,60,0.09);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--grey-50); color: var(--grey-700); }
+
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: var(--white); padding: 28px 24px 24px; text-align: center; position: relative;
+  }
+  header::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--saffron) 33.3%, var(--white) 33.3%, var(--white) 66.6%, var(--india-green) 66.6%);
+  }
+  header h1 { font-family: 'Noto Serif', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 5px; }
+  header p { font-size: 0.85rem; opacity: 0.8; }
+
+  main { max-width: 680px; margin: 28px auto; padding: 0 16px 60px; }
+
+  .intro-card {
+    background: linear-gradient(135deg, var(--saffron-light) 0%, var(--india-green-light) 100%);
+    border-radius: var(--radius); padding: 20px 22px; margin-bottom: 20px;
+    border-left: 4px solid var(--saffron);
+  }
+  .intro-card h2 { font-family: 'Noto Serif', serif; font-size: 1.05rem; color: var(--navy); margin-bottom: 8px; }
+  .intro-card p { font-size: 0.88rem; line-height: 1.6; color: var(--grey-700); }
+
+  .section { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 14px; overflow: hidden; }
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; cursor: pointer; user-select: none;
+    border-bottom: 1px solid transparent; transition: background 0.15s;
+  }
+  .section-header:hover { background: var(--grey-50); }
+  .section-header h3 { font-size: 0.92rem; font-weight: 600; color: var(--navy); display: flex; gap: 10px; align-items: center; }
+  .section-header .chevron { font-size: 0.75rem; color: var(--grey-500); transition: transform 0.2s; }
+  .section.open .section-header { border-bottom-color: var(--grey-100); }
+  .section.open .chevron { transform: rotate(180deg); }
+
+  .section-body { display: none; padding: 16px 20px; }
+  .section.open .section-body { display: block; }
+
+  .faq-item { margin-bottom: 14px; }
+  .faq-item:last-child { margin-bottom: 0; }
+  .faq-q { font-size: 0.88rem; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .faq-a { font-size: 0.85rem; color: var(--grey-700); line-height: 1.6; }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 2px; background: var(--grey-100); }
+  .tl-item { position: relative; margin-bottom: 14px; }
+  .tl-item:last-child { margin-bottom: 0; }
+  .tl-dot {
+    position: absolute; left: -24px; top: 2px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--saffron); border: 2px solid var(--white);
+    box-shadow: 0 0 0 2px var(--saffron);
+  }
+  .tl-time { font-size: 0.75rem; font-weight: 600; color: var(--saffron); margin-bottom: 2px; }
+  .tl-label { font-size: 0.88rem; color: var(--navy); font-weight: 500; }
+  .tl-desc { font-size: 0.8rem; color: var(--grey-500); margin-top: 2px; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .info-grid { grid-template-columns: 1fr; } }
+  .info-cell { background: var(--grey-50); border-radius: 7px; padding: 12px 14px; }
+  .info-cell .ic-label { font-size: 0.72rem; color: var(--grey-500); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .info-cell .ic-val { font-size: 0.9rem; font-weight: 600; color: var(--navy); }
+
+  .size-guide { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+  .size-guide th { background: var(--grey-50); padding: 8px 10px; text-align: left; font-weight: 600; color: var(--navy); border-bottom: 1.5px solid var(--grey-100); }
+  .size-guide td { padding: 7px 10px; border-bottom: 1px solid var(--grey-100); }
+  .size-guide tr:last-child td { border-bottom: none; }
+
+  .btn-register {
+    display: block; background: var(--saffron); color: var(--white);
+    border: none; border-radius: 7px; padding: 13px;
+    font-size: 0.95rem; font-weight: 600; text-align: center;
+    text-decoration: none; margin: 20px 0 0; cursor: pointer;
+    font-family: 'Inter', sans-serif; transition: background 0.15s;
+  }
+  .btn-register:hover { background: var(--saffron-dark); }
+
+  .footer-nav { text-align: center; margin-top: 20px; display: flex; justify-content: center; gap: 20px; font-size: 0.8rem; }
+  .footer-nav a { color: var(--grey-500); text-decoration: none; }
+  .footer-nav a:hover { color: var(--saffron); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏃 Viksit Bharat Run 2026</h1>
+  <p>Event Guide · Wednesday, 30 September 2026 · Bangkok, Thailand</p>
+</header>
+
+<main>
+  <div class="intro-card">
+    <h2>About the Run</h2>
+    <p>Viksit Bharat Run 2026 is a nationwide initiative celebrating India's vision of becoming a developed nation by 2047. The Bangkok edition, organised by the Embassy of India, brings together the Indian community and friends of India for a 5 km run through the heart of the city.</p>
+  </div>
+
+  <!-- Schedule -->
+  <div class="section open">
+    <div class="section-header" onclick="toggle(this)">
+      <h3>📅 Event Schedule</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-time">6:00 AM</div>
+          <div class="tl-label">Assembly &amp; Bib Collection</div>
+          <div class="tl-desc">Participants assemble at the start point. Collect bibs and T-shirts at the check-in counters.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-time">7:00 AM</div>
+          <div class="tl-label">Flag-off Ceremony</div>
+          <div class="tl-desc">Official flag-off by the Ambassador of India to Thailand.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-time">7:10 AM</div>
+          <div class="tl-label">Run Begins</div>
+          <div class="tl-desc">5 km (General) and 3 km (Senior / Junior) categories start simultaneously.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-time">8:30 AM</div>
+          <div class="tl-label">Finish Line &amp; Refreshments</div>
+          <div class="tl-desc">Finisher medals, hydration, and a cultural programme at the finish area.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot" style="background:var(--india-green);box-shadow:0 0 0 2px var(--india-green);"></div>
+          <div class="tl-time">9:00 AM</div>
+          <div class="tl-label">Prize Distribution &amp; Close</div>
+          <div class="tl-desc">Prizes for top finishers in each category. Event concludes by 9:30 AM.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Venue -->
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h3>📍 Venue &amp; Logistics</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="info-grid" style="margin-bottom:14px;">
+        <div class="info-cell"><div class="ic-label">Date</div><div class="ic-val">Wednesday, 30 Sep 2026</div></div>
+        <div class="info-cell"><div class="ic-label">Start Time</div><div class="ic-val">7:00 AM (Assembly 6:00 AM)</div></div>
+        <div class="info-cell"><div class="ic-label">Location</div><div class="ic-val">Bangkok, Thailand</div></div>
+        <div class="info-cell"><div class="ic-label">Distance</div><div class="ic-val">5 km / 3 km</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Nearest BTS station?</div>
+        <div class="faq-a">Details will be shared with registered participants via email one week before the event.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is parking available?</div>
+        <div class="faq-a">Limited parking is available near the venue. Participants are encouraged to use public transport or rideshare services.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h3>🏅 Run Categories</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="faq-item">
+        <div class="faq-q">General (5 km)</div>
+        <div class="faq-a">Open to all participants aged 18–59. A timed 5 km run with prizes for the top 3 male and female finishers.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Senior (3 km)</div>
+        <div class="faq-a">For participants aged 60 and above. A non-timed, celebratory 3 km walk-run.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Junior (3 km)</div>
+        <div class="faq-a">For participants under 18. A non-timed 3 km run. Juniors must be accompanied by a registered adult guardian.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- T-shirt sizes -->
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h3>👕 T-Shirt Size Guide</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <p style="font-size:0.82rem;color:var(--grey-500);margin-bottom:12px;">Measurements in centimetres. T-shirts are unisex. If between sizes, size up.</p>
+      <table class="size-guide">
+        <thead><tr><th>Size</th><th>Chest</th><th>Length</th><th>Shoulder</th></tr></thead>
+        <tbody>
+          <tr><td>XS</td><td>86–90</td><td>64</td><td>40</td></tr>
+          <tr><td>S</td><td>91–96</td><td>67</td><td>42</td></tr>
+          <tr><td>M</td><td>97–103</td><td>70</td><td>44</td></tr>
+          <tr><td>L</td><td>104–110</td><td>72</td><td>46</td></tr>
+          <tr><td>XL</td><td>111–118</td><td>74</td><td>48</td></tr>
+          <tr><td>XXL</td><td>119–126</td><td>76</td><td>50</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FAQs -->
+  <div class="section">
+    <div class="section-header" onclick="toggle(this)">
+      <h3>❓ Frequently Asked Questions</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="faq-item">
+        <div class="faq-q">Is the event free?</div>
+        <div class="faq-a">Yes. Participation in the Viksit Bharat Run 2026 Bangkok edition is entirely free of charge.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Who can register?</div>
+        <div class="faq-a">The event is open to all — Indian nationals, Thai nationals, and international residents of Bangkok are welcome to participate.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I register a group?</div>
+        <div class="faq-a">Yes. Up to 5 participants can be registered per email address. For groups larger than 5, please use separate email registrations.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What do I bring on the day?</div>
+        <div class="faq-a">Your registration pass (printed or on your phone), a photo ID, and comfortable running shoes. Water will be available along the route.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I retrieve my pass after registering?</div>
+        <div class="faq-a">Yes. Use the "Retrieve your pass" link on the registration page. You will need the email address and year of birth used at registration.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What is the PDPA consent for?</div>
+        <div class="faq-a">Your personal data (name, email, T-shirt size) is collected solely for event coordination and communication, in compliance with Thailand's Personal Data Protection Act B.E. 2562. Data will not be shared with third parties or used after the event.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Who do I contact for queries?</div>
+        <div class="faq-a">Please write to the Embassy of India, Bangkok at the contact details provided on the Embassy website. Technical issues with registration can be flagged at the check-in counter on the day.</div>
+      </div>
+    </div>
+  </div>
+
+  <a class="btn-register" href="index.html">Register Now →</a>
+
+  <div class="footer-nav">
+    <a href="index.html">Registration</a>
+    <a href="checkin.html">Check-in</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</main>
+
+<script>
+  function toggle(header) {
+    const section = header.closest('.section');
+    section.classList.toggle('open');
+  }
+</script>
+</body>
+</html>

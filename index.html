@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viksit Bharat Run 2026 — Register</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  :root {
+    --saffron:       #E8500A;
+    --saffron-dark:  #B83E08;
+    --saffron-light: #FDF1EB;
+    --green:         #1A6B2F;
+    --green-light:   #EBF5EE;
+    --navy:          #0C1F3F;
+    --navy-mid:      #162E58;
+    --navy-light:    #EEF1F6;
+    --ink:           #1C2333;
+    --mist:          #F4F6F9;
+    --line:          #E4E8EF;
+    --text-secondary:#5C6478;
+    --white:         #FFFFFF;
+    --error:         #C0392B;
+    --radius-sm:     6px;
+    --radius:        12px;
+    --radius-lg:     16px;
+    --shadow-sm:     0 1px 4px rgba(12,31,63,0.07);
+    --shadow:        0 4px 24px rgba(12,31,63,0.09);
+    --shadow-lg:     0 8px 40px rgba(12,31,63,0.13);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--mist);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── TRICOLOUR ── */
+  .tricolour {
+    height: 4px;
+    background: linear-gradient(90deg,
+      var(--saffron) 33.33%,
+      #fff 33.33%, #fff 66.66%,
+      var(--green) 66.66%);
+  }
+
+  /* ── HERO ── */
+  .hero { width: 100%; background: #0C1F3F; line-height: 0; }
+  .hero img {
+    width: 100%; display: block;
+    max-height: 360px; object-fit: cover; object-position: center 20%;
+  }
+  @media (max-width: 600px) { .hero img { max-height: 210px; } }
+
+  /* ── EVENT STRIP ── */
+  .event-strip {
+    background: var(--navy);
+    color: rgba(255,255,255,0.88);
+    padding: 13px 24px;
+    display: flex; justify-content: center; gap: 36px; flex-wrap: wrap;
+  }
+  .es-item {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 0.83rem; font-weight: 500; letter-spacing: 0.01em;
+  }
+
+  /* ── KEY MESSAGES ── */
+  .key-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--line);
+  }
+  .key-bar-inner {
+    max-width: 1240px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    padding: 0 20px;
+  }
+  @media (max-width: 800px) { .key-bar-inner { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .key-bar-inner { grid-template-columns: 1fr; } }
+
+  .key-msg {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 16px 20px 16px 0;
+    border-right: 1px solid var(--line);
+  }
+  .key-msg:last-child { border-right: none; }
+  @media (max-width: 800px) {
+    .key-msg:nth-child(2) { border-right: none; }
+    .key-msg { border-bottom: 1px solid var(--line); padding-right: 0; }
+    .key-msg:nth-child(3), .key-msg:nth-child(4) { border-bottom: none; }
+  }
+  @media (max-width: 480px) {
+    .key-msg { border-right: none; border-bottom: 1px solid var(--line); }
+    .key-msg:last-child { border-bottom: none; }
+  }
+
+  .km-icon {
+    width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .km-icon.s { background: #FDF1EB; }
+  .km-icon.g { background: var(--green-light); }
+  .km-icon.n { background: var(--navy-light); }
+
+  .km-body { padding-top: 1px; }
+  .km-title { font-size: 0.8rem; font-weight: 700; color: var(--navy); margin-bottom: 3px; line-height: 1.2; }
+  .km-desc  { font-size: 0.73rem; color: var(--text-secondary); line-height: 1.5; }
+
+  /* ── PAGE WRAP ── */
+  .page-wrap {
+    max-width: 1240px; margin: 0 auto;
+    padding: 32px 20px 72px;
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 960px) { .page-wrap { grid-template-columns: 1fr; } }
+
+  /* ── LEFT ── */
+  .left-col { display: flex; flex-direction: column; gap: 20px; }
+
+  /* ── ABOUT CARD ── */
+  .about-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
+
+  .about-header {
+    background: linear-gradient(140deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding: 28px 30px 24px; position: relative; overflow: hidden;
+  }
+  .about-header::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--saffron) 33.33%, #fff 33.33%, #fff 66.66%, var(--green) 66.66%);
+  }
+  .about-header::after {
+    content: '2047';
+    position: absolute; right: -10px; bottom: -20px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 7rem; font-weight: 400; color: rgba(255,255,255,0.04);
+    line-height: 1; pointer-events: none; user-select: none;
+  }
+  .about-eyebrow {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--saffron); margin-bottom: 8px;
+  }
+  .about-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.65rem; font-weight: 400; color: var(--white);
+    line-height: 1.2; margin-bottom: 6px;
+  }
+  .about-header p { font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+
+  .about-body { padding: 28px 30px; }
+  .about-body p { font-size: 0.9rem; line-height: 1.85; color: #3A4155; margin-bottom: 18px; }
+  .about-body p:last-child { margin-bottom: 0; }
+
+  .venue-tag {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--green-light); color: var(--green);
+    border-radius: var(--radius-sm); padding: 5px 12px;
+    font-size: 0.78rem; font-weight: 600; margin-bottom: 20px;
+    border: 1px solid rgba(26,107,47,0.15);
+  }
+
+  /* ── PILLARS ── */
+  .pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 22px 0 4px; }
+  .pillar {
+    background: var(--mist);
+    border-radius: var(--radius);
+    padding: 18px 18px 16px;
+    border-top: 2px solid transparent;
+    position: relative;
+  }
+  .pillar.p-saffron { border-top-color: var(--saffron); }
+  .pillar.p-green   { border-top-color: var(--green); }
+  .pillar-icon { width: 38px; height: 38px; margin-bottom: 12px; }
+  .pillar-title { font-size: 0.8rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .pillar-desc  { font-size: 0.73rem; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── SCHEDULE ── */
+  .schedule-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
+  .card-header {
+    padding: 16px 24px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-header-label {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-secondary);
+  }
+  .sched-timeline { padding: 6px 24px 4px; }
+  .sched-row { display: flex; align-items: stretch; gap: 0; }
+  .sched-left {
+    display: flex; flex-direction: column; align-items: center;
+    width: 18px; flex-shrink: 0; margin-right: 18px; padding: 10px 0 0;
+  }
+  .sched-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--saffron); flex-shrink: 0; }
+  .sched-row.final .sched-dot { background: var(--green); }
+  .sched-connector { width: 1px; flex: 1; background: var(--line); margin: 3px auto 0; }
+  .sched-row:last-child .sched-connector { display: none; }
+  .sched-content { padding: 8px 0 20px; flex: 1; }
+  .sched-time {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+    color: var(--saffron); text-transform: uppercase; margin-bottom: 2px;
+  }
+  .sched-row.final .sched-time { color: var(--green); }
+  .sched-label { font-size: 0.875rem; color: var(--ink); line-height: 1.4; }
+
+  /* ── MAP ── */
+  .map-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
+  .map-card iframe { display: block; width: 100%; height: 290px; border: none; }
+  .map-footer {
+    padding: 11px 24px; background: var(--mist);
+    border-top: 1px solid var(--line);
+    font-size: 0.78rem; color: var(--text-secondary);
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .map-footer a { color: var(--saffron); text-decoration: none; font-weight: 600; font-size: 0.78rem; }
+  .map-footer a:hover { text-decoration: underline; }
+
+  /* ── REGISTRATION CARD ── */
+  .reg-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg); overflow: hidden;
+    position: sticky; top: 24px;
+    border: 1px solid var(--line);
+  }
+
+  .reg-card-header {
+    background: linear-gradient(140deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding: 20px 24px 18px; position: relative;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .reg-card-header::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--saffron) 33.33%, #fff 33.33%, #fff 66.66%, var(--green) 66.66%);
+  }
+  .reg-card-logo {
+    width: 60px; height: 60px; flex-shrink: 0;
+    background: var(--white); border-radius: 10px;
+    padding: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  }
+  .reg-card-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .reg-card-header-text h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem; font-weight: 400; color: var(--white); margin-bottom: 3px;
+  }
+  .reg-card-header-text p { font-size: 0.76rem; color: rgba(255,255,255,0.5); }
+
+  /* CLOSED */
+  .closed-banner {
+    background: var(--mist); border-left: 3px solid var(--text-secondary);
+    padding: 18px 24px; font-size: 0.9rem; color: var(--ink); display: none;
+  }
+
+  /* RETRIEVE */
+  .retrieve-panel {
+    background: var(--saffron-light); border-bottom: 1px solid #F0CABA;
+    padding: 18px 24px; display: none;
+  }
+  .retrieve-panel h3 { font-size: 0.88rem; font-weight: 700; color: var(--saffron-dark); margin-bottom: 10px; }
+  .retrieve-panel input {
+    width: 100%; padding: 10px 12px; border: 1.5px solid #F0CABA;
+    border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem; margin-bottom: 10px; background: var(--white);
+    color: var(--ink);
+  }
+  .retrieve-panel input:focus { outline: none; border-color: var(--saffron); }
+  .btn-retrieve {
+    background: var(--saffron); color: var(--white); border: none;
+    border-radius: var(--radius-sm); padding: 10px 18px; font-size: 0.88rem;
+    font-weight: 600; cursor: pointer; width: 100%; font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+  }
+  .btn-retrieve:hover { background: var(--saffron-dark); }
+
+  /* STEPS */
+  .steps-bar {
+    display: flex; border-bottom: 1px solid var(--line); padding: 0 20px;
+    background: var(--mist);
+  }
+  .step-item {
+    flex: 1; text-align: center; padding: 14px 4px 12px;
+    font-size: 0.72rem; color: var(--text-secondary); transition: color 0.2s;
+  }
+  .step-item.active { color: var(--saffron); font-weight: 700; }
+  .step-item.done   { color: var(--green); }
+  .step-num {
+    display: block; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--line); margin: 0 auto 5px; line-height: 22px;
+    font-size: 0.7rem; font-weight: 700; transition: all 0.2s;
+  }
+  .step-item.active .step-num { background: var(--saffron); color: var(--white); }
+  .step-item.done   .step-num { background: var(--green);   color: var(--white); }
+
+  /* FORM */
+  .form-section { padding: 24px; display: none; }
+  .form-section.active { display: block; }
+  .form-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem; font-weight: 400; color: var(--navy); margin-bottom: 3px;
+  }
+  .form-section p.hint { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 18px; }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 0.78rem; font-weight: 600;
+    color: var(--ink); margin-bottom: 6px; letter-spacing: 0.01em;
+  }
+  .field label span { font-weight: 400; color: var(--text-secondary); }
+  .field input, .field select {
+    width: 100%; padding: 10px 13px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    color: var(--ink); background: var(--white); transition: border-color 0.15s;
+  }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--saffron); box-shadow: 0 0 0 3px rgba(232,80,10,0.08); }
+  .field .error-msg { display: none; font-size: 0.74rem; color: var(--error); margin-top: 5px; }
+  .field.invalid input, .field.invalid select { border-color: var(--error); }
+  .field.invalid .error-msg { display: block; }
+  .field.invalid .btn-sel { border-color: var(--error); }
+
+  /* PHONE ROW */
+  .phone-row { display: flex; gap: 8px; }
+  .phone-row select {
+    width: 110px; flex-shrink: 0; padding: 10px 8px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 0.84rem; background: var(--white); color: var(--ink);
+  }
+  .phone-row select:focus { outline: none; border-color: var(--saffron); }
+  .phone-row input { flex: 1; }
+
+  /* BTN SELECT */
+  .btn-select-group { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 2px; }
+  .btn-sel {
+    padding: 8px 18px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--line); background: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500;
+    color: var(--ink); cursor: pointer; transition: all 0.15s; user-select: none;
+  }
+  .btn-sel:hover { border-color: var(--saffron); color: var(--saffron); }
+  .btn-sel.selected { border-color: var(--saffron); background: var(--saffron); color: var(--white); font-weight: 600; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 10px; margin-top: 10px; }
+  .btn-back {
+    background: var(--white); border: 1.5px solid var(--line); color: var(--ink);
+    border-radius: var(--radius-sm); padding: 10px 18px; font-size: 0.88rem;
+    font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.15s;
+  }
+  .btn-back:hover { border-color: var(--text-secondary); }
+  .btn-next {
+    background: var(--saffron); color: var(--white); border: none;
+    border-radius: var(--radius-sm); padding: 11px 24px; font-size: 0.9rem;
+    font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    flex: 1; transition: background 0.15s; letter-spacing: 0.01em;
+  }
+  .btn-next:hover { background: var(--saffron-dark); }
+  .btn-next:disabled { background: var(--line); color: var(--text-secondary); cursor: not-allowed; }
+
+  .retrieve-link { text-align: center; margin-top: 14px; font-size: 0.78rem; color: var(--text-secondary); }
+  .retrieve-link a { color: var(--saffron); text-decoration: none; font-weight: 600; }
+  .retrieve-link a:hover { text-decoration: underline; }
+
+  /* DECLARATION */
+  .declaration-box {
+    background: var(--mist); border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 14px 16px; font-size: 0.79rem; color: var(--text-secondary);
+    line-height: 1.7; margin-bottom: 14px; max-height: 150px; overflow-y: auto;
+  }
+  .declaration-box h4 { font-size: 0.82rem; margin-bottom: 8px; color: var(--navy); font-weight: 600; }
+
+  .checkbox-row {
+    display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px;
+    font-size: 0.82rem; color: var(--ink); line-height: 1.5;
+  }
+  .checkbox-row input[type="checkbox"] { width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; accent-color: var(--saffron); }
+
+  .summary-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; margin-bottom: 16px; }
+  .summary-table td { padding: 7px 8px; border-bottom: 1px solid var(--line); }
+  .summary-table td:first-child { color: var(--text-secondary); width: 35%; font-weight: 500; }
+  .summary-table td:last-child { font-weight: 600; color: var(--ink); }
+
+  /* ALERT */
+  .alert { padding: 11px 14px; border-radius: var(--radius-sm); font-size: 0.82rem; margin-bottom: 14px; }
+  .alert-error { background: #FDECEA; color: var(--error); border-left: 3px solid var(--error); }
+
+  /* LOADER */
+  .loader { display: none; text-align: center; padding: 32px 24px; color: var(--text-secondary); font-size: 0.88rem; }
+  .loader.active { display: block; }
+  .spinner {
+    width: 28px; height: 28px; border: 2.5px solid var(--line);
+    border-top-color: var(--saffron); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* SUCCESS */
+  .success-section { padding: 28px 24px; text-align: center; display: none; }
+  .success-section.active { display: block; }
+  .success-icon {
+    width: 52px; height: 52px; background: var(--green-light); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
+  }
+  .success-section h2 {
+    font-family: 'DM Serif Display', serif; font-size: 1.25rem;
+    font-weight: 400; color: var(--navy); margin-bottom: 5px;
+  }
+  .success-section p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; }
+
+  .pass-card {
+    background: linear-gradient(140deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: var(--white); border-radius: var(--radius); padding: 22px 22px 20px;
+    margin: 0 auto 18px; text-align: left; position: relative; overflow: hidden;
+  }
+  .pass-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--saffron) 33.33%, #fff 33.33%, #fff 66.66%, var(--green) 66.66%);
+  }
+  .pass-event {
+    font-size: 0.65rem; opacity: 0.5; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .pass-name {
+    font-family: 'DM Serif Display', serif; font-size: 1.3rem;
+    font-weight: 400; margin-bottom: 14px; line-height: 1.2;
+  }
+  .pass-meta { font-size: 0.78rem; opacity: 0.75; line-height: 1.9; }
+  .pass-divider { height: 1px; background: rgba(255,255,255,0.12); margin: 12px 0; }
+  .pass-id { font-size: 0.65rem; opacity: 0.35; letter-spacing: 0.08em; }
+
+  .btn-download {
+    display: block; width: 100%; max-width: 280px; margin: 0 auto 8px;
+    padding: 12px 22px; border-radius: var(--radius-sm); border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; text-align: center;
+  }
+  .btn-download.primary { background: var(--green); color: var(--white); }
+  .btn-download.primary:hover { background: #145526; }
+  .btn-download.secondary { background: var(--mist); color: var(--navy); border: 1.5px solid var(--line); }
+  .btn-download.secondary:hover { border-color: var(--navy); }
+</style>
+</head>
+<body>
+
+<div class="tricolour"></div>
+<div class="hero">
+  <img src="hero.jpg" alt="Viksit Bharat Run 2026 — Bangkok, Thailand">
+</div>
+<div class="tricolour"></div>
+
+<!-- EVENT STRIP -->
+<div class="event-strip">
+  <div class="es-item">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+      <rect x="1" y="2.5" width="13" height="11" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M1 6h13" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M4.5 1v2M10.5 1v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    Wednesday, 30 September 2026
+  </div>
+  <div class="es-item">
+    <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+      <path d="M7 1C4.24 1 2 3.24 2 6c0 3.75 5 9 5 9s5-5.25 5-9c0-2.76-2.24-5-5-5z" stroke="currentColor" stroke-width="1.2"/>
+      <circle cx="7" cy="6" r="1.75" stroke="currentColor" stroke-width="1.2"/>
+    </svg>
+    Suan Luang Rama IX, Bangkok
+  </div>
+  <div class="es-item">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+      <circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="1.2"/>
+      <path d="M7.5 4v3.5l2.5 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    Flag-off 6:00 AM
+  </div>
+</div>
+
+<!-- KEY MESSAGES -->
+<div class="key-bar">
+  <div class="key-bar-inner">
+
+    <div class="key-msg">
+      <div class="km-icon s">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="9" r="7.5" stroke="#E8500A" stroke-width="1.3"/>
+          <path d="M9 5.5v4" stroke="#E8500A" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="9" cy="12" r="0.8" fill="#E8500A"/>
+        </svg>
+      </div>
+      <div class="km-body">
+        <div class="km-title">If unwell, please stay home</div>
+        <div class="km-desc">Your health comes first. Join us when you are feeling your best.</div>
+      </div>
+    </div>
+
+    <div class="key-msg">
+      <div class="km-icon n">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M9 3v4M6.5 5l2.5 2 2.5-2" stroke="#0C1F3F" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 9c0 2.76 2.24 5 5 5s5-2.24 5-5" stroke="#0C1F3F" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M2.5 9h13" stroke="#0C1F3F" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="km-body">
+        <div class="km-title">Stay hydrated throughout</div>
+        <div class="km-desc">Carry water and use the hydration points along the route.</div>
+      </div>
+    </div>
+
+    <div class="key-msg">
+      <div class="km-icon g">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <rect x="2.5" y="6.5" width="13" height="9" rx="1.5" stroke="#1A6B2F" stroke-width="1.3"/>
+          <path d="M6 6.5V5a3 3 0 016 0v1.5" stroke="#1A6B2F" stroke-width="1.3" stroke-linecap="round"/>
+          <path d="M7 11h4" stroke="#1A6B2F" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="km-body">
+        <div class="km-title">One registration per email</div>
+        <div class="km-desc">Please register once and use "Retrieve your pass" if needed.</div>
+      </div>
+    </div>
+
+    <div class="key-msg">
+      <div class="km-icon s">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M5 8V5a4 4 0 018 0v3" stroke="#E8500A" stroke-width="1.3" stroke-linecap="round"/>
+          <rect x="3" y="8" width="12" height="7" rx="1.5" stroke="#E8500A" stroke-width="1.3"/>
+          <path d="M7 12h4" stroke="#E8500A" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="km-body">
+        <div class="km-title">One T-shirt per registration</div>
+        <div class="km-desc">Your size is set at registration and collected at the venue on the day.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PAGE WRAP -->
+<div class="page-wrap">
+
+  <!-- LEFT COLUMN -->
+  <div class="left-col">
+
+    <!-- ABOUT -->
+    <div class="about-card">
+      <div class="about-header">
+        <div class="about-eyebrow">Embassy of India, Bangkok</div>
+        <h2>Viksit Bharat Run 2026</h2>
+        <p>Run to Serve the Nation</p>
+      </div>
+      <div class="about-body">
+        <div class="venue-tag">
+          <svg width="12" height="13" viewBox="0 0 12 13" fill="none"><path d="M6 1C3.79 1 2 2.79 2 5c0 3 4 7 4 7s4-4 4-7c0-2.21-1.79-4-4-4z" stroke="#1A6B2F" stroke-width="1.2"/><circle cx="6" cy="5" r="1.5" stroke="#1A6B2F" stroke-width="1.2"/></svg>
+          Suan Luang Rama IX, Bangkok
+        </div>
+
+        <p>The Viksit Bharat Run is one of India's largest global outreach initiatives, uniting the Indian diaspora and local communities in a shared commitment to India's vision of becoming a fully developed nation by 2047. Organised as part of <strong>Seva Pakhwada</strong> — a fortnight dedicated to public service — the run embodies the spirit of <em>Seva Bhav</em>: service to the nation as a collective responsibility.</p>
+
+        <p>The Embassy of India, Bangkok brings the run to the heart of the city this year. Whether you are part of the Indian community in Thailand or a friend of India, join us on the morning of 30 September 2026 to run, pledge and celebrate together.</p>
+
+        <div class="pillars">
+          <div class="pillar p-saffron">
+            <svg class="pillar-icon" viewBox="0 0 38 38" fill="none">
+              <circle cx="19" cy="19" r="18" stroke="#E8500A" stroke-width="1" stroke-opacity=".15"/>
+              <circle cx="19" cy="13.5" r="3.5" stroke="#E8500A" stroke-width="1.5"/>
+              <path d="M11 27c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="#E8500A" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="10" cy="16" r="2.5" stroke="#E8500A" stroke-width="1.2" stroke-opacity=".5"/>
+              <path d="M4.5 26.5c0-3 2.5-5.5 5.5-5.5" stroke="#E8500A" stroke-width="1.2" stroke-linecap="round" stroke-opacity=".5"/>
+              <circle cx="28" cy="16" r="2.5" stroke="#E8500A" stroke-width="1.2" stroke-opacity=".5"/>
+              <path d="M33.5 26.5c0-3-2.5-5.5-5.5-5.5" stroke="#E8500A" stroke-width="1.2" stroke-linecap="round" stroke-opacity=".5"/>
+            </svg>
+            <div class="pillar-title">Seva Bhav</div>
+            <div class="pillar-desc">Service to the nation as a shared calling across communities</div>
+          </div>
+          <div class="pillar p-green">
+            <svg class="pillar-icon" viewBox="0 0 38 38" fill="none">
+              <circle cx="19" cy="19" r="18" stroke="#1A6B2F" stroke-width="1" stroke-opacity=".15"/>
+              <path d="M19 30V17" stroke="#1A6B2F" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M19 22c0 0-4-4-8-3" stroke="#1A6B2F" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M19 18c0 0 4-4 8-3" stroke="#1A6B2F" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M13 30h12" stroke="#1A6B2F" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="19" cy="12" r="3.5" stroke="#1A6B2F" stroke-width="1.4"/>
+            </svg>
+            <div class="pillar-title">Ek Ped Maa Ke Naam</div>
+            <div class="pillar-desc">Planting for our mothers — a pledge toward a greener India</div>
+          </div>
+          <div class="pillar p-saffron">
+            <svg class="pillar-icon" viewBox="0 0 38 38" fill="none">
+              <circle cx="19" cy="19" r="18" stroke="#E8500A" stroke-width="1" stroke-opacity=".15"/>
+              <rect x="9" y="11" width="20" height="16" rx="2" stroke="#E8500A" stroke-width="1.4"/>
+              <path d="M13 23l4-4 3 3 6-7" stroke="#E8500A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="pillar-title">Aatmanirbhar Bharat</div>
+            <div class="pillar-desc">Self-reliance as the foundation of a prosperous India</div>
+          </div>
+          <div class="pillar p-green">
+            <svg class="pillar-icon" viewBox="0 0 38 38" fill="none">
+              <circle cx="19" cy="19" r="18" stroke="#1A6B2F" stroke-width="1" stroke-opacity=".15"/>
+              <circle cx="19" cy="19" r="9" stroke="#1A6B2F" stroke-width="1.4"/>
+              <path d="M19 10c0 0-3.5 4-3.5 9s3.5 9 3.5 9" stroke="#1A6B2F" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M19 10c0 0 3.5 4 3.5 9s-3.5 9-3.5 9" stroke="#1A6B2F" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M10 19h18" stroke="#1A6B2F" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M11.5 14.5h15M11.5 23.5h15" stroke="#1A6B2F" stroke-width="0.9" stroke-linecap="round" stroke-opacity=".5"/>
+            </svg>
+            <div class="pillar-title">Global Reach</div>
+            <div class="pillar-desc">Across 91 countries and 150 locations worldwide</div>
+          </div>
+        </div>
+
+        <p>Participants will take the <strong>Viksit Bharat pledge</strong> and the <strong>Aatmanirbhar Bharat pledge</strong>, connecting this morning's run to a movement of overseas Indians and their neighbours standing together for nation-building.</p>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="schedule-card">
+      <div class="card-header">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#5C6478" stroke-width="1.2"/><path d="M8 4.5v4l2.5 2" stroke="#5C6478" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <span class="card-header-label">Event Schedule — 30 September 2026</span>
+      </div>
+      <div class="sched-timeline">
+        <div class="sched-row">
+          <div class="sched-left"><div class="sched-dot"></div><div class="sched-connector"></div></div>
+          <div class="sched-content">
+            <div class="sched-time">4:45 AM</div>
+            <div class="sched-label">Registration open and T-shirt distribution at venue</div>
+          </div>
+        </div>
+        <div class="sched-row">
+          <div class="sched-left"><div class="sched-dot"></div><div class="sched-connector"></div></div>
+          <div class="sched-content">
+            <div class="sched-time">6:00 AM</div>
+            <div class="sched-label">Flag-off by the Ambassador of India to Thailand</div>
+          </div>
+        </div>
+        <div class="sched-row">
+          <div class="sched-left"><div class="sched-dot"></div><div class="sched-connector"></div></div>
+          <div class="sched-content">
+            <div class="sched-time">7:30 AM</div>
+            <div class="sched-label">Run concludes</div>
+          </div>
+        </div>
+        <div class="sched-row final">
+          <div class="sched-left"><div class="sched-dot"></div><div class="sched-connector"></div></div>
+          <div class="sched-content">
+            <div class="sched-time">7:30 AM onwards</div>
+            <div class="sched-label">Distribution of medals, certificates and refreshments</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div class="map-card">
+      <div class="card-header">
+        <svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M7 1C4.24 1 2 3.24 2 6c0 3.75 5 9 5 9s5-5.25 5-9c0-2.76-2.24-5-5-5z" stroke="#5C6478" stroke-width="1.2"/><circle cx="7" cy="6" r="2" stroke="#5C6478" stroke-width="1.2"/></svg>
+        <span class="card-header-label">Venue — Suan Luang Rama IX</span>
+      </div>
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3876.5!2d100.6178!3d13.7196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d601f8a85e9c5%3A0x5b3e1c0e2f5c3e6a!2sSuan%20Luang%20Rama%20IX!5e0!3m2!1sen!2sth!4v1"
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+      <div class="map-footer">
+        <span>Suan Luang Rama IX, Prawet, Bangkok 10250</span>
+        <a href="https://maps.google.com/?q=Suan+Luang+Rama+IX+Bangkok" target="_blank" rel="noopener">Open in Google Maps</a>
+      </div>
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- RIGHT COLUMN -->
+  <div class="reg-card">
+
+    <div class="reg-card-header">
+      <div class="reg-card-logo">
+        <img src="vbr-logo.png" alt="Viksit Bharat Run">
+      </div>
+      <div class="reg-card-header-text">
+        <h3>Register for the Run</h3>
+        <p>One registration per person · Free entry</p>
+      </div>
+    </div>
+
+    <div class="closed-banner" id="closedBanner">Registration is currently closed. Please check back later.</div>
+
+    <div class="retrieve-panel" id="retrievePanel">
+      <h3>Retrieve Your Pass</h3>
+      <p style="font-size:0.78rem;color:#7A4A00;margin-bottom:10px;">Enter your registered email address.</p>
+      <input type="email" id="retEmail" placeholder="Email address used at registration">
+      <div class="alert alert-error" id="retError" style="display:none;"></div>
+      <button class="btn-retrieve" onclick="retrievePass()">Find My Pass</button>
+      <div style="text-align:center;margin-top:10px;">
+        <a href="#" style="font-size:0.78rem;color:#7A4A00;" onclick="toggleRetrieve(false)">Back to Registration</a>
+      </div>
+    </div>
+
+    <div class="steps-bar" id="stepsBar">
+      <div class="step-item active" id="step-tab-1"><span class="step-num">1</span>Contact</div>
+      <div class="step-item" id="step-tab-2"><span class="step-num">2</span>Details</div>
+      <div class="step-item" id="step-tab-3"><span class="step-num">3</span>Confirm</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="form-section active" id="step-1">
+      <h2>Contact Details</h2>
+      <p class="hint">All fields marked * are required.</p>
+      <div id="step1Alert"></div>
+      <div class="field" id="f-email">
+        <label for="emailInput">Email Address *</label>
+        <input type="email" id="emailInput" placeholder="you@example.com">
+        <span class="error-msg">Please enter a valid email address.</span>
+      </div>
+      <div class="field" id="f-email2">
+        <label for="email2Input">Confirm Email *</label>
+        <input type="email" id="email2Input" placeholder="Confirm your email">
+        <span class="error-msg">Email addresses do not match.</span>
+      </div>
+      <div class="field" id="f-mobile">
+        <label>Mobile Number *</label>
+        <div class="phone-row">
+          <select id="mobileCountry">
+            <option value="+66">TH +66</option>
+            <option value="+91">IN +91</option>
+            <option value="+1">US +1</option>
+            <option value="+44">GB +44</option>
+            <option value="+61">AU +61</option>
+            <option value="+65">SG +65</option>
+            <option value="+60">MY +60</option>
+            <option value="+62">ID +62</option>
+            <option value="+63">PH +63</option>
+            <option value="+84">VN +84</option>
+            <option value="+81">JP +81</option>
+            <option value="+82">KR +82</option>
+            <option value="+86">CN +86</option>
+            <option value="+971">AE +971</option>
+            <option value="+49">DE +49</option>
+            <option value="+33">FR +33</option>
+            <option value="+7">RU +7</option>
+            <option value="+27">ZA +27</option>
+            <option value="+55">BR +55</option>
+            <option value="+other">Other</option>
+          </select>
+          <input type="tel" id="mobileNumber" placeholder="e.g. 812345678">
+        </div>
+        <span class="error-msg">Please enter a valid mobile number.</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn-next" id="step1Btn" onclick="goToStep2()">Continue</button>
+      </div>
+      <div class="retrieve-link">
+        Already registered? <a href="#" onclick="toggleRetrieve(true)">Retrieve your pass</a>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="form-section" id="step-2">
+      <h2>Your Details</h2>
+      <p class="hint">Enter your name, ID and T-shirt size.</p>
+      <div id="participantFields"></div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goToStep(1)">Back</button>
+        <button class="btn-next" onclick="goToStep3()">Continue</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="form-section" id="step-3">
+      <h2>Confirm Registration</h2>
+      <p class="hint">Review your details and accept the declaration.</p>
+      <div id="summaryBlock"></div>
+      <div class="declaration-box">
+        <h4>Declaration / คำประกาศ</h4>
+        <p>I hereby declare that the information provided is accurate and complete. I understand that participation in the Viksit Bharat Run 2026 is voluntary and I accept all associated terms.</p>
+        <br>
+        <p>I consent to the collection, use and processing of my personal data for the purposes of this event registration, including coordination and communication, in accordance with Thailand's Personal Data Protection Act B.E. 2562 (PDPA).</p>
+        <br>
+        <p style="color:#7A5C00;">ข้าพเจ้าขอยืนยันว่าข้อมูลที่ให้ไว้ถูกต้องและครบถ้วน และยินยอมให้ใช้ข้อมูลส่วนบุคคลเพื่อการลงทะเบียนกิจกรรมนี้ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</p>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="declareCheck" onchange="document.getElementById('submitBtn').disabled=!this.checked">
+        <label for="declareCheck">I understand and accept the above declaration / ข้าพเจ้าเข้าใจและยอมรับ</label>
+      </div>
+      <div id="step3Alert"></div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="goToStep(2)">Back</button>
+        <button class="btn-next" id="submitBtn" disabled onclick="submitRegistration()">Complete Registration</button>
+      </div>
+    </div>
+
+    <!-- LOADER -->
+    <div class="loader" id="loader"><div class="spinner"></div>Submitting your registration…</div>
+
+    <!-- SUCCESS -->
+    <div class="success-section" id="successSection">
+      <div class="success-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="#1A6B2F" stroke-width="1.5"/>
+          <path d="M7 12l3.5 3.5L17 9" stroke="#1A6B2F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>Registration Confirmed</h2>
+      <p>Your pass is ready. Save or print it before the event.</p>
+      <div id="passContainer"></div>
+      <button class="btn-download primary" onclick="downloadPass()">Download Pass</button>
+      <button class="btn-download secondary" onclick="window.print()">Print Pass</button>
+    </div>
+
+  </div><!-- /reg-card -->
+
+</div><!-- /page-wrap -->
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
+    authDomain: "viksitbharatrunbkk2026.firebaseapp.com",
+    databaseURL: "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "viksitbharatrunbkk2026",
+    storageBucket: "viksitbharatrunbkk2026.firebasestorage.app",
+    messagingSenderId: "732438557121",
+    appId: "1:732438557121:web:c41053238a31f5c2af3f40"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+  window._db = db; window._ref = ref; window._get = get; window._push = push; window._set = set;
+
+  get(ref(db, 'vbr2026/config')).then(snap => {
+    const cfg = snap.val() || {};
+    if (cfg.regOpen === false) {
+      document.getElementById('closedBanner').style.display = 'block';
+      document.getElementById('stepsBar').style.display    = 'none';
+      document.getElementById('step-1').style.display      = 'none';
+    }
+    window._maxReg = cfg.maxReg || 500;
+  });
+</script>
+
+<script>
+  let currentStep = 1;
+  let registrationData = {};
+
+  function toggleRetrieve(show) {
+    document.getElementById('retrievePanel').style.display = show ? 'block' : 'none';
+    document.getElementById('stepsBar').style.display      = show ? 'none'  : 'flex';
+    document.getElementById('step-1').style.display        = show ? 'none'  : 'block';
+  }
+  window.toggleRetrieve = toggleRetrieve;
+
+  function goToStep(n) {
+    document.getElementById('step-' + currentStep).classList.remove('active');
+    document.getElementById('step-tab-' + currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('step-' + n).classList.add('active');
+    document.getElementById('step-tab-' + n).classList.add('active');
+    for (let i = 1; i < n; i++) document.getElementById('step-tab-' + i).classList.add('done');
+    document.querySelector('.reg-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  window.goToStep = goToStep;
+
+  async function goToStep2() {
+    const email    = document.getElementById('emailInput').value.trim().toLowerCase();
+    const email2   = document.getElementById('email2Input').value.trim().toLowerCase();
+    const mobile   = document.getElementById('mobileNumber').value.trim();
+    const dialCode = document.getElementById('mobileCountry').value;
+    let ok = true;
+    document.getElementById('step1Alert').innerHTML = '';
+
+    const ef = document.getElementById('f-email');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { ef.classList.add('invalid'); ok = false; } else ef.classList.remove('invalid');
+    const e2f = document.getElementById('f-email2');
+    if (email !== email2) { e2f.classList.add('invalid'); ok = false; } else e2f.classList.remove('invalid');
+    const mf = document.getElementById('f-mobile');
+    if (!mobile || !/^\d{6,15}$/.test(mobile.replace(/\s/g,''))) { mf.classList.add('invalid'); ok = false; } else mf.classList.remove('invalid');
+    if (!ok) return;
+
+    const btn = document.getElementById('step1Btn');
+    btn.disabled = true; btn.textContent = 'Checking…';
+    try {
+      const snap = await window._get(window._ref(window._db, 'vbr2026/registrations'));
+      const all  = snap.val() || {};
+      if (Object.values(all).some(r => r.email && r.email.toLowerCase() === email)) {
+        document.getElementById('step1Alert').innerHTML =
+          '<div class="alert alert-error">This email is already registered. Use "Retrieve your pass" below to access your registration.</div>';
+        btn.disabled = false; btn.textContent = 'Continue'; return;
+      }
+    } catch(e) {}
+    btn.disabled = false; btn.textContent = 'Continue';
+
+    registrationData.email  = email;
+    registrationData.mobile = dialCode + ' ' + mobile.replace(/\s/g,'');
+
+    const prev = registrationData.participant || {};
+    document.getElementById('participantFields').innerHTML = `
+      <div class="field" id="fp-name">
+        <label>Full Name * <span>(as on passport / ID)</span></label>
+        <input type="text" id="p-name" placeholder="Full name" value="${prev.name || ''}">
+        <span class="error-msg">Name is required.</span>
+      </div>
+      <div class="field" id="fp-idtype">
+        <label>ID Type *</label>
+        <div class="btn-sel-wrap btn-select-group">
+          <button type="button" class="btn-sel${prev.idType==='Passport'   ?' selected':''}" onclick="selBtnGroup('fp-idtype','Passport')">Passport</button>
+          <button type="button" class="btn-sel${prev.idType==='National ID'?' selected':''}" onclick="selBtnGroup('fp-idtype','National ID')">National ID</button>
+        </div>
+        <span class="error-msg">Please select an ID type.</span>
+      </div>
+      <div class="field" id="fp-idnum">
+        <label>ID / Passport Number *</label>
+        <input type="text" id="p-idnum" placeholder="e.g. A1234567" value="${prev.idNumber||''}" style="letter-spacing:0.05em;">
+        <span class="error-msg">ID / Passport number is required.</span>
+      </div>
+      <div class="field" id="fp-size">
+        <label>T-Shirt Size *</label>
+        <div class="btn-sel-wrap btn-select-group">
+          ${['S','M','L','XL','XXL'].map(s=>`<button type="button" class="btn-sel${prev.size===s?' selected':''}" onclick="selBtnGroup('fp-size','${s}')">${s}</button>`).join('')}
+        </div>
+        <span class="error-msg">Please select a size.</span>
+      </div>`;
+    goToStep(2);
+  }
+  window.goToStep2 = goToStep2;
+
+  function selBtnGroup(fieldId, value) {
+    document.querySelector(`#${fieldId} .btn-sel-wrap`).querySelectorAll('.btn-sel')
+      .forEach(b => b.classList.toggle('selected', b.textContent.trim() === value));
+    document.getElementById(fieldId).classList.remove('invalid');
+  }
+  window.selBtnGroup = selBtnGroup;
+
+  function getBtnGroupValue(fieldId) {
+    const sel = document.querySelector(`#${fieldId} .btn-sel.selected`);
+    return sel ? sel.textContent.trim() : '';
+  }
+
+  function goToStep3() {
+    let ok = true;
+    const name = document.getElementById('p-name').value.trim();
+    const nf = document.getElementById('fp-name');
+    if (!name) { nf.classList.add('invalid'); ok = false; } else nf.classList.remove('invalid');
+    const idType = getBtnGroupValue('fp-idtype');
+    const itf = document.getElementById('fp-idtype');
+    if (!idType) { itf.classList.add('invalid'); ok = false; } else itf.classList.remove('invalid');
+    const idNumber = document.getElementById('p-idnum').value.trim();
+    const idf = document.getElementById('fp-idnum');
+    if (!idNumber) { idf.classList.add('invalid'); ok = false; } else idf.classList.remove('invalid');
+    const size = getBtnGroupValue('fp-size');
+    const sf = document.getElementById('fp-size');
+    if (!size) { sf.classList.add('invalid'); ok = false; } else sf.classList.remove('invalid');
+    if (!ok) return;
+
+    registrationData.participant = { name, idType, idNumber, size };
+    const p = registrationData.participant;
+    document.getElementById('summaryBlock').innerHTML = `
+      <table class="summary-table"><tbody>
+        <tr><td>Name</td><td>${p.name}</td></tr>
+        <tr><td>ID</td><td>${p.idType}: ${p.idNumber}</td></tr>
+        <tr><td>T-Shirt</td><td>${p.size}</td></tr>
+        <tr><td>Email</td><td>${registrationData.email}</td></tr>
+        <tr><td>Mobile</td><td>${registrationData.mobile}</td></tr>
+      </tbody></table>`;
+    document.getElementById('declareCheck').checked = false;
+    document.getElementById('submitBtn').disabled = true;
+    goToStep(3);
+  }
+  window.goToStep3 = goToStep3;
+
+  async function submitRegistration() {
+    document.getElementById('step-3').classList.remove('active');
+    document.getElementById('loader').classList.add('active');
+    try {
+      const countSnap = await window._get(window._ref(window._db, 'vbr2026/counter'));
+      const current   = countSnap.val() || 0;
+      if (current + 1 > (window._maxReg || 500)) throw new Error('Registration limit reached. Please contact the organiser.');
+      const payload = {
+        email: registrationData.email, mobile: registrationData.mobile,
+        participant: registrationData.participant,
+        registeredAt: new Date().toISOString(), checkedIn: false, event: 'VBR2026',
+      };
+      const newRef = await window._push(window._ref(window._db, 'vbr2026/registrations'), payload);
+      await window._set(window._ref(window._db, 'vbr2026/counter'), current + 1);
+      registrationData.regId = newRef.key;
+      showSuccess(registrationData);
+    } catch(e) {
+      document.getElementById('loader').classList.remove('active');
+      document.getElementById('step-3').classList.add('active');
+      document.getElementById('step3Alert').innerHTML = `<div class="alert alert-error">${e.message}</div>`;
+    }
+  }
+  window.submitRegistration = submitRegistration;
+
+  function showSuccess(data) {
+    document.getElementById('loader').classList.remove('active');
+    document.getElementById('stepsBar').style.display = 'none';
+    document.getElementById('successSection').classList.add('active');
+    const p = data.participant || {};
+    document.getElementById('passContainer').innerHTML = `
+      <div class="pass-card">
+        <div class="pass-event">Viksit Bharat Run 2026 &nbsp;·&nbsp; Bangkok</div>
+        <div class="pass-name">${p.name || ''}</div>
+        <div class="pass-meta">
+          30 September 2026 &nbsp;·&nbsp; Suan Luang Rama IX<br>
+          T-Shirt &nbsp;${p.size || ''} &nbsp;·&nbsp; ${p.idType || ''} ${p.idNumber || ''}<br>
+          ${data.email || ''}<br>
+          ${data.mobile || ''}
+        </div>
+        <div class="pass-divider"></div>
+        <div class="pass-id">REG # ${data.regId || ''}</div>
+      </div>`;
+  }
+
+  window.downloadPass = function() { window.print(); };
+
+  async function retrievePass() {
+    const email = document.getElementById('retEmail').value.trim().toLowerCase();
+    const errEl = document.getElementById('retError');
+    errEl.style.display = 'none';
+    if (!email) { errEl.textContent = 'Please enter your email.'; errEl.style.display = 'block'; return; }
+    const snap  = await window._get(window._ref(window._db, 'vbr2026/registrations'));
+    const all   = snap.val() || {};
+    const match = Object.entries(all).find(([k,v]) => v.email && v.email.toLowerCase() === email);
+    if (!match) { errEl.textContent = 'No registration found for this email.'; errEl.style.display = 'block'; return; }
+    registrationData = { ...match[1], regId: match[0] };
+    toggleRetrieve(false);
+    showSuccess(registrationData);
+  }
+  window.retrievePass = retrievePass;
+</script>
+
+</body>
+</html>

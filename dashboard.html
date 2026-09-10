@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VBR 2026 — Live Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:wght@700&display=swap');
+  :root {
+    --saffron: #FF6600; --saffron-dark: #CC5200; --saffron-light: #FFF0E6;
+    --india-green: #138808; --india-green-light: #E8F5E9;
+    --navy: #0A1E3C; --navy-mid: #1A3A5C;
+    --white: #FFFFFF; --grey-50: #F8F9FA; --grey-100: #F1F3F5;
+    --grey-300: #CED4DA; --grey-500: #6C757D; --grey-700: #343A40;
+    --radius: 10px; --shadow: 0 2px 14px rgba(10,30,60,0.09);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--grey-50); color: var(--grey-700); }
+
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: var(--white); padding: 20px 24px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative;
+  }
+  header::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--saffron) 33.3%, var(--white) 33.3%, var(--white) 66.6%, var(--india-green) 66.6%);
+  }
+  header h1 { font-family: 'Noto Serif', serif; font-size: 1.1rem; font-weight: 700; }
+  header p { font-size: 0.78rem; opacity: 0.75; margin-top: 2px; }
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.75rem; font-weight: 600;
+    background: rgba(255,255,255,0.12); border-radius: 20px;
+    padding: 5px 12px; color: var(--white);
+  }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #4ADE80; animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  main { max-width: 1000px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .top-bar h2 { font-size: 0.95rem; font-weight: 600; color: var(--navy); }
+  .btn-refresh {
+    background: var(--white); border: 1.5px solid var(--grey-300);
+    border-radius: 7px; padding: 7px 14px; font-size: 0.82rem;
+    cursor: pointer; font-family: 'Inter', sans-serif; color: var(--grey-700);
+  }
+  .btn-refresh:hover { border-color: var(--saffron); color: var(--saffron); }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px 18px;
+  }
+  .stat-card .label { font-size: 0.75rem; color: var(--grey-500); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .stat-card .value { font-size: 2rem; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+  .stat-card .sub { font-size: 0.78rem; color: var(--grey-500); }
+  .stat-card.accent-saffron { border-top: 3px solid var(--saffron); }
+  .stat-card.accent-green { border-top: 3px solid var(--india-green); }
+  .stat-card.accent-navy { border-top: 3px solid var(--navy); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 20px; }
+  .card h3 { font-size: 0.88rem; font-weight: 600; color: var(--navy); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+  /* Progress bar */
+  .progress-wrap { margin-bottom: 10px; }
+  .progress-track { height: 10px; background: var(--grey-100); border-radius: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--india-green), #22C55E); border-radius: 6px; transition: width 0.5s ease; }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--grey-500); margin-top: 5px; }
+
+  /* Size bars */
+  .size-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.82rem; }
+  .size-label { width: 36px; font-weight: 600; color: var(--navy); }
+  .size-track { flex: 1; height: 8px; background: var(--grey-100); border-radius: 4px; overflow: hidden; }
+  .size-fill { height: 100%; background: var(--saffron); border-radius: 4px; transition: width 0.5s ease; }
+  .size-count { width: 28px; text-align: right; color: var(--grey-500); }
+
+  /* Activity feed */
+  .feed-list { list-style: none; max-height: 220px; overflow-y: auto; }
+  .feed-list li { padding: 8px 0; border-bottom: 1px solid var(--grey-100); font-size: 0.82rem; display: flex; gap: 8px; }
+  .feed-list li:last-child { border-bottom: none; }
+  .feed-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--saffron); margin-top: 4px; flex-shrink: 0; }
+  .feed-dot.green { background: var(--india-green); }
+  .feed-time { color: var(--grey-500); font-size: 0.75rem; margin-left: auto; white-space: nowrap; }
+
+  .footer-nav { text-align: center; margin-top: 28px; display: flex; justify-content: center; gap: 20px; font-size: 0.8rem; }
+  .footer-nav a { color: var(--grey-500); text-decoration: none; }
+  .footer-nav a:hover { color: var(--saffron); }
+  .footer-nav a.active { color: var(--saffron); font-weight: 600; }
+
+
+</style>
+</head>
+<body>
+
+
+<header>
+  <div>
+    <h1>Viksit Bharat Run 2026 — Live Dashboard</h1>
+    <p>Embassy of India, Bangkok · Operations Overview</p>
+  </div>
+  <div class="live-badge"><div class="live-dot"></div><span id="liveStatus">Connecting…</span></div>
+</header>
+
+<main>
+  <div class="top-bar">
+    <h2>Registration Overview</h2>
+    <button class="btn-refresh" onclick="loadData()">🔄 Refresh</button>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card accent-saffron">
+      <div class="label">Total Participants</div>
+      <div class="value" id="statTotal">—</div>
+      <div class="sub" id="statEmails">— email registrations</div>
+    </div>
+    <div class="stat-card accent-navy">
+      <div class="label">Registered Today</div>
+      <div class="value" id="statToday">—</div>
+      <div class="sub">since midnight</div>
+    </div>
+    <div class="stat-card accent-green">
+      <div class="label">Checked In</div>
+      <div class="value" id="statCheckin">—</div>
+      <div class="sub" id="statCheckinSub">— of registered</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Pending Check-in</div>
+      <div class="value" id="statPending">—</div>
+      <div class="sub">Not yet arrived</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>Check-in Progress</h3>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-labels">
+        <span>✓ Checked In: <strong id="plCheckin">0</strong></span>
+        <span id="plPct">0%</span>
+        <span>⏳ Pending: <strong id="plPending">0</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <h3>T-Shirt Sizes</h3>
+    <div id="sizeBars"><p style="color:var(--grey-500);font-size:0.82rem;">Loading…</p></div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>Recent Registrations <span class="live-dot" style="display:inline-block;margin-left:4px;"></span></h3>
+      <ul class="feed-list" id="feedReg"><li><span class="feed-dot"></span>Connecting…</li></ul>
+    </div>
+    <div class="card">
+      <h3>Recent Check-ins <span class="live-dot green" style="display:inline-block;margin-left:4px;background:var(--india-green);"></span></h3>
+      <ul class="feed-list" id="feedCheckin"><li><span class="feed-dot green"></span>Connecting…</li></ul>
+    </div>
+  </div>
+
+  <div class="footer-nav">
+    <a href="index.html">Registration</a>
+    <a href="checkin.html">Check-in</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
+    authDomain: "viksitbharatrunbkk2026.firebaseapp.com",
+    databaseURL: "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "viksitbharatrunbkk2026",
+    storageBucket: "viksitbharatrunbkk2026.firebasestorage.app",
+    messagingSenderId: "732438557121",
+    appId: "1:732438557121:web:c41053238a31f5c2af3f40"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
+
+  window._db = db;
+  window._ref = ref;
+  window._onValue = onValue;
+  window._auth = auth;
+  window._signIn = signInWithEmailAndPassword;
+
+  // Password gate (simple client-side; replace with proper auth for production)
+  loadData();
+
+  window.loadData = function() {
+    document.getElementById('liveStatus').textContent = 'Loading…';
+    const regRef = ref(db, 'vbr2026/registrations');
+    onValue(regRef, (snap) => {
+      document.getElementById('liveStatus').textContent = 'LIVE';
+      const all = snap.val() || {};
+      const regs = Object.entries(all).map(([k, v]) => ({ ...v, id: k }));
+
+      const today = new Date().toDateString();
+      let totalPax = 0, emailCount = regs.length, todayCount = 0, checkedIn = 0;
+      const sizes = {};
+      const feedReg = [], feedChk = [];
+
+      regs.forEach(r => {
+        const p = r.participant || {};
+        totalPax += 1;
+        if (new Date(r.registeredAt).toDateString() === today) todayCount += 1;
+        if (r.checkedIn) { checkedIn += 1; feedChk.push(r); }
+        else feedReg.push(r);
+        if (p.size)     sizes[p.size]     = (sizes[p.size]     || 0) + 1;
+      });
+
+      const pending = totalPax - checkedIn;
+      const pct = totalPax ? Math.round(checkedIn / totalPax * 100) : 0;
+
+      document.getElementById('statTotal').textContent = totalPax;
+      document.getElementById('statEmails').textContent = emailCount + ' email registrations';
+      document.getElementById('statToday').textContent = todayCount;
+      document.getElementById('statCheckin').textContent = checkedIn;
+      document.getElementById('statCheckinSub').textContent = checkedIn + ' of ' + totalPax + ' registered';
+      document.getElementById('statPending').textContent = pending;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('plCheckin').textContent = checkedIn;
+      document.getElementById('plPending').textContent = pending;
+      document.getElementById('plPct').textContent = pct + '%';
+
+      // Size bars
+      const sizeOrder = ['S','M','L','XL','XXL'];
+      const maxSize = Math.max(1, ...Object.values(sizes));
+      document.getElementById('sizeBars').innerHTML = sizeOrder.map(s =>
+        `<div class="size-row">
+          <span class="size-label">${s}</span>
+          <div class="size-track"><div class="size-fill" style="width:${((sizes[s]||0)/maxSize*100)}%"></div></div>
+          <span class="size-count">${sizes[s]||0}</span>
+        </div>`).join('');
+
+      // Feed
+      const fmt = (r) => {
+        const t = new Date(r.registeredAt);
+        const name = (r.participant && r.participant.name) ? r.participant.name.split(' ')[0] : '—';
+        const time = t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        return `<li><span class="feed-dot"></span><span>${name}</span><span class="feed-time">${time}</span></li>`;
+      };
+      const fmtChk = (r) => {
+        const name = (r.participant && r.participant.name) ? r.participant.name.split(' ')[0] : '—';
+        return `<li><span class="feed-dot green"></span><span>${name}</span><span class="feed-time">✓</span></li>`;
+      };
+      const recent = [...feedReg].sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt)).slice(0, 8);
+      const recentChk = [...feedChk].slice(-8).reverse();
+      document.getElementById('feedReg').innerHTML = recent.length ? recent.map(fmt).join('') : '<li style="color:var(--grey-500);font-size:0.82rem;">No registrations yet.</li>';
+      document.getElementById('feedCheckin').innerHTML = recentChk.length ? recentChk.map(fmtChk).join('') : '<li style="color:var(--grey-500);font-size:0.82rem;">No check-ins yet.</li>';
+    });
+  };
+</script>
+</body>
+</html>
