@@ -177,8 +177,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
@@ -191,22 +190,11 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const auth = getAuth(app);
-
-  window._db = db;
-  window._ref = ref;
-  window._onValue = onValue;
-  window._auth = auth;
-  window._signIn = signInWithEmailAndPassword;
-
-  // Password gate (simple client-side; replace with proper auth for production)
-  loadData();
+  const db  = getDatabase(app);
 
   window.loadData = function() {
     document.getElementById('liveStatus').textContent = 'Loading…';
-    const regRef = ref(db, 'vbr2026/registrations');
-    onValue(regRef, (snap) => {
+    onValue(ref(db, 'vbr2026/registrations'), (snap) => {
       document.getElementById('liveStatus').textContent = 'LIVE';
       const all = snap.val() || {};
       const regs = Object.entries(all).map(([k, v]) => ({ ...v, id: k }));
@@ -222,7 +210,7 @@
         if (new Date(r.registeredAt).toDateString() === today) todayCount += 1;
         if (r.checkedIn) { checkedIn += 1; feedChk.push(r); }
         else feedReg.push(r);
-        if (p.size)     sizes[p.size]     = (sizes[p.size]     || 0) + 1;
+        if (p.size) sizes[p.size] = (sizes[p.size] || 0) + 1;
       });
 
       const pending = totalPax - checkedIn;
@@ -239,9 +227,8 @@
       document.getElementById('plPending').textContent = pending;
       document.getElementById('plPct').textContent = pct + '%';
 
-      // Size bars
       const sizeOrder = ['S','M','L','XL','XXL'];
-      const maxSize = Math.max(1, ...Object.values(sizes));
+      const maxSize = Math.max(1, ...Object.values(sizes).length ? Object.values(sizes) : [1]);
       document.getElementById('sizeBars').innerHTML = sizeOrder.map(s =>
         `<div class="size-row">
           <span class="size-label">${s}</span>
@@ -249,7 +236,6 @@
           <span class="size-count">${sizes[s]||0}</span>
         </div>`).join('');
 
-      // Feed
       const fmt = (r) => {
         const t = new Date(r.registeredAt);
         const name = (r.participant && r.participant.name) ? r.participant.name.split(' ')[0] : '—';
@@ -260,12 +246,15 @@
         const name = (r.participant && r.participant.name) ? r.participant.name.split(' ')[0] : '—';
         return `<li><span class="feed-dot green"></span><span>${name}</span><span class="feed-time">✓</span></li>`;
       };
-      const recent = [...feedReg].sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt)).slice(0, 8);
+      const recent    = [...feedReg].sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt)).slice(0, 8);
       const recentChk = [...feedChk].slice(-8).reverse();
-      document.getElementById('feedReg').innerHTML = recent.length ? recent.map(fmt).join('') : '<li style="color:var(--grey-500);font-size:0.82rem;">No registrations yet.</li>';
+      document.getElementById('feedReg').innerHTML     = recent.length    ? recent.map(fmt).join('')       : '<li style="color:var(--grey-500);font-size:0.82rem;">No registrations yet.</li>';
       document.getElementById('feedCheckin').innerHTML = recentChk.length ? recentChk.map(fmtChk).join('') : '<li style="color:var(--grey-500);font-size:0.82rem;">No check-ins yet.</li>';
     });
   };
+
+  // Call after definition
+  loadData();
 </script>
 </body>
 </html>

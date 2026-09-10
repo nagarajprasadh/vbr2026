@@ -5,488 +5,377 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VBR 2026 — Check-in</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap');
-
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
   :root {
-    --saffron: #E8500A; --saffron-dark: #B83E08; --saffron-light: #FDF1EB;
-    --green: #1A6B2F; --green-light: #EBF5EE;
-    --navy: #0C1F3F; --navy-mid: #162E58; --navy-light: #EEF1F6;
-    --ink: #1C2333; --mist: #F4F6F9; --line: #E4E8EF;
-    --text-secondary: #5C6478; --white: #FFFFFF; --error: #C0392B;
-    --radius: 12px; --shadow: 0 4px 24px rgba(12,31,63,0.09);
+    --saffron:#E8500A; --saffron-dark:#B83E08; --saffron-light:#FDF1EB;
+    --green:#1A6B2F; --green-light:#EBF5EE;
+    --navy:#0C1F3F; --navy-mid:#162E58; --navy-light:#EEF1F6;
+    --ink:#1C2333; --mist:#F4F6F9; --line:#E4E8EF;
+    --text-sec:#5C6478; --white:#FFFFFF; --error:#C0392B;
   }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--mist);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--mist); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  .topbar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:var(--white);padding:16px 22px;position:relative}
+  .topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
+  .topbar h1{font-family:'DM Serif Display',serif;font-size:1.05rem;font-weight:400}
+  .topbar p{font-size:.73rem;opacity:.6;margin-top:2px}
 
-  /* HEADER */
-  .top-bar {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-    color: var(--white); padding: 18px 24px; position: relative;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .top-bar::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--saffron) 33.3%, #fff 33.3%, #fff 66.6%, var(--green) 66.6%);
-  }
-  .top-bar h1 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; font-weight: 400; }
-  .top-bar p { font-size: 0.75rem; opacity: 0.6; margin-top: 2px; }
+  .stats{background:var(--white);border-bottom:1px solid var(--line);display:flex;max-width:680px;margin:0 auto}
+  .stat{flex:1;text-align:center;padding:13px 8px}
+  .stat+.stat{border-left:1px solid var(--line)}
+  .stat-v{font-size:1.55rem;font-weight:700;color:var(--navy);line-height:1;margin-bottom:3px}
+  .stat-l{font-size:.7rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.05em}
 
-  /* STATS STRIP */
-  .stats-strip {
-    background: var(--white); border-bottom: 1px solid var(--line);
-    display: flex; max-width: 700px; margin: 0 auto;
-  }
-  .stat-cell { flex: 1; text-align: center; padding: 14px 8px; }
-  .stat-cell + .stat-cell { border-left: 1px solid var(--line); }
-  .stat-val { font-size: 1.6rem; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 3px; }
-  .stat-label { font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+  main{max-width:680px;margin:0 auto;padding:20px 14px 60px}
+  .card{background:var(--white);border-radius:12px;box-shadow:0 4px 24px rgba(12,31,63,.09);overflow:hidden}
 
-  /* MAIN */
-  main { max-width: 700px; margin: 0 auto; padding: 24px 16px 60px; display: flex; flex-direction: column; gap: 16px; }
+  .tabs{display:flex;border-bottom:1px solid var(--line);background:var(--mist)}
+  .tab{flex:1;padding:13px;text-align:center;font-size:.82rem;font-weight:600;color:var(--text-sec);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none}
+  .tab.active{color:var(--saffron);border-bottom-color:var(--saffron);background:var(--white)}
 
-  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
 
-  /* TABS */
-  .tabs { display: flex; border-bottom: 1px solid var(--line); background: var(--mist); }
-  .tab {
-    flex: 1; padding: 14px; text-align: center; font-size: 0.82rem; font-weight: 600;
-    color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent;
-    transition: all 0.15s; user-select: none;
-  }
-  .tab.active { color: var(--saffron); border-bottom-color: var(--saffron); background: var(--white); }
+  /* Scanner panel */
+  .scan-wrap{padding:18px 20px 14px}
+  .scan-wrap h2{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:3px}
+  .scan-wrap p{font-size:.78rem;color:var(--text-sec);margin-bottom:14px}
 
-  /* SCANNER */
-  .scanner-area { padding: 20px 24px; }
-  .scanner-area h2 { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-  .scanner-area p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px; }
+  /* Html5Qrcode renders its own video inside #qr-reader */
+  #qr-reader{width:100%;max-width:420px;margin:0 auto 14px;border-radius:10px;overflow:hidden;background:#000}
+  /* Override Html5Qrcode internal styles for cleaner look */
+  #qr-reader img[alt="Info icon"]{display:none!important}
+  #qr-reader select{font-family:'DM Sans',sans-serif!important;font-size:.82rem!important;padding:6px 8px!important;border:1.5px solid var(--line)!important;border-radius:6px!important;margin-bottom:10px!important}
 
-  .camera-wrap {
-    position: relative; background: var(--navy); border-radius: 10px; overflow: hidden;
-    aspect-ratio: 4/3; max-width: 400px; margin: 0 auto 16px;
-  }
-  #cameraVideo { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .camera-overlay {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    pointer-events: none;
-  }
-  .scan-frame {
-    width: 60%; aspect-ratio: 1;
-    border: 2.5px solid var(--saffron);
-    border-radius: 8px;
-    box-shadow: 0 0 0 2000px rgba(0,0,0,0.45);
-    position: relative;
-  }
-  .scan-line {
-    position: absolute; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent, var(--saffron), transparent);
-    animation: scanMove 2s ease-in-out infinite;
-    top: 0;
-  }
-  @keyframes scanMove { 0%,100% { top: 0%; } 50% { top: 95%; } }
+  .btn-scan{display:block;width:100%;max-width:420px;margin:0 auto;background:var(--saffron);color:var(--white);border:none;border-radius:8px;padding:13px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
+  .btn-scan:hover{background:var(--saffron-dark)}
+  .btn-scan:disabled{background:var(--line);color:var(--text-sec);cursor:not-allowed}
+  .btn-scan.stop{background:var(--navy)}
+  .btn-scan.stop:hover{background:var(--navy-mid)}
 
-  .camera-placeholder {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; color: rgba(255,255,255,0.6);
-    font-size: 0.85rem; gap: 10px; text-align: center; padding: 20px;
-  }
+  .scan-status{text-align:center;margin-top:10px;font-size:.8rem;color:var(--text-sec);min-height:18px;padding:0 10px}
+  .scan-status.ok{color:var(--green);font-weight:600}
+  .scan-status.err{color:var(--error);font-weight:600}
 
-  .btn-scan {
-    display: block; width: 100%; max-width: 400px; margin: 0 auto;
-    background: var(--saffron); color: var(--white); border: none;
-    border-radius: 8px; padding: 13px; font-size: 0.92rem; font-weight: 600;
-    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.15s;
-  }
-  .btn-scan:hover { background: var(--saffron-dark); }
-  .btn-scan.stop { background: var(--navy); }
-  .btn-scan.stop:hover { background: var(--navy-mid); }
+  /* Search panel */
+  .search-wrap{padding:18px 20px 14px}
+  .search-wrap h2{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:3px}
+  .search-wrap p{font-size:.78rem;color:var(--text-sec);margin-bottom:14px}
+  .search-row{display:flex;gap:8px}
+  .search-row input{flex:1;padding:11px 13px;border:1.5px solid var(--line);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink)}
+  .search-row input:focus{outline:none;border-color:var(--saffron)}
+  .btn-srch{background:var(--saffron);color:var(--white);border:none;border-radius:8px;padding:11px 16px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:background .15s}
+  .btn-srch:hover{background:var(--saffron-dark)}
 
-  .scan-status {
-    text-align: center; margin-top: 12px; font-size: 0.82rem;
-    color: var(--text-secondary); min-height: 20px;
-  }
-  .scan-status.success { color: var(--green); font-weight: 600; }
-  .scan-status.error   { color: var(--error); font-weight: 600; }
+  /* Result */
+  .divider{height:1px;background:var(--line)}
+  .result{padding:0 20px 18px;display:none}
+  .result.show{display:block}
 
-  /* SEARCH */
-  .search-area { padding: 20px 24px; }
-  .search-area h2 { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-  .search-area p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px; }
-  .search-row { display: flex; gap: 8px; }
-  .search-row input {
-    flex: 1; padding: 11px 14px; border: 1.5px solid var(--line);
-    border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--ink);
-  }
-  .search-row input:focus { outline: none; border-color: var(--saffron); }
-  .btn-search {
-    background: var(--saffron); color: var(--white); border: none;
-    border-radius: 8px; padding: 11px 18px; font-size: 0.9rem; font-weight: 600;
-    cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; transition: background 0.15s;
-  }
-  .btn-search:hover { background: var(--saffron-dark); }
+  .alert{padding:11px 14px;border-radius:8px;font-size:.82rem;margin-bottom:12px}
+  .alert-err{background:#FDECEA;color:var(--error);border-left:3px solid var(--error)}
 
-  /* RESULT */
-  .result-area { padding: 0 24px 20px; display: none; }
-  .result-area.active { display: block; }
+  .reg-box{border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+  .reg-head{background:var(--mist);padding:13px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+  .reg-name{font-size:.98rem;font-weight:700;color:var(--navy)}
+  .reg-email{font-size:.73rem;color:var(--text-sec);margin-top:2px}
+  .badge{font-size:.7rem;font-weight:700;padding:4px 11px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+  .badge-pend{background:var(--saffron-light);color:var(--saffron-dark)}
+  .badge-done{background:var(--green-light);color:var(--green)}
+  .reg-body{padding:13px 15px}
+  .drow{display:flex;gap:8px;font-size:.82rem;padding:5px 0;border-bottom:1px solid var(--line)}
+  .drow:last-child{border-bottom:none}
+  .dlbl{color:var(--text-sec);font-weight:500;width:72px;flex-shrink:0}
+  .dval{color:var(--ink);font-weight:600;word-break:break-all}
 
-  .alert { padding: 12px 16px; border-radius: 8px; font-size: 0.84rem; margin-bottom: 14px; }
-  .alert-error   { background: #FDECEA; color: var(--error); border-left: 3px solid var(--error); }
-  .alert-success { background: var(--green-light); color: var(--green); border-left: 3px solid var(--green); }
+  .btn-ci{width:100%;background:var(--green);color:var(--white);border:none;border-radius:8px;padding:13px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:12px;transition:background .15s}
+  .btn-ci:hover{background:#145526}
+  .btn-ci:disabled,.btn-ci.done{background:var(--line);color:var(--text-sec);cursor:default}
 
-  .reg-result {
-    border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 12px;
-  }
-  .reg-result-head {
-    background: var(--mist); padding: 14px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid var(--line);
-  }
-  .reg-name { font-size: 1rem; font-weight: 700; color: var(--navy); }
-  .reg-email { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
-  .badge {
-    font-size: 0.72rem; font-weight: 700; padding: 4px 12px;
-    border-radius: 20px; white-space: nowrap; flex-shrink: 0;
-  }
-  .badge-pending { background: var(--saffron-light); color: var(--saffron-dark); }
-  .badge-done    { background: var(--green-light); color: var(--green); }
-
-  .reg-result-body { padding: 14px 16px; }
-  .detail-row {
-    display: flex; gap: 8px; font-size: 0.83rem; padding: 5px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .detail-row:last-child { border-bottom: none; }
-  .detail-label { color: var(--text-secondary); font-weight: 500; width: 80px; flex-shrink: 0; }
-  .detail-val { color: var(--ink); font-weight: 600; }
-
-  .btn-checkin {
-    width: 100%; background: var(--green); color: var(--white); border: none;
-    border-radius: 8px; padding: 13px; font-size: 0.92rem; font-weight: 700;
-    cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 14px;
-    transition: background 0.15s; letter-spacing: 0.01em;
-  }
-  .btn-checkin:hover { background: #145526; }
-  .btn-checkin:disabled { background: var(--line); color: var(--text-secondary); cursor: not-allowed; }
-  .btn-checkin.done { background: var(--line); color: var(--text-secondary); cursor: default; }
-
-  .loader { display: none; text-align: center; padding: 20px; color: var(--text-secondary); font-size: 0.85rem; }
-  .loader.active { display: block; }
-  .spinner { width: 22px; height: 22px; border: 2.5px solid var(--line); border-top-color: var(--saffron); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 8px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .divider { height: 1px; background: var(--line); }
-
-  /* Tab panels */
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+  .loader{display:none;text-align:center;padding:16px;color:var(--text-sec);font-size:.82rem}
+  .loader.show{display:block}
+  .spinner{width:20px;height:20px;border:2.5px solid var(--line);border-top-color:var(--saffron);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <div>
-    <h1>Viksit Bharat Run 2026 — Check-in</h1>
-    <p>Wednesday, 30 September 2026 · Suan Luang Rama IX</p>
-  </div>
+<div class="topbar">
+  <h1>Viksit Bharat Run 2026 — Check-in</h1>
+  <p>Wednesday, 30 September 2026 · Suan Luang Rama IX, Bangkok</p>
 </div>
 
-<div class="stats-strip">
-  <div class="stat-cell"><div class="stat-val" id="csTotal">—</div><div class="stat-label">Registered</div></div>
-  <div class="stat-cell"><div class="stat-val" id="csChecked">—</div><div class="stat-label">Checked In</div></div>
-  <div class="stat-cell"><div class="stat-val" id="csPending">—</div><div class="stat-label">Pending</div></div>
+<div class="stats">
+  <div class="stat"><div class="stat-v" id="csTotal">—</div><div class="stat-l">Registered</div></div>
+  <div class="stat"><div class="stat-v" id="csChecked">—</div><div class="stat-l">Checked In</div></div>
+  <div class="stat"><div class="stat-v" id="csPending">—</div><div class="stat-l">Pending</div></div>
 </div>
 
 <main>
   <div class="card">
 
-    <!-- TABS -->
     <div class="tabs">
       <div class="tab active" id="tab-scan" onclick="switchTab('scan')">Scan QR Code</div>
-      <div class="tab" id="tab-search" onclick="switchTab('search')">Search by Email / ID</div>
+      <div class="tab" id="tab-search" onclick="switchTab('search')">Search</div>
     </div>
 
-    <!-- SCANNER PANEL -->
+    <!-- SCAN -->
     <div class="tab-panel active" id="panel-scan">
-      <div class="scanner-area">
-        <h2>Point camera at participant's pass QR code</h2>
-        <p>Works on mobile and desktop with a webcam. Allow camera access when prompted. <strong>Must be opened via the live website URL — not a local file.</strong></p>
-
-        <div class="camera-wrap" id="cameraWrap">
-          <video id="cameraVideo" autoplay playsinline muted></video>
-          <div class="camera-overlay">
-            <div class="scan-frame"><div class="scan-line"></div></div>
-          </div>
-          <div class="camera-placeholder" id="cameraPlaceholder">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-              <rect x="2" y="8" width="36" height="28" rx="4" stroke="currentColor" stroke-width="1.5"/>
-              <circle cx="20" cy="22" r="7" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M13 8V6a2 2 0 012-2h10a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-            Camera not started
-          </div>
-        </div>
-
-        <button class="btn-scan" id="btnScan" onclick="toggleCamera()">Start Camera</button>
-        <div class="scan-status" id="scanStatus">Press Start Camera to begin scanning</div>
+      <div class="scan-wrap">
+        <h2>Scan participant's QR code</h2>
+        <p>Opens rear camera automatically on mobile. Allow camera access when prompted. Open via the live website URL only.</p>
+        <div id="qr-reader"></div>
+        <button class="btn-scan" id="btnScan" onclick="toggleScanner()">Start Scanner</button>
+        <div class="scan-status" id="scanStatus">Press Start Scanner to begin</div>
       </div>
-
       <div class="divider"></div>
-      <div class="result-area" id="scanResult"></div>
+      <div class="result" id="scanResult"></div>
     </div>
 
-    <!-- SEARCH PANEL -->
+    <!-- SEARCH -->
     <div class="tab-panel" id="panel-search">
-      <div class="search-area">
+      <div class="search-wrap">
         <h2>Search Registration</h2>
         <p>Search by email address or registration ID.</p>
         <div class="search-row">
           <input type="text" id="searchInput" placeholder="Email or Registration ID" onkeydown="if(event.key==='Enter')doSearch()">
-          <button class="btn-search" onclick="doSearch()">Search</button>
+          <button class="btn-srch" onclick="doSearch()">Search</button>
         </div>
       </div>
-
       <div class="loader" id="searchLoader"><div class="spinner"></div>Searching…</div>
       <div class="divider"></div>
-      <div class="result-area" id="searchResult"></div>
+      <div class="result" id="searchResult"></div>
     </div>
 
   </div>
 </main>
 
-<!-- QR Scanner library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
-    authDomain: "viksitbharatrunbkk2026.firebaseapp.com",
-    databaseURL: "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "viksitbharatrunbkk2026",
-    storageBucket: "viksitbharatrunbkk2026.firebasestorage.app",
-    messagingSenderId: "732438557121",
-    appId: "1:732438557121:web:c41053238a31f5c2af3f40"
-  };
+const app = initializeApp({
+  apiKey: "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
+  authDomain: "viksitbharatrunbkk2026.firebaseapp.com",
+  databaseURL: "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "viksitbharatrunbkk2026",
+  storageBucket: "viksitbharatrunbkk2026.firebasestorage.app",
+  messagingSenderId: "732438557121",
+  appId: "1:732438557121:web:c41053238a31f5c2af3f40"
+});
+const db = getDatabase(app);
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getDatabase(app);
+// ── Live stats ──
+onValue(ref(db, 'vbr2026/registrations'), snap => {
+  const all     = snap.val() || {};
+  const regs    = Object.values(all);
+  const total   = regs.length;
+  const checked = regs.filter(r => r.checkedIn).length;
+  document.getElementById('csTotal').textContent   = total;
+  document.getElementById('csChecked').textContent = checked;
+  document.getElementById('csPending').textContent = total - checked;
+});
 
-  // ── Live stats ──
-  onValue(ref(db, 'vbr2026/registrations'), snap => {
-    const all  = snap.val() || {};
-    const regs = Object.values(all);
-    const total   = regs.length;
-    const checked = regs.filter(r => r.checkedIn).length;
-    document.getElementById('csTotal').textContent   = total;
-    document.getElementById('csChecked').textContent = checked;
-    document.getElementById('csPending').textContent = total - checked;
-  });
+// ── Status helper ──
+function setStatus(msg, type) {
+  const el = document.getElementById('scanStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'scan-status' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
+}
 
-  // ── Render result card ──
-  function renderResult(containerId, regId, data) {
-    const p    = data.participant || {};
-    const done = data.checkedIn;
-    const el   = document.getElementById(containerId);
-    el.classList.add('active');
-    el.innerHTML = `
-      <div class="reg-result">
-        <div class="reg-result-head">
-          <div>
-            <div class="reg-name">${p.name || '—'}</div>
-            <div class="reg-email">${data.email || ''}</div>
-          </div>
-          <span class="badge ${done ? 'badge-done' : 'badge-pending'}" id="badge-${regId}">
-            ${done ? '✓ Checked In' : 'Pending'}
-          </span>
+// ── Render result card ──
+function renderResult(containerId, regId, data) {
+  const p    = data.participant || {};
+  const done = !!data.checkedIn;
+  const el   = document.getElementById(containerId);
+  el.classList.add('show');
+  el.innerHTML = `
+    <div class="reg-box">
+      <div class="reg-head">
+        <div>
+          <div class="reg-name">${p.name || '—'}</div>
+          <div class="reg-email">${data.email || ''}</div>
         </div>
-        <div class="reg-result-body">
-          <div class="detail-row"><span class="detail-label">Mobile</span><span class="detail-val">${data.mobile || '—'}</span></div>
-          <div class="detail-row"><span class="detail-label">ID</span><span class="detail-val">${p.idType || ''} ${p.idNumber || ''}</span></div>
-          <div class="detail-row"><span class="detail-label">T-Shirt</span><span class="detail-val">${p.size || '—'}</span></div>
-          <div class="detail-row"><span class="detail-label">Reg ID</span><span class="detail-val" style="font-size:0.75rem;word-break:break-all;">${regId}</span></div>
-          ${done && data.checkedInAt ? `<div class="detail-row"><span class="detail-label">Time</span><span class="detail-val">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>` : ''}
-        </div>
+        <span class="badge ${done ? 'badge-done' : 'badge-pend'}" id="badge-${regId}">
+          ${done ? '✓ Checked In' : 'Pending'}
+        </span>
       </div>
-      <button class="btn-checkin ${done ? 'done' : ''}" id="btn-${regId}" ${done ? 'disabled' : ''}
-        onclick="window._doCheckin('${regId}')">
-        ${done ? '✓ Already Checked In' : '✓ Confirm Check-in'}
-      </button>`;
-  }
+      <div class="reg-body">
+        <div class="drow"><span class="dlbl">Mobile</span><span class="dval">${data.mobile || '—'}</span></div>
+        <div class="drow"><span class="dlbl">ID</span><span class="dval">${(p.idType||'')} ${(p.idNumber||'')}</span></div>
+        <div class="drow"><span class="dlbl">T-Shirt</span><span class="dval">${p.size || '—'}</span></div>
+        ${done && data.checkedInAt
+          ? `<div class="drow"><span class="dlbl">Checked in</span><span class="dval">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>`
+          : ''}
+      </div>
+    </div>
+    <button class="btn-ci ${done?'done':''}" id="btn-${regId}" ${done?'disabled':''}
+      onclick="window._ci('${regId}')">
+      ${done ? '✓ Already Checked In' : '✓ Confirm Check-in'}
+    </button>`;
+}
 
-  // ── Check-in action ──
-  window._doCheckin = async function(regId) {
-    const btn = document.getElementById('btn-' + regId);
-    if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+// ── Check-in ──
+window._ci = async function(regId) {
+  const btn = document.getElementById('btn-' + regId);
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+  try {
+    await set(ref(db, `vbr2026/registrations/${regId}/checkedIn`), true);
+    await set(ref(db, `vbr2026/registrations/${regId}/checkedInAt`), new Date().toISOString());
+    if (btn) { btn.textContent = '✓ Checked In'; btn.classList.add('done'); }
+    const badge = document.getElementById('badge-' + regId);
+    if (badge) { badge.textContent = '✓ Checked In'; badge.className = 'badge badge-done'; }
+    setStatus('✓ Checked in — ready for next scan', 'ok');
+    // Auto-clear after 4 seconds
+    setTimeout(() => {
+      const r = document.getElementById('scanResult');
+      if (r) { r.classList.remove('show'); r.innerHTML = ''; }
+      lastScanned = null;
+      setStatus('Scanning — point at next QR code', 'ok');
+    }, 4000);
+  } catch(e) {
+    if (btn) { btn.disabled = false; btn.textContent = '✓ Confirm Check-in'; }
+    alert('Check-in failed: ' + e.message);
+  }
+};
+
+// ── QR Scanner ──
+let scanner     = null;
+let running     = false;
+let lastScanned = null;
+
+window.toggleScanner = async function() {
+  if (running) { await stopScanner(); } else { await startScanner(); }
+};
+
+async function startScanner() {
+  const btn = document.getElementById('btnScan');
+  btn.disabled = true;
+  setStatus('Starting camera…', '');
+
+  try {
+    scanner = new Html5Qrcode('qr-reader');
+
+    // Get cameras, prefer rear
+    let camId;
     try {
-      await set(ref(db, `vbr2026/registrations/${regId}/checkedIn`), true);
-      await set(ref(db, `vbr2026/registrations/${regId}/checkedInAt`), new Date().toISOString());
-      if (btn) { btn.textContent = '✓ Checked In'; btn.classList.add('done'); }
-      const badge = document.getElementById('badge-' + regId);
-      if (badge) { badge.textContent = '✓ Checked In'; badge.className = 'badge badge-done'; }
-      document.getElementById('scanStatus') && (document.getElementById('scanStatus').textContent = '✓ Check-in confirmed — ready for next scan');
-      document.getElementById('scanStatus') && document.getElementById('scanStatus').classList.replace('error','success');
+      const devices = await Html5Qrcode.getCameras();
+      if (!devices || devices.length === 0) throw new Error('No camera found');
+      const rear = devices.find(d => /back|rear|environment/i.test(d.label));
+      camId = (rear || devices[devices.length - 1]).id;
     } catch(e) {
-      if (btn) { btn.disabled = false; btn.textContent = '✓ Confirm Check-in'; }
-      alert('Check-in failed: ' + e.message);
-    }
-  };
-
-  // ── QR Camera Scanner ──
-  let stream = null;
-  let scanning = false;
-  let lastScannedId = null;
-  let scanInterval = null;
-
-  window.toggleCamera = async function() {
-    if (scanning) { stopCamera(); } else { await startCamera(); }
-  };
-
-  async function startCamera() {
-    // Must be HTTPS or localhost
-    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-      setStatus('Camera requires HTTPS. Open this page via its web URL, not a local file.', 'error');
-      return;
-    }
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setStatus('Camera not supported on this browser. Use Search tab instead.', 'error');
-      return;
+      // Fallback: let Html5Qrcode pick via facingMode
+      camId = { facingMode: 'environment' };
     }
 
-    setStatus('Requesting camera access…', '');
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
-      });
-    } catch(e) {
-      if (e.name === 'NotAllowedError') {
-        setStatus('Camera permission denied. Go to browser Settings → Site permissions → Camera → Allow for this site, then try again.', 'error');
-      } else if (e.name === 'NotFoundError') {
-        setStatus('No camera found on this device. Use Search tab instead.', 'error');
-      } else {
-        setStatus('Camera error: ' + e.message, 'error');
-      }
-      return;
-    }
-
-    const video = document.getElementById('cameraVideo');
-    video.srcObject = stream;
-    video.style.display = 'block';
-    document.getElementById('cameraPlaceholder').style.display = 'none';
-
-    try { await video.play(); } catch(e) {}
-
-    scanning = true;
-    lastScannedId = null;
-    document.getElementById('btnScan').textContent = 'Stop Camera';
-    document.getElementById('btnScan').classList.add('stop');
-    document.getElementById('scanResult').classList.remove('active');
-    document.getElementById('scanResult').innerHTML = '';
-    setStatus('Scanning — point at a participant\'s pass QR code', 'success');
-
-    // Throttle to every 250ms to save battery
-    scanInterval = setInterval(scanFrame, 250);
-  }
-
-  function stopCamera() {
-    scanning = false;
-    if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
-    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-    const video = document.getElementById('cameraVideo');
-    video.srcObject = null;
-    video.style.display = 'none';
-    document.getElementById('cameraPlaceholder').style.display = 'flex';
-    document.getElementById('btnScan').textContent = 'Start Camera';
-    document.getElementById('btnScan').classList.remove('stop');
-    setStatus('Camera stopped.', '');
-  }
-
-  function scanFrame() {
-    if (!scanning) return;
-    const video = document.getElementById('cameraVideo');
-    if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
-
-    const canvas = document.createElement('canvas');
-    canvas.width  = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
-
-    if (code && code.data && code.data !== lastScannedId) {
-      lastScannedId = code.data;
-      // Vibrate on mobile to confirm scan
-      if (navigator.vibrate) navigator.vibrate(100);
-      setStatus('QR detected — looking up registration…', '');
-      handleScannedId(code.data);
-    }
-  }
-
-  function setStatus(msg, type) {
-    const el = document.getElementById('scanStatus');
-    el.textContent = msg;
-    el.className = 'scan-status' + (type ? ' ' + type : '');
-  }
-
-  async function handleScannedId(regId) {
-    document.getElementById('scanResult').classList.remove('active');
-    document.getElementById('scanResult').innerHTML = '';
-    try {
-      const snap = await get(ref(db, `vbr2026/registrations/${regId}`));
-      if (!snap.exists()) {
-        setStatus('No registration found for this QR code. Try again.', 'error');
-        setTimeout(() => { lastScannedId = null; }, 3000); // allow rescan after 3s
-        return;
-      }
-      setStatus('Registration found — confirm check-in below', 'success');
-      renderResult('scanResult', regId, snap.val());
-      // Reset lastScannedId after 10s so re-scanning same pass is possible if needed
-      setTimeout(() => { lastScannedId = null; }, 10000);
-    } catch(e) {
-      setStatus('Lookup failed: ' + e.message, 'error');
-      lastScannedId = null;
-    }
-  }
-
-  // ── Text search ──
-  window.doSearch = async function() {
-    const q = document.getElementById('searchInput').value.trim().toLowerCase();
-    if (!q) return;
-
-    document.getElementById('searchLoader').classList.add('active');
-    document.getElementById('searchResult').classList.remove('active');
-    document.getElementById('searchResult').innerHTML = '';
-
-    const snap = await get(ref(db, 'vbr2026/registrations'));
-    const all  = snap.val() || {};
-
-    const matches = Object.entries(all).filter(([k, v]) =>
-      (v.email && v.email.toLowerCase().includes(q)) || k.toLowerCase() === q
+    await scanner.start(
+      camId,
+      { fps: 10, qrbox: { width: 240, height: 240 } },
+      onScan,
+      () => {} // silent per-frame errors
     );
 
-    document.getElementById('searchLoader').classList.remove('active');
+    running = true;
+    lastScanned = null;
+    btn.textContent = 'Stop Scanner';
+    btn.classList.add('stop');
+    btn.disabled = false;
+    const r = document.getElementById('scanResult');
+    r.classList.remove('show'); r.innerHTML = '';
+    setStatus('Scanning — point camera at the QR code on the pass', 'ok');
 
-    if (!matches.length) {
-      document.getElementById('searchResult').classList.add('active');
-      document.getElementById('searchResult').innerHTML = `<div class="alert alert-error">No registration found for "${q}".</div>`;
+  } catch(e) {
+    btn.disabled = false;
+    scanner = null;
+    const msg = String(e);
+    if (/permission|denied|notallowed/i.test(msg)) {
+      setStatus('Camera permission denied. In your browser: Settings → Site permissions → Camera → Allow this site. Then try again.', 'err');
+    } else if (/notfound|no.*camera/i.test(msg)) {
+      setStatus('No camera found on this device. Use Search instead.', 'err');
+    } else {
+      setStatus('Could not start camera: ' + msg + '. Use Search instead.', 'err');
+    }
+  }
+}
+
+async function stopScanner() {
+  if (scanner && running) {
+    try { await scanner.stop(); } catch(e) {}
+    try { scanner.clear(); } catch(e) {}
+    scanner = null;
+  }
+  running = false;
+  const btn = document.getElementById('btnScan');
+  btn.textContent = 'Start Scanner';
+  btn.classList.remove('stop');
+  btn.disabled = false;
+  setStatus('Scanner stopped.', '');
+}
+
+async function onScan(regId) {
+  if (!regId || regId === lastScanned) return;
+  lastScanned = regId;
+  if (navigator.vibrate) navigator.vibrate(120);
+  setStatus('QR detected — looking up…', '');
+  const r = document.getElementById('scanResult');
+  r.classList.remove('show'); r.innerHTML = '';
+
+  try {
+    const snap = await get(ref(db, `vbr2026/registrations/${regId}`));
+    if (!snap.exists()) {
+      setStatus('No registration found. Make sure you are scanning the correct pass.', 'err');
+      setTimeout(() => { lastScanned = null; }, 3000);
       return;
     }
+    setStatus('Found — confirm check-in below', 'ok');
+    renderResult('scanResult', regId, snap.val());
+  } catch(e) {
+    setStatus('Lookup error: ' + e.message, 'err');
+    setTimeout(() => { lastScanned = null; }, 2000);
+  }
+}
 
-    const [regId, data] = matches[0];
-    renderResult('searchResult', regId, data);
-  };
+// ── Search ──
+window.doSearch = async function() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!q) return;
+  const sl = document.getElementById('searchLoader');
+  const sr = document.getElementById('searchResult');
+  sl.classList.add('show');
+  sr.classList.remove('show'); sr.innerHTML = '';
 
-  // ── Tab switching ──
-  window.switchTab = function(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    document.getElementById('panel-' + tab).classList.add('active');
-    if (tab !== 'scan' && scanning) stopCamera();
-  };
+  try {
+    const snap = await get(ref(db, 'vbr2026/registrations'));
+    const all  = snap.val() || {};
+    const hit  = Object.entries(all).find(([k,v]) =>
+      k === q || (v.email && v.email.toLowerCase() === q)
+    );
+    sl.classList.remove('show');
+    if (!hit) {
+      sr.classList.add('show');
+      sr.innerHTML = `<div class="alert alert-err">No registration found for "${q}".</div>`;
+      return;
+    }
+    renderResult('searchResult', hit[0], hit[1]);
+  } catch(e) {
+    sl.classList.remove('show');
+    sr.classList.add('show');
+    sr.innerHTML = `<div class="alert alert-err">Error: ${e.message}</div>`;
+  }
+};
+
+// ── Tab switch ──
+window.switchTab = async function(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (tab !== 'scan' && running) await stopScanner();
+};
 </script>
 </body>
 </html>
