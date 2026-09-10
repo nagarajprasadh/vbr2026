@@ -50,12 +50,26 @@
   }
 
   /* ── HERO ── */
-  .hero { width: 100%; background: #fff; line-height: 0; }
-  .hero img {
-    width: 100%; display: block;
-    max-height: 200px; object-fit: cover; object-position: 65% top;
+  .hero {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 16px 20px 0;
+    line-height: 0;
   }
-  @media (max-width: 600px) { .hero img { max-height: 120px; } }
+  .hero img {
+    width: 100%;
+    display: block;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(12,31,63,0.12);
+    max-height: 160px;
+    object-fit: cover;
+    object-position: 65% top;
+  }
+  @media (max-width: 600px) {
+    .hero { padding: 10px 12px 0; }
+    .hero img { max-height: 100px; border-radius: 8px; }
+  }
 
 
   /* ── EVENT STRIP ── */
@@ -114,7 +128,7 @@
   /* ── PAGE WRAP ── */
   .page-wrap {
     max-width: 1240px; margin: 0 auto;
-    padding: 32px 20px 72px;
+    padding: 20px 20px 72px;
     display: grid;
     grid-template-columns: 1fr 460px;
     gap: 28px;
@@ -449,10 +463,6 @@
 <body>
 
 <div class="tricolour"></div>
-<div class="hero">
-  <img src="hero.jpg" alt="Viksit Bharat Run 2026 — Bangkok, Thailand">
-</div>
-<div class="tricolour"></div>
 
 <!-- EVENT STRIP -->
 <div class="event-strip">
@@ -545,6 +555,11 @@
 
 <!-- PAGE WRAP -->
 <div class="page-wrap">
+
+  <!-- HERO -->
+  <div class="hero" style="grid-column: 1 / -1;">
+    <img src="hero.jpg" alt="Viksit Bharat Run 2026 — Bangkok, Thailand">
+  </div>
 
   <!-- LEFT COLUMN -->
   <div class="left-col">
