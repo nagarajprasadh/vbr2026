@@ -27,7 +27,7 @@
   .stat-v{font-size:1.55rem;font-weight:700;color:var(--navy);line-height:1;margin-bottom:3px}
   .stat-l{font-size:.7rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.05em}
 
-  main{max-width:680px;margin:0 auto;padding:20px 14px 60px}
+  main{max-width:680px;margin:0 auto;padding:20px 14px 60px;display:flex;flex-direction:column;gap:16px}
   .card{background:var(--white);border-radius:12px;box-shadow:0 4px 24px rgba(12,31,63,.09);overflow:hidden}
 
   .tabs{display:flex;border-bottom:1px solid var(--line);background:var(--mist)}
@@ -36,32 +36,55 @@
   .tab-panel{display:none}
   .tab-panel.active{display:block}
 
-  .scan-wrap{padding:18px 20px 0}
+  /* ── CAMERA SCANNER ── */
+  .scan-wrap{padding:18px 20px}
   .scan-wrap h2{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:3px}
   .scan-wrap p{font-size:.78rem;color:var(--text-sec);margin-bottom:14px}
 
-  /* Html5QrcodeScanner renders inside #qr-reader */
-  #qr-reader{width:100%;max-width:460px;margin:0 auto}
-  /* Tidy up the library's default UI */
-  #qr-reader__status_span{font-family:'DM Sans',sans-serif!important;font-size:.8rem!important}
-  #qr-reader__dashboard_section_csr button,
-  #qr-reader__dashboard_section_fsr button{
-    font-family:'DM Sans',sans-serif!important;font-size:.85rem!important;
-    background:var(--saffron)!important;color:#fff!important;
-    border:none!important;border-radius:7px!important;
-    padding:9px 18px!important;cursor:pointer!important;margin-top:6px!important
+  .video-wrap{
+    position:relative;width:100%;max-width:420px;margin:0 auto 14px;
+    background:#000;border-radius:10px;overflow:hidden;
+    aspect-ratio:4/3;
   }
-  #qr-reader__camera_selection{
-    font-family:'DM Sans',sans-serif!important;font-size:.82rem!important;
-    padding:7px 10px!important;border:1.5px solid var(--line)!important;
-    border-radius:7px!important;width:100%!important;margin-bottom:8px!important
+  #camVideo{width:100%;height:100%;object-fit:cover;display:block}
+  .scan-box{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:56%;aspect-ratio:1;pointer-events:none;
   }
-  #qr-reader img[alt="Info icon"]{display:none!important}
+  .scan-box::before,.scan-box::after,
+  .scan-box span::before,.scan-box span::after{
+    content:'';position:absolute;width:22px;height:22px;
+    border-color:var(--saffron);border-style:solid;
+  }
+  .scan-box::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+  .scan-box::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
+  .scan-box span::before{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
+  .scan-box span::after{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+  .scan-line{
+    position:absolute;left:5%;right:5%;height:2px;
+    background:linear-gradient(90deg,transparent,var(--saffron),transparent);
+    animation:sweep 2s ease-in-out infinite;top:0;
+  }
+  @keyframes sweep{0%,100%{top:5%}50%{top:90%}}
 
-  .scan-status{text-align:center;margin:10px 0 16px;font-size:.8rem;color:var(--text-sec);min-height:18px;padding:0 10px}
+  .cam-placeholder{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    color:rgba(255,255,255,.5);gap:10px;font-size:.82rem;
+  }
+  .cam-placeholder svg{opacity:.4}
+
+  .btn-scan{display:block;width:100%;max-width:420px;margin:0 auto;background:var(--saffron);color:var(--white);border:none;border-radius:8px;padding:13px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
+  .btn-scan:hover{background:var(--saffron-dark)}
+  .btn-scan.stop{background:var(--navy)}
+  .btn-scan.stop:hover{background:var(--navy-mid)}
+  .btn-scan:disabled{background:var(--line);color:var(--text-sec);cursor:not-allowed}
+
+  .scan-status{text-align:center;margin-top:10px;font-size:.8rem;color:var(--text-sec);min-height:18px;padding:0 8px}
   .scan-status.ok{color:var(--green);font-weight:600}
   .scan-status.err{color:var(--error);font-weight:600}
 
+  /* ── SEARCH ── */
   .search-wrap{padding:18px 20px 14px}
   .search-wrap h2{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:3px}
   .search-wrap p{font-size:.78rem;color:var(--text-sec);margin-bottom:14px}
@@ -71,13 +94,11 @@
   .btn-srch{background:var(--saffron);color:var(--white);border:none;border-radius:8px;padding:11px 16px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
   .btn-srch:hover{background:var(--saffron-dark)}
 
+  /* ── RESULTS ── */
   .divider{height:1px;background:var(--line)}
   .result{padding:0 20px 18px;display:none}
   .result.show{display:block}
-
-  .alert{padding:11px 14px;border-radius:8px;font-size:.82rem;margin-bottom:12px}
-  .alert-err{background:#FDECEA;color:var(--error);border-left:3px solid var(--error)}
-
+  .alert-err{padding:11px 14px;border-radius:8px;font-size:.82rem;background:#FDECEA;color:var(--error);border-left:3px solid var(--error);margin-bottom:12px}
   .reg-box{border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
   .reg-head{background:var(--mist);padding:13px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
   .reg-name{font-size:.98rem;font-weight:700;color:var(--navy)}
@@ -90,11 +111,9 @@
   .drow:last-child{border-bottom:none}
   .dlbl{color:var(--text-sec);font-weight:500;width:72px;flex-shrink:0}
   .dval{color:var(--ink);font-weight:600;word-break:break-all}
-
   .btn-ci{width:100%;background:var(--green);color:var(--white);border:none;border-radius:8px;padding:13px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:12px;transition:background .15s}
   .btn-ci:hover{background:#145526}
-  .btn-ci:disabled,.btn-ci.done{background:var(--line);color:var(--text-sec);cursor:default}
-
+  .btn-ci.done,.btn-ci:disabled{background:var(--line);color:var(--text-sec);cursor:default}
   .loader{display:none;text-align:center;padding:16px;color:var(--text-sec);font-size:.82rem}
   .loader.show{display:block}
   .spinner{width:20px;height:20px;border:2.5px solid var(--line);border-top-color:var(--saffron);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 6px}
@@ -118,17 +137,31 @@
   <div class="card">
 
     <div class="tabs">
-      <div class="tab active" id="tab-scan" onclick="switchTab('scan')">Scan QR Code</div>
-      <div class="tab" id="tab-search" onclick="switchTab('search')">Search</div>
+      <div class="tab active" id="tab-scan"   onclick="switchTab('scan')">Camera Scan</div>
+      <div class="tab"        id="tab-search" onclick="switchTab('search')">Search / USB Scanner</div>
     </div>
 
-    <!-- SCAN TAB -->
+    <!-- CAMERA TAB -->
     <div class="tab-panel active" id="panel-scan">
       <div class="scan-wrap">
-        <h2>Scan participant's pass QR code</h2>
-        <p>Click "Start Scanning" below. Allow camera access when prompted. Use rear camera on mobile for best results. Must be opened via the live website URL.</p>
-        <div id="qr-reader"></div>
-        <div class="scan-status" id="scanStatus"></div>
+        <h2>Scan QR code on participant's pass</h2>
+        <p>Press Start. Allow camera access. Hold the QR code steady inside the frame. For USB scanner — use the Search tab.</p>
+
+        <div class="video-wrap">
+          <video id="camVideo" autoplay playsinline muted></video>
+          <div class="scan-box"><span></span><div class="scan-line"></div></div>
+          <div class="cam-placeholder" id="camPlaceholder">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="3" y="10" width="42" height="32" rx="5" stroke="white" stroke-width="2"/>
+              <circle cx="24" cy="26" r="8" stroke="white" stroke-width="2"/>
+              <path d="M16 10V8a3 3 0 013-3h10a3 3 0 013 3v2" stroke="white" stroke-width="2"/>
+            </svg>
+            Camera not started
+          </div>
+        </div>
+
+        <button class="btn-scan" id="btnScan" onclick="toggleCam()">Start Camera</button>
+        <div class="scan-status" id="scanStatus">Press Start Camera to begin</div>
       </div>
       <div class="divider"></div>
       <div class="result" id="scanResult"></div>
@@ -137,14 +170,15 @@
     <!-- SEARCH TAB -->
     <div class="tab-panel" id="panel-search">
       <div class="search-wrap">
-        <h2>Search Registration</h2>
-        <p>Search by email address or full registration ID.</p>
+        <h2>Search or USB Scanner</h2>
+        <p>Click the box below, then scan with the USB barcode scanner or type an email address. The scanner auto-submits on read.</p>
         <div class="search-row">
-          <input type="text" id="searchInput" placeholder="Email or Registration ID" onkeydown="if(event.key==='Enter')doSearch()">
+          <input type="text" id="searchInput" placeholder="Scan QR or type email…" autofocus
+            onkeydown="if(event.key==='Enter'||event.keyCode===13)doSearch()">
           <button class="btn-srch" onclick="doSearch()">Search</button>
         </div>
       </div>
-      <div class="loader" id="searchLoader"><div class="spinner"></div>Searching…</div>
+      <div class="loader" id="searchLoader"><div class="spinner"></div>Looking up…</div>
       <div class="divider"></div>
       <div class="result" id="searchResult"></div>
     </div>
@@ -152,8 +186,8 @@
   </div>
 </main>
 
-<!-- Html5QrcodeScanner — handles all camera selection natively -->
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<!-- ZXing — Google's QR/barcode library, used in production worldwide -->
+<script src="https://unpkg.com/@zxing/browser@0.1.4/umd/index.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -171,7 +205,7 @@ const app = initializeApp({
 const db = getDatabase(app);
 
 // ── Live stats ──
-onValue(ref(db, 'vbr2026/registrations'), snap => {
+onValue(ref(db,'vbr2026/registrations'), snap => {
   const all     = snap.val() || {};
   const regs    = Object.values(all);
   const total   = regs.length;
@@ -181,15 +215,15 @@ onValue(ref(db, 'vbr2026/registrations'), snap => {
   document.getElementById('csPending').textContent = total - checked;
 });
 
-// ── Status helper ──
+// ── Status ──
 function setStatus(msg, type) {
   const el = document.getElementById('scanStatus');
   if (!el) return;
   el.textContent = msg;
-  el.className = 'scan-status' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
+  el.className = 'scan-status' + (type==='ok'?' ok':type==='err'?' err':'');
 }
 
-// ── Render result card ──
+// ── Render result ──
 function renderResult(containerId, regId, data) {
   const p    = data.participant || {};
   const done = !!data.checkedIn;
@@ -199,146 +233,190 @@ function renderResult(containerId, regId, data) {
     <div class="reg-box">
       <div class="reg-head">
         <div>
-          <div class="reg-name">${p.name || '—'}</div>
-          <div class="reg-email">${data.email || ''}</div>
+          <div class="reg-name">${esc(p.name||'—')}</div>
+          <div class="reg-email">${esc(data.email||'')}</div>
         </div>
-        <span class="badge ${done ? 'badge-done' : 'badge-pend'}" id="badge-${regId}">
-          ${done ? '✓ Checked In' : 'Pending'}
+        <span class="badge ${done?'badge-done':'badge-pend'}" id="badge-${regId}">
+          ${done?'✓ Checked In':'Pending'}
         </span>
       </div>
       <div class="reg-body">
-        <div class="drow"><span class="dlbl">Mobile</span><span class="dval">${data.mobile || '—'}</span></div>
-        <div class="drow"><span class="dlbl">ID</span><span class="dval">${p.idType||''} ${p.idNumber||''}</span></div>
-        <div class="drow"><span class="dlbl">T-Shirt</span><span class="dval">${p.size||'—'}</span></div>
-        ${done && data.checkedInAt
-          ? `<div class="drow"><span class="dlbl">Time</span><span class="dval">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>`
-          : ''}
+        <div class="drow"><span class="dlbl">Mobile</span><span class="dval">${esc(data.mobile||'—')}</span></div>
+        <div class="drow"><span class="dlbl">ID</span><span class="dval">${esc((p.idType||'')+' '+(p.idNumber||''))}</span></div>
+        <div class="drow"><span class="dlbl">T-Shirt</span><span class="dval">${esc(p.size||'—')}</span></div>
+        ${done&&data.checkedInAt?`<div class="drow"><span class="dlbl">Time</span><span class="dval">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>`:''}
       </div>
     </div>
-    <button class="btn-ci ${done?'done':''}" id="btn-${regId}" ${done?'disabled':''}
+    <button class="btn-ci${done?' done':''}" id="btn-${regId}" ${done?'disabled':''}
       onclick="window._ci('${regId}')">
-      ${done ? '✓ Already Checked In' : '✓ Confirm Check-in'}
+      ${done?'✓ Already Checked In':'✓ Confirm Check-in'}
     </button>`;
 }
 
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
 // ── Check-in ──
 window._ci = async function(regId) {
-  const btn = document.getElementById('btn-' + regId);
-  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+  const btn = document.getElementById('btn-'+regId);
+  if(btn){btn.disabled=true;btn.textContent='Processing…';}
   try {
-    await set(ref(db, `vbr2026/registrations/${regId}/checkedIn`), true);
-    await set(ref(db, `vbr2026/registrations/${regId}/checkedInAt`), new Date().toISOString());
-    if (btn) { btn.textContent = '✓ Checked In'; btn.classList.add('done'); }
-    const badge = document.getElementById('badge-' + regId);
-    if (badge) { badge.textContent = '✓ Checked In'; badge.className = 'badge badge-done'; }
-    setStatus('✓ Checked in — ready for next scan', 'ok');
-    // Auto-clear result after 4s for next participant
-    setTimeout(() => {
-      const r = document.getElementById('scanResult');
-      if (r) { r.classList.remove('show'); r.innerHTML = ''; }
-      lastScanned = null;
-      setStatus('', '');
-    }, 4000);
+    await set(ref(db,`vbr2026/registrations/${regId}/checkedIn`), true);
+    await set(ref(db,`vbr2026/registrations/${regId}/checkedInAt`), new Date().toISOString());
+    if(btn){btn.textContent='✓ Checked In';btn.classList.add('done');}
+    const badge = document.getElementById('badge-'+regId);
+    if(badge){badge.textContent='✓ Checked In';badge.className='badge badge-done';}
+    setStatus('✓ Checked in — ready for next scan','ok');
+    setTimeout(()=>{
+      const r=document.getElementById('scanResult');
+      if(r){r.classList.remove('show');r.innerHTML='';}
+      lastId=null;
+      setStatus('Scanning…','ok');
+    },4000);
   } catch(e) {
-    if (btn) { btn.disabled = false; btn.textContent = '✓ Confirm Check-in'; }
-    alert('Check-in failed: ' + e.message);
+    if(btn){btn.disabled=false;btn.textContent='✓ Confirm Check-in';}
+    alert('Check-in failed: '+e.message);
   }
 };
 
-// ── QR Scanner using Html5QrcodeScanner ──
-// This is the HIGH-LEVEL API — handles camera selection, permissions,
-// and scanning loop internally. Much more reliable on mobile than the low-level API.
-let qrScanner  = null;
-let lastScanned = null;
+// ── ZXing Camera Scanner ──
+let reader  = null;
+let running = false;
+let lastId  = null;
 
-function initScanner() {
-  if (qrScanner) return; // already initialised
+window.toggleCam = async function() {
+  if(running){ stopCam(); } else { await startCam(); }
+};
 
-  qrScanner = new Html5QrcodeScanner(
-    'qr-reader',
-    {
-      fps: 10,
-      qrbox: { width: 240, height: 240 },
-      rememberLastUsedCamera: true,
-      showTorchButtonIfSupported: true,
-      // Prefer rear camera on mobile
-      videoConstraints: { facingMode: { ideal: 'environment' } }
-    },
-    /* verbose= */ false
-  );
+async function startCam() {
+  const btn = document.getElementById('btnScan');
+  btn.disabled = true;
+  setStatus('Starting camera…','');
 
-  qrScanner.render(onScanSuccess, onScanError);
-}
-
-async function onScanSuccess(regId) {
-  if (!regId || regId === lastScanned) return;
-  lastScanned = regId;
-  if (navigator.vibrate) navigator.vibrate(120);
-
-  setStatus('QR detected — looking up…', '');
-  const r = document.getElementById('scanResult');
-  r.classList.remove('show'); r.innerHTML = '';
+  // Must be HTTPS or localhost
+  if(location.protocol!=='https:' && location.hostname!=='localhost'){
+    setStatus('Camera requires HTTPS. Open via the live website URL.','err');
+    btn.disabled=false; return;
+  }
 
   try {
-    const snap = await get(ref(db, `vbr2026/registrations/${regId}`));
-    if (!snap.exists()) {
-      setStatus('No registration found for this QR. Please check the pass.', 'err');
-      setTimeout(() => { lastScanned = null; }, 3000);
-      return;
-    }
-    setStatus('Found — confirm check-in below', 'ok');
-    renderResult('scanResult', regId, snap.val());
+    const video = document.getElementById('camVideo');
+    const placeholder = document.getElementById('camPlaceholder');
+
+    // Use ZXing BrowserMultiFormatReader — reads QR and all barcodes
+    reader = new ZXingBrowser.BrowserMultiFormatReader();
+
+    // Get devices
+    const devices = await ZXingBrowser.BrowserMultiFormatReader.listVideoInputDevices();
+    if(!devices || devices.length===0) throw new Error('No camera found on this device.');
+
+    // Prefer rear/environment camera
+    const cam = devices.find(d => /back|rear|environment/i.test(d.label)) || devices[devices.length-1];
+
+    await reader.decodeFromVideoDevice(cam.deviceId, video, (result, err) => {
+      if(result) {
+        const text = result.getText();
+        if(text && text !== lastId) {
+          lastId = text;
+          if(navigator.vibrate) navigator.vibrate(120);
+          handleScan(text);
+        }
+      }
+      // err here just means no QR in current frame — normal, ignore
+    });
+
+    running = true;
+    placeholder.style.display = 'none';
+    btn.textContent = 'Stop Camera';
+    btn.classList.add('stop');
+    btn.disabled = false;
+    const r = document.getElementById('scanResult');
+    r.classList.remove('show'); r.innerHTML='';
+    setStatus('Scanning — hold QR code inside the frame','ok');
+
   } catch(e) {
-    setStatus('Lookup error: ' + e.message, 'err');
-    setTimeout(() => { lastScanned = null; }, 2000);
+    running = false;
+    reader = null;
+    const btn2 = document.getElementById('btnScan');
+    btn2.disabled = false;
+    if(/permission|denied|notallowed/i.test(String(e))){
+      setStatus('Camera permission denied. Allow camera for this site in browser settings, then try again.','err');
+    } else if(/notfound|no camera/i.test(String(e))) {
+      setStatus('No camera found. Use the Search / USB Scanner tab.','err');
+    } else {
+      setStatus('Camera error: '+e.message+'. Use Search tab instead.','err');
+    }
   }
 }
 
-function onScanError() {
-  // Per-frame errors are normal (no QR in frame) — ignore silently
+function stopCam() {
+  if(reader){ try{ reader.reset(); }catch(e){} reader=null; }
+  running = false;
+  const video = document.getElementById('camVideo');
+  video.srcObject = null;
+  document.getElementById('camPlaceholder').style.display = 'flex';
+  const btn = document.getElementById('btnScan');
+  btn.textContent='Start Camera'; btn.classList.remove('stop'); btn.disabled=false;
+  setStatus('Camera stopped.','');
 }
 
-// ── Search ──
-window.doSearch = async function() {
-  const q  = document.getElementById('searchInput').value.trim().toLowerCase();
-  if (!q) return;
-  const sl = document.getElementById('searchLoader');
-  const sr = document.getElementById('searchResult');
-  sl.classList.add('show');
-  sr.classList.remove('show'); sr.innerHTML = '';
-
+async function handleScan(regId) {
+  setStatus('QR detected — looking up…','');
+  const r=document.getElementById('scanResult');
+  r.classList.remove('show'); r.innerHTML='';
   try {
-    const snap = await get(ref(db, 'vbr2026/registrations'));
+    const snap = await get(ref(db,`vbr2026/registrations/${regId}`));
+    if(!snap.exists()){
+      setStatus('No registration found for this QR. Check the pass.','err');
+      setTimeout(()=>{ lastId=null; },3000);
+      return;
+    }
+    setStatus('Found — confirm check-in below','ok');
+    renderResult('scanResult', regId, snap.val());
+  } catch(e) {
+    setStatus('Lookup error: '+e.message,'err');
+    setTimeout(()=>{ lastId=null; },2000);
+  }
+}
+
+// ── Search / USB ──
+window.doSearch = async function() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if(!q) return;
+  const sl=document.getElementById('searchLoader');
+  const sr=document.getElementById('searchResult');
+  sl.classList.add('show');
+  sr.classList.remove('show'); sr.innerHTML='';
+  try {
+    const snap = await get(ref(db,'vbr2026/registrations'));
     const all  = snap.val() || {};
-    const hit  = Object.entries(all).find(([k,v]) =>
-      k === q || (v.email && v.email.toLowerCase() === q)
+    // Match exact reg ID or email
+    const hit  = Object.entries(all).find(([k,v])=>
+      k===q || k.toLowerCase()===q ||
+      (v.email && v.email.toLowerCase()===q)
     );
     sl.classList.remove('show');
-    if (!hit) {
+    if(!hit){
       sr.classList.add('show');
-      sr.innerHTML = `<div class="alert alert-err">No registration found for "${document.getElementById('searchInput').value.trim()}".</div>`;
+      sr.innerHTML=`<div class="alert-err">No registration found for "${document.getElementById('searchInput').value.trim()}".</div>`;
       return;
     }
     renderResult('searchResult', hit[0], hit[1]);
   } catch(e) {
     sl.classList.remove('show');
     sr.classList.add('show');
-    sr.innerHTML = `<div class="alert alert-err">Error: ${e.message}</div>`;
+    sr.innerHTML=`<div class="alert-err">Error: ${e.message}</div>`;
   }
 };
 
 // ── Tab switch ──
 window.switchTab = function(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.getElementById('panel-' + tab).classList.add('active');
-  // Initialise scanner when scan tab is shown
-  if (tab === 'scan') initScanner();
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(tab!=='scan' && running) stopCam();
+  if(tab==='search') setTimeout(()=>document.getElementById('searchInput').focus(),100);
 };
-
-// Auto-init scanner on load (scan tab is active by default)
-initScanner();
 </script>
 </body>
 </html>
