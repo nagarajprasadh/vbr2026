@@ -439,9 +439,10 @@
   }
   .pass-card-body { flex: 1; min-width: 0; }
   .pass-card-qr {
-    width: 80px; height: 80px; flex-shrink: 0;
-    background: var(--white); border-radius: 6px; padding: 4px;
+    width: 88px; height: 88px; flex-shrink: 0;
+    background: var(--white); border-radius: 8px; padding: 5px;
     display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
   }
   .pass-card-qr canvas, .pass-card-qr svg { width: 100% !important; height: 100% !important; }
   .pass-event {
@@ -481,6 +482,7 @@
     }
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -855,7 +857,6 @@
 
 </div><!-- /page-wrap -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -1065,9 +1066,9 @@
     // Generate QR code from registration ID
     new QRCode(document.getElementById('qrContainer'), {
       text: regId,
-      width: 80,
-      height: 80,
-      colorDark: '#0C1F3F',
+      width: 78,
+      height: 78,
+      colorDark: '#000000',
       colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.M
     });

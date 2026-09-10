@@ -210,7 +210,7 @@
     <div class="tab-panel active" id="panel-scan">
       <div class="scanner-area">
         <h2>Point camera at participant's pass QR code</h2>
-        <p>Works on mobile and desktop with a webcam. Allow camera access when prompted.</p>
+        <p>Works on mobile and desktop with a webcam. Allow camera access when prompted. <strong>Must be opened via the live website URL — not a local file.</strong></p>
 
         <div class="camera-wrap" id="cameraWrap">
           <video id="cameraVideo" autoplay playsinline muted></video>
@@ -337,51 +337,62 @@
   // ── QR Camera Scanner ──
   let stream = null;
   let scanning = false;
-  let animFrame = null;
   let lastScannedId = null;
+  let scanInterval = null;
 
   window.toggleCamera = async function() {
-    if (scanning) {
-      stopCamera();
-    } else {
-      await startCamera();
-    }
+    if (scanning) { stopCamera(); } else { await startCamera(); }
   };
 
   async function startCamera() {
-    try {
-      document.getElementById('scanStatus').textContent = 'Requesting camera access…';
-      document.getElementById('scanStatus').className = 'scan-status';
+    // Must be HTTPS or localhost
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+      setStatus('Camera requires HTTPS. Open this page via its web URL, not a local file.', 'error');
+      return;
+    }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setStatus('Camera not supported on this browser. Use Search tab instead.', 'error');
+      return;
+    }
 
-      // Prefer rear camera on mobile
+    setStatus('Requesting camera access…', '');
+    try {
       stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
       });
-
-      const video = document.getElementById('cameraVideo');
-      video.srcObject = stream;
-      video.style.display = 'block';
-      document.getElementById('cameraPlaceholder').style.display = 'none';
-      await video.play();
-
-      scanning = true;
-      lastScannedId = null;
-      document.getElementById('btnScan').textContent = 'Stop Camera';
-      document.getElementById('btnScan').classList.add('stop');
-      document.getElementById('scanStatus').textContent = 'Scanning — point at a QR code';
-      document.getElementById('scanResult').classList.remove('active');
-      document.getElementById('scanResult').innerHTML = '';
-
-      scanFrame();
     } catch(e) {
-      document.getElementById('scanStatus').textContent = 'Camera access denied or unavailable. Use Search tab instead.';
-      document.getElementById('scanStatus').className = 'scan-status error';
+      if (e.name === 'NotAllowedError') {
+        setStatus('Camera permission denied. Go to browser Settings → Site permissions → Camera → Allow for this site, then try again.', 'error');
+      } else if (e.name === 'NotFoundError') {
+        setStatus('No camera found on this device. Use Search tab instead.', 'error');
+      } else {
+        setStatus('Camera error: ' + e.message, 'error');
+      }
+      return;
     }
+
+    const video = document.getElementById('cameraVideo');
+    video.srcObject = stream;
+    video.style.display = 'block';
+    document.getElementById('cameraPlaceholder').style.display = 'none';
+
+    try { await video.play(); } catch(e) {}
+
+    scanning = true;
+    lastScannedId = null;
+    document.getElementById('btnScan').textContent = 'Stop Camera';
+    document.getElementById('btnScan').classList.add('stop');
+    document.getElementById('scanResult').classList.remove('active');
+    document.getElementById('scanResult').innerHTML = '';
+    setStatus('Scanning — point at a participant\'s pass QR code', 'success');
+
+    // Throttle to every 250ms to save battery
+    scanInterval = setInterval(scanFrame, 250);
   }
 
   function stopCamera() {
     scanning = false;
-    if (animFrame) cancelAnimationFrame(animFrame);
+    if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
     if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
     const video = document.getElementById('cameraVideo');
     video.srcObject = null;
@@ -389,54 +400,53 @@
     document.getElementById('cameraPlaceholder').style.display = 'flex';
     document.getElementById('btnScan').textContent = 'Start Camera';
     document.getElementById('btnScan').classList.remove('stop');
-    document.getElementById('scanStatus').textContent = 'Camera stopped.';
-    document.getElementById('scanStatus').className = 'scan-status';
+    setStatus('Camera stopped.', '');
   }
 
   function scanFrame() {
     if (!scanning) return;
     const video = document.getElementById('cameraVideo');
-    if (video.readyState !== video.HAVE_ENOUGH_DATA) {
-      animFrame = requestAnimationFrame(scanFrame);
-      return;
-    }
+    if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
 
     const canvas = document.createElement('canvas');
     canvas.width  = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, 0, 0);
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
 
     if (code && code.data && code.data !== lastScannedId) {
       lastScannedId = code.data;
+      // Vibrate on mobile to confirm scan
+      if (navigator.vibrate) navigator.vibrate(100);
+      setStatus('QR detected — looking up registration…', '');
       handleScannedId(code.data);
     }
+  }
 
-    animFrame = requestAnimationFrame(scanFrame);
+  function setStatus(msg, type) {
+    const el = document.getElementById('scanStatus');
+    el.textContent = msg;
+    el.className = 'scan-status' + (type ? ' ' + type : '');
   }
 
   async function handleScannedId(regId) {
-    document.getElementById('scanStatus').textContent = 'QR detected — looking up registration…';
-    document.getElementById('scanStatus').className = 'scan-status';
     document.getElementById('scanResult').classList.remove('active');
     document.getElementById('scanResult').innerHTML = '';
-
     try {
       const snap = await get(ref(db, `vbr2026/registrations/${regId}`));
       if (!snap.exists()) {
-        document.getElementById('scanStatus').textContent = 'No registration found for this QR code.';
-        document.getElementById('scanStatus').className = 'scan-status error';
-        lastScannedId = null; // allow rescan
+        setStatus('No registration found for this QR code. Try again.', 'error');
+        setTimeout(() => { lastScannedId = null; }, 3000); // allow rescan after 3s
         return;
       }
-      document.getElementById('scanStatus').textContent = 'Registration found — confirm below';
-      document.getElementById('scanStatus').className = 'scan-status success';
+      setStatus('Registration found — confirm check-in below', 'success');
       renderResult('scanResult', regId, snap.val());
+      // Reset lastScannedId after 10s so re-scanning same pass is possible if needed
+      setTimeout(() => { lastScannedId = null; }, 10000);
     } catch(e) {
-      document.getElementById('scanStatus').textContent = 'Lookup failed: ' + e.message;
-      document.getElementById('scanStatus').className = 'scan-status error';
+      setStatus('Lookup failed: ' + e.message, 'error');
       lastScannedId = null;
     }
   }
