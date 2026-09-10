@@ -429,24 +429,32 @@
 
   .pass-card {
     background: linear-gradient(140deg, var(--navy) 0%, var(--navy-mid) 100%);
-    color: var(--white); border-radius: var(--radius); padding: 22px 22px 20px;
+    color: var(--white); border-radius: var(--radius); padding: 20px 20px 18px;
     margin: 0 auto 18px; text-align: left; position: relative; overflow: hidden;
+    display: flex; gap: 16px; align-items: flex-start;
   }
   .pass-card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
     background: linear-gradient(90deg, var(--saffron) 33.33%, #fff 33.33%, #fff 66.66%, var(--green) 66.66%);
   }
+  .pass-card-body { flex: 1; min-width: 0; }
+  .pass-card-qr {
+    width: 80px; height: 80px; flex-shrink: 0;
+    background: var(--white); border-radius: 6px; padding: 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pass-card-qr canvas, .pass-card-qr svg { width: 100% !important; height: 100% !important; }
   .pass-event {
-    font-size: 0.65rem; opacity: 0.5; letter-spacing: 0.1em;
-    text-transform: uppercase; margin-bottom: 6px;
+    font-size: 0.62rem; opacity: 0.5; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 5px;
   }
   .pass-name {
-    font-family: 'DM Serif Display', serif; font-size: 1.3rem;
-    font-weight: 400; margin-bottom: 14px; line-height: 1.2;
+    font-family: 'DM Serif Display', serif; font-size: 1.2rem;
+    font-weight: 400; margin-bottom: 10px; line-height: 1.2;
   }
-  .pass-meta { font-size: 0.78rem; opacity: 0.75; line-height: 1.9; }
-  .pass-divider { height: 1px; background: rgba(255,255,255,0.12); margin: 12px 0; }
-  .pass-id { font-size: 0.65rem; opacity: 0.35; letter-spacing: 0.08em; }
+  .pass-meta { font-size: 0.75rem; opacity: 0.75; line-height: 1.85; }
+  .pass-divider { height: 1px; background: rgba(255,255,255,0.12); margin: 10px 0; }
+  .pass-id { font-size: 0.62rem; opacity: 0.35; letter-spacing: 0.08em; }
 
   .btn-download {
     display: block; width: 100%; max-width: 280px; margin: 0 auto 8px;
@@ -458,6 +466,20 @@
   .btn-download.primary:hover { background: #145526; }
   .btn-download.secondary { background: var(--mist); color: var(--navy); border: 1.5px solid var(--line); }
   .btn-download.secondary:hover { border-color: var(--navy); }
+
+  /* PRINT — show only the pass card */
+  @media print {
+    body > *:not(#printArea) { display: none !important; }
+    #printArea {
+      display: block !important;
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #printArea .pass-card {
+      width: 380px; margin: 0 auto;
+      box-shadow: none; border-radius: 0;
+    }
+  }
 </style>
 </head>
 <body>
@@ -822,7 +844,9 @@
       </div>
       <h2>Registration Confirmed</h2>
       <p>Your pass is ready. Save or print it before the event.</p>
-      <div id="passContainer"></div>
+      <div id="printArea">
+        <div id="passContainer"></div>
+      </div>
       <button class="btn-download primary" onclick="downloadPass()">Download Pass</button>
       <button class="btn-download secondary" onclick="window.print()">Print Pass</button>
     </div>
@@ -831,7 +855,7 @@
 
 </div><!-- /page-wrap -->
 
-<!-- Firebase -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -1019,22 +1043,58 @@
     document.getElementById('stepsBar').style.display = 'none';
     document.getElementById('successSection').classList.add('active');
     const p = data.participant || {};
+    const regId = data.regId || data.id || '';
+
     document.getElementById('passContainer').innerHTML = `
-      <div class="pass-card">
-        <div class="pass-event">Viksit Bharat Run 2026 &nbsp;·&nbsp; Bangkok</div>
-        <div class="pass-name">${p.name || ''}</div>
-        <div class="pass-meta">
-          30 September 2026 &nbsp;·&nbsp; Suan Luang Rama IX<br>
-          T-Shirt &nbsp;${p.size || ''} &nbsp;·&nbsp; ${p.idType || ''} ${p.idNumber || ''}<br>
-          ${data.email || ''}<br>
-          ${data.mobile || ''}
+      <div class="pass-card" id="passCard">
+        <div class="pass-card-body">
+          <div class="pass-event">Viksit Bharat Run 2026 &nbsp;·&nbsp; Bangkok</div>
+          <div class="pass-name">${p.name || ''}</div>
+          <div class="pass-meta">
+            30 September 2026 &nbsp;·&nbsp; Suan Luang Rama IX<br>
+            T-Shirt &nbsp;${p.size || ''} &nbsp;·&nbsp; ${p.idType || ''} ${p.idNumber || ''}<br>
+            ${data.email || ''}<br>
+            ${data.mobile || ''}
+          </div>
+          <div class="pass-divider"></div>
+          <div class="pass-id">REG # ${regId}</div>
         </div>
-        <div class="pass-divider"></div>
-        <div class="pass-id">REG # ${data.regId || ''}</div>
+        <div class="pass-card-qr" id="qrContainer"></div>
       </div>`;
+
+    // Generate QR code from registration ID
+    new QRCode(document.getElementById('qrContainer'), {
+      text: regId,
+      width: 80,
+      height: 80,
+      colorDark: '#0C1F3F',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
   }
 
-  window.downloadPass = function() { window.print(); };
+  window.downloadPass = function() {
+    const card = document.getElementById('passCard');
+    if (!card) return;
+
+    // Use html2canvas to capture just the pass card
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    script.onload = function() {
+      html2canvas(card, {
+        scale: 3,
+        backgroundColor: null,
+        useCORS: true,
+        logging: false
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'VBR2026-Pass.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    };
+    document.head.appendChild(script);
+  };
 
   async function retrievePass() {
     const email = document.getElementById('retEmail').value.trim().toLowerCase();

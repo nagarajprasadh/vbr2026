@@ -5,158 +5,257 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VBR 2026 — Check-in</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:wght@700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap');
+
   :root {
-    --saffron: #FF6600; --saffron-dark: #CC5200; --saffron-light: #FFF0E6;
-    --india-green: #138808; --india-green-light: #E8F5E9;
-    --navy: #0A1E3C; --navy-mid: #1A3A5C;
-    --white: #FFFFFF; --grey-50: #F8F9FA; --grey-100: #F1F3F5;
-    --grey-300: #CED4DA; --grey-500: #6C757D; --grey-700: #343A40;
-    --error: #C0392B; --radius: 10px; --shadow: 0 2px 14px rgba(10,30,60,0.09);
+    --saffron: #E8500A; --saffron-dark: #B83E08; --saffron-light: #FDF1EB;
+    --green: #1A6B2F; --green-light: #EBF5EE;
+    --navy: #0C1F3F; --navy-mid: #162E58; --navy-light: #EEF1F6;
+    --ink: #1C2333; --mist: #F4F6F9; --line: #E4E8EF;
+    --text-secondary: #5C6478; --white: #FFFFFF; --error: #C0392B;
+    --radius: 12px; --shadow: 0 4px 24px rgba(12,31,63,0.09);
   }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', sans-serif; background: var(--grey-50); color: var(--grey-700); min-height: 100vh; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--mist); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
-  header {
+  /* HEADER */
+  .top-bar {
     background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-    color: var(--white); padding: 20px 24px 18px; position: relative;
+    color: var(--white); padding: 18px 24px; position: relative;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  header::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-    background: linear-gradient(90deg, var(--saffron) 33.3%, var(--white) 33.3%, var(--white) 66.6%, var(--india-green) 66.6%);
+  .top-bar::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--saffron) 33.3%, #fff 33.3%, #fff 66.6%, var(--green) 66.6%);
   }
-  header h1 { font-family: 'Noto Serif', serif; font-size: 1.1rem; font-weight: 700; }
-  header p { font-size: 0.78rem; opacity: 0.75; margin-top: 2px; }
+  .top-bar h1 { font-family: 'DM Serif Display', serif; font-size: 1.1rem; font-weight: 400; }
+  .top-bar p { font-size: 0.75rem; opacity: 0.6; margin-top: 2px; }
 
-  main { max-width: 560px; margin: 28px auto; padding: 0 16px 60px; }
+  /* STATS STRIP */
+  .stats-strip {
+    background: var(--white); border-bottom: 1px solid var(--line);
+    display: flex; max-width: 700px; margin: 0 auto;
+  }
+  .stat-cell { flex: 1; text-align: center; padding: 14px 8px; }
+  .stat-cell + .stat-cell { border-left: 1px solid var(--line); }
+  .stat-val { font-size: 1.6rem; font-weight: 700; color: var(--navy); line-height: 1; margin-bottom: 3px; }
+  .stat-label { font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* MAIN */
+  main { max-width: 700px; margin: 0 auto; padding: 24px 16px 60px; display: flex; flex-direction: column; gap: 16px; }
 
   .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
 
-  .search-area { padding: 24px; }
-  .search-area h2 { font-size: 1rem; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
-  .search-area p { font-size: 0.82rem; color: var(--grey-500); margin-bottom: 18px; }
+  /* TABS */
+  .tabs { display: flex; border-bottom: 1px solid var(--line); background: var(--mist); }
+  .tab {
+    flex: 1; padding: 14px; text-align: center; font-size: 0.82rem; font-weight: 600;
+    color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent;
+    transition: all 0.15s; user-select: none;
+  }
+  .tab.active { color: var(--saffron); border-bottom-color: var(--saffron); background: var(--white); }
 
+  /* SCANNER */
+  .scanner-area { padding: 20px 24px; }
+  .scanner-area h2 { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .scanner-area p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px; }
+
+  .camera-wrap {
+    position: relative; background: var(--navy); border-radius: 10px; overflow: hidden;
+    aspect-ratio: 4/3; max-width: 400px; margin: 0 auto 16px;
+  }
+  #cameraVideo { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .camera-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  .scan-frame {
+    width: 60%; aspect-ratio: 1;
+    border: 2.5px solid var(--saffron);
+    border-radius: 8px;
+    box-shadow: 0 0 0 2000px rgba(0,0,0,0.45);
+    position: relative;
+  }
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--saffron), transparent);
+    animation: scanMove 2s ease-in-out infinite;
+    top: 0;
+  }
+  @keyframes scanMove { 0%,100% { top: 0%; } 50% { top: 95%; } }
+
+  .camera-placeholder {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; color: rgba(255,255,255,0.6);
+    font-size: 0.85rem; gap: 10px; text-align: center; padding: 20px;
+  }
+
+  .btn-scan {
+    display: block; width: 100%; max-width: 400px; margin: 0 auto;
+    background: var(--saffron); color: var(--white); border: none;
+    border-radius: 8px; padding: 13px; font-size: 0.92rem; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.15s;
+  }
+  .btn-scan:hover { background: var(--saffron-dark); }
+  .btn-scan.stop { background: var(--navy); }
+  .btn-scan.stop:hover { background: var(--navy-mid); }
+
+  .scan-status {
+    text-align: center; margin-top: 12px; font-size: 0.82rem;
+    color: var(--text-secondary); min-height: 20px;
+  }
+  .scan-status.success { color: var(--green); font-weight: 600; }
+  .scan-status.error   { color: var(--error); font-weight: 600; }
+
+  /* SEARCH */
+  .search-area { padding: 20px 24px; }
+  .search-area h2 { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .search-area p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px; }
   .search-row { display: flex; gap: 8px; }
   .search-row input {
-    flex: 1; padding: 11px 14px; border: 1.5px solid var(--grey-300);
-    border-radius: 7px; font-family: 'Inter', sans-serif; font-size: 0.92rem;
-    color: var(--grey-700); background: var(--white);
+    flex: 1; padding: 11px 14px; border: 1.5px solid var(--line);
+    border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--ink);
   }
   .search-row input:focus { outline: none; border-color: var(--saffron); }
   .btn-search {
     background: var(--saffron); color: var(--white); border: none;
-    border-radius: 7px; padding: 11px 18px; font-size: 0.9rem; font-weight: 600;
-    cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap;
+    border-radius: 8px; padding: 11px 18px; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; transition: background 0.15s;
   }
   .btn-search:hover { background: var(--saffron-dark); }
 
-  .divider { height: 1px; background: var(--grey-100); }
-
-  .result-area { padding: 20px 24px; display: none; }
+  /* RESULT */
+  .result-area { padding: 0 24px 20px; display: none; }
   .result-area.active { display: block; }
 
-  .alert {
-    padding: 12px 16px; border-radius: 7px; font-size: 0.85rem; margin-bottom: 14px;
-  }
-  .alert-error { background: #FDECEA; color: var(--error); border-left: 3px solid var(--error); }
-  .alert-success { background: var(--india-green-light); color: var(--india-green); border-left: 3px solid var(--india-green); }
-  .alert-info { background: var(--saffron-light); color: var(--saffron-dark); border-left: 3px solid var(--saffron); }
+  .alert { padding: 12px 16px; border-radius: 8px; font-size: 0.84rem; margin-bottom: 14px; }
+  .alert-error   { background: #FDECEA; color: var(--error); border-left: 3px solid var(--error); }
+  .alert-success { background: var(--green-light); color: var(--green); border-left: 3px solid var(--green); }
 
-  .reg-card { border: 1.5px solid var(--grey-100); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-  .reg-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-  .reg-card-email { font-size: 0.92rem; font-weight: 600; color: var(--navy); }
-  .reg-card-id { font-size: 0.72rem; color: var(--grey-500); margin-top: 2px; }
+  .reg-result {
+    border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 12px;
+  }
+  .reg-result-head {
+    background: var(--mist); padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+  }
+  .reg-name { font-size: 1rem; font-weight: 700; color: var(--navy); }
+  .reg-email { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
   .badge {
-    font-size: 0.72rem; font-weight: 600; padding: 3px 10px;
-    border-radius: 20px; white-space: nowrap;
+    font-size: 0.72rem; font-weight: 700; padding: 4px 12px;
+    border-radius: 20px; white-space: nowrap; flex-shrink: 0;
   }
   .badge-pending { background: var(--saffron-light); color: var(--saffron-dark); }
-  .badge-done { background: var(--india-green-light); color: var(--india-green); }
+  .badge-done    { background: var(--green-light); color: var(--green); }
 
-  .participant-list { margin-bottom: 12px; }
-  .participant-row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 7px 0; border-bottom: 1px solid var(--grey-100); font-size: 0.85rem;
+  .reg-result-body { padding: 14px 16px; }
+  .detail-row {
+    display: flex; gap: 8px; font-size: 0.83rem; padding: 5px 0;
+    border-bottom: 1px solid var(--line);
   }
-  .participant-row:last-child { border-bottom: none; }
-  .p-name { flex: 1; font-weight: 500; }
-  .p-meta { color: var(--grey-500); font-size: 0.78rem; }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-label { color: var(--text-secondary); font-weight: 500; width: 80px; flex-shrink: 0; }
+  .detail-val { color: var(--ink); font-weight: 600; }
 
   .btn-checkin {
-    background: var(--india-green); color: var(--white); border: none;
-    border-radius: 7px; padding: 10px 18px; font-size: 0.88rem; font-weight: 600;
-    cursor: pointer; font-family: 'Inter', sans-serif; width: 100%;
-    transition: background 0.15s;
+    width: 100%; background: var(--green); color: var(--white); border: none;
+    border-radius: 8px; padding: 13px; font-size: 0.92rem; font-weight: 700;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 14px;
+    transition: background 0.15s; letter-spacing: 0.01em;
   }
-  .btn-checkin:hover { background: #0E6B06; }
-  .btn-checkin:disabled { background: var(--grey-300); cursor: not-allowed; }
-  .btn-checkin.done { background: var(--grey-300); cursor: default; }
+  .btn-checkin:hover { background: #145526; }
+  .btn-checkin:disabled { background: var(--line); color: var(--text-secondary); cursor: not-allowed; }
+  .btn-checkin.done { background: var(--line); color: var(--text-secondary); cursor: default; }
 
-  .loader { text-align: center; padding: 16px; color: var(--grey-500); font-size: 0.85rem; display: none; }
+  .loader { display: none; text-align: center; padding: 20px; color: var(--text-secondary); font-size: 0.85rem; }
   .loader.active { display: block; }
-  .spinner { width: 22px; height: 22px; border: 3px solid var(--grey-200); border-top-color: var(--saffron); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 8px; }
+  .spinner { width: 22px; height: 22px; border: 2.5px solid var(--line); border-top-color: var(--saffron); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 8px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .stats-strip {
-    display: flex; gap: 0;
-    background: var(--grey-50); border-top: 1px solid var(--grey-100);
-  }
-  .stat-cell { flex: 1; text-align: center; padding: 14px 8px; }
-  .stat-cell .sv { font-size: 1.4rem; font-weight: 700; color: var(--navy); }
-  .stat-cell .sl { font-size: 0.72rem; color: var(--grey-500); margin-top: 2px; }
-  .stat-cell + .stat-cell { border-left: 1px solid var(--grey-100); }
+  .divider { height: 1px; background: var(--line); }
 
-  .footer-nav { text-align: center; margin-top: 20px; display: flex; justify-content: center; gap: 20px; font-size: 0.8rem; }
-  .footer-nav a { color: var(--grey-500); text-decoration: none; }
-  .footer-nav a:hover { color: var(--saffron); }
-  .footer-nav a.active { color: var(--saffron); font-weight: 600; }
-
-
+  /* Tab panels */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 </style>
 </head>
 <body>
 
+<div class="top-bar">
+  <div>
+    <h1>Viksit Bharat Run 2026 — Check-in</h1>
+    <p>Wednesday, 30 September 2026 · Suan Luang Rama IX</p>
+  </div>
+</div>
 
-<header>
-  <h1>🏃 Viksit Bharat Run 2026 — Check-in</h1>
-  <p>Wednesday, 30 September 2026 · Bangkok, Thailand</p>
-</header>
+<div class="stats-strip">
+  <div class="stat-cell"><div class="stat-val" id="csTotal">—</div><div class="stat-label">Registered</div></div>
+  <div class="stat-cell"><div class="stat-val" id="csChecked">—</div><div class="stat-label">Checked In</div></div>
+  <div class="stat-cell"><div class="stat-val" id="csPending">—</div><div class="stat-label">Pending</div></div>
+</div>
 
 <main>
   <div class="card">
-    <div class="stats-strip" id="statsStrip">
-      <div class="stat-cell"><div class="sv" id="csTotal">—</div><div class="sl">Registered</div></div>
-      <div class="stat-cell"><div class="sv" id="csChecked">—</div><div class="sl">Checked In</div></div>
-      <div class="stat-cell"><div class="sv" id="csPending">—</div><div class="sl">Pending</div></div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" id="tab-scan" onclick="switchTab('scan')">Scan QR Code</div>
+      <div class="tab" id="tab-search" onclick="switchTab('search')">Search by Email / ID</div>
     </div>
 
-    <div class="divider"></div>
+    <!-- SCANNER PANEL -->
+    <div class="tab-panel active" id="panel-scan">
+      <div class="scanner-area">
+        <h2>Point camera at participant's pass QR code</h2>
+        <p>Works on mobile and desktop with a webcam. Allow camera access when prompted.</p>
 
-    <div class="search-area">
-      <h2>Search Registration</h2>
-      <p>Search by email address or registration ID.</p>
-      <div class="search-row">
-        <input type="text" id="searchInput" placeholder="Email or Registration ID" onkeydown="if(event.key==='Enter')doSearch()">
-        <button class="btn-search" onclick="doSearch()">Search</button>
+        <div class="camera-wrap" id="cameraWrap">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <div class="camera-overlay">
+            <div class="scan-frame"><div class="scan-line"></div></div>
+          </div>
+          <div class="camera-placeholder" id="cameraPlaceholder">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <rect x="2" y="8" width="36" height="28" rx="4" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="20" cy="22" r="7" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M13 8V6a2 2 0 012-2h10a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+            Camera not started
+          </div>
+        </div>
+
+        <button class="btn-scan" id="btnScan" onclick="toggleCamera()">Start Camera</button>
+        <div class="scan-status" id="scanStatus">Press Start Camera to begin scanning</div>
       </div>
+
+      <div class="divider"></div>
+      <div class="result-area" id="scanResult"></div>
     </div>
 
-    <div class="loader" id="loader"><div class="spinner"></div>Searching…</div>
+    <!-- SEARCH PANEL -->
+    <div class="tab-panel" id="panel-search">
+      <div class="search-area">
+        <h2>Search Registration</h2>
+        <p>Search by email address or registration ID.</p>
+        <div class="search-row">
+          <input type="text" id="searchInput" placeholder="Email or Registration ID" onkeydown="if(event.key==='Enter')doSearch()">
+          <button class="btn-search" onclick="doSearch()">Search</button>
+        </div>
+      </div>
 
-    <div class="divider"></div>
-
-    <div class="result-area" id="resultArea">
-      <div id="resultContent"></div>
+      <div class="loader" id="searchLoader"><div class="spinner"></div>Searching…</div>
+      <div class="divider"></div>
+      <div class="result-area" id="searchResult"></div>
     </div>
-  </div>
 
-  <div class="footer-nav">
-    <a href="index.html">Registration</a>
-    <a href="checkin.html" class="active">Check-in</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="admin.html">Admin</a>
   </div>
 </main>
+
+<!-- QR Scanner library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -173,95 +272,210 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  const db  = getDatabase(app);
 
-  window._db = db;
-  window._ref = ref;
-  window._get = get;
-  window._set = set;
+  // ── Live stats ──
+  onValue(ref(db, 'vbr2026/registrations'), snap => {
+    const all  = snap.val() || {};
+    const regs = Object.values(all);
+    const total   = regs.length;
+    const checked = regs.filter(r => r.checkedIn).length;
+    document.getElementById('csTotal').textContent   = total;
+    document.getElementById('csChecked').textContent = checked;
+    document.getElementById('csPending').textContent = total - checked;
+  });
 
-  loadStats();
-
-  function loadStats() {
-    onValue(ref(db, 'vbr2026/registrations'), snap => {
-      const all = snap.val() || {};
-      const regs = Object.values(all);
-      const total = regs.length;
-      const checked = regs.filter(r => r.checkedIn).length;
-      document.getElementById('csTotal').textContent = total;
-      document.getElementById('csChecked').textContent = checked;
-      document.getElementById('csPending').textContent = total - checked;
-    });
+  // ── Render result card ──
+  function renderResult(containerId, regId, data) {
+    const p    = data.participant || {};
+    const done = data.checkedIn;
+    const el   = document.getElementById(containerId);
+    el.classList.add('active');
+    el.innerHTML = `
+      <div class="reg-result">
+        <div class="reg-result-head">
+          <div>
+            <div class="reg-name">${p.name || '—'}</div>
+            <div class="reg-email">${data.email || ''}</div>
+          </div>
+          <span class="badge ${done ? 'badge-done' : 'badge-pending'}" id="badge-${regId}">
+            ${done ? '✓ Checked In' : 'Pending'}
+          </span>
+        </div>
+        <div class="reg-result-body">
+          <div class="detail-row"><span class="detail-label">Mobile</span><span class="detail-val">${data.mobile || '—'}</span></div>
+          <div class="detail-row"><span class="detail-label">ID</span><span class="detail-val">${p.idType || ''} ${p.idNumber || ''}</span></div>
+          <div class="detail-row"><span class="detail-label">T-Shirt</span><span class="detail-val">${p.size || '—'}</span></div>
+          <div class="detail-row"><span class="detail-label">Reg ID</span><span class="detail-val" style="font-size:0.75rem;word-break:break-all;">${regId}</span></div>
+          ${done && data.checkedInAt ? `<div class="detail-row"><span class="detail-label">Time</span><span class="detail-val">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>` : ''}
+        </div>
+      </div>
+      <button class="btn-checkin ${done ? 'done' : ''}" id="btn-${regId}" ${done ? 'disabled' : ''}
+        onclick="window._doCheckin('${regId}')">
+        ${done ? '✓ Already Checked In' : '✓ Confirm Check-in'}
+      </button>`;
   }
 
+  // ── Check-in action ──
+  window._doCheckin = async function(regId) {
+    const btn = document.getElementById('btn-' + regId);
+    if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+    try {
+      await set(ref(db, `vbr2026/registrations/${regId}/checkedIn`), true);
+      await set(ref(db, `vbr2026/registrations/${regId}/checkedInAt`), new Date().toISOString());
+      if (btn) { btn.textContent = '✓ Checked In'; btn.classList.add('done'); }
+      const badge = document.getElementById('badge-' + regId);
+      if (badge) { badge.textContent = '✓ Checked In'; badge.className = 'badge badge-done'; }
+      document.getElementById('scanStatus') && (document.getElementById('scanStatus').textContent = '✓ Check-in confirmed — ready for next scan');
+      document.getElementById('scanStatus') && document.getElementById('scanStatus').classList.replace('error','success');
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.textContent = '✓ Confirm Check-in'; }
+      alert('Check-in failed: ' + e.message);
+    }
+  };
+
+  // ── QR Camera Scanner ──
+  let stream = null;
+  let scanning = false;
+  let animFrame = null;
+  let lastScannedId = null;
+
+  window.toggleCamera = async function() {
+    if (scanning) {
+      stopCamera();
+    } else {
+      await startCamera();
+    }
+  };
+
+  async function startCamera() {
+    try {
+      document.getElementById('scanStatus').textContent = 'Requesting camera access…';
+      document.getElementById('scanStatus').className = 'scan-status';
+
+      // Prefer rear camera on mobile
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+      });
+
+      const video = document.getElementById('cameraVideo');
+      video.srcObject = stream;
+      video.style.display = 'block';
+      document.getElementById('cameraPlaceholder').style.display = 'none';
+      await video.play();
+
+      scanning = true;
+      lastScannedId = null;
+      document.getElementById('btnScan').textContent = 'Stop Camera';
+      document.getElementById('btnScan').classList.add('stop');
+      document.getElementById('scanStatus').textContent = 'Scanning — point at a QR code';
+      document.getElementById('scanResult').classList.remove('active');
+      document.getElementById('scanResult').innerHTML = '';
+
+      scanFrame();
+    } catch(e) {
+      document.getElementById('scanStatus').textContent = 'Camera access denied or unavailable. Use Search tab instead.';
+      document.getElementById('scanStatus').className = 'scan-status error';
+    }
+  }
+
+  function stopCamera() {
+    scanning = false;
+    if (animFrame) cancelAnimationFrame(animFrame);
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    const video = document.getElementById('cameraVideo');
+    video.srcObject = null;
+    video.style.display = 'none';
+    document.getElementById('cameraPlaceholder').style.display = 'flex';
+    document.getElementById('btnScan').textContent = 'Start Camera';
+    document.getElementById('btnScan').classList.remove('stop');
+    document.getElementById('scanStatus').textContent = 'Camera stopped.';
+    document.getElementById('scanStatus').className = 'scan-status';
+  }
+
+  function scanFrame() {
+    if (!scanning) return;
+    const video = document.getElementById('cameraVideo');
+    if (video.readyState !== video.HAVE_ENOUGH_DATA) {
+      animFrame = requestAnimationFrame(scanFrame);
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+
+    if (code && code.data && code.data !== lastScannedId) {
+      lastScannedId = code.data;
+      handleScannedId(code.data);
+    }
+
+    animFrame = requestAnimationFrame(scanFrame);
+  }
+
+  async function handleScannedId(regId) {
+    document.getElementById('scanStatus').textContent = 'QR detected — looking up registration…';
+    document.getElementById('scanStatus').className = 'scan-status';
+    document.getElementById('scanResult').classList.remove('active');
+    document.getElementById('scanResult').innerHTML = '';
+
+    try {
+      const snap = await get(ref(db, `vbr2026/registrations/${regId}`));
+      if (!snap.exists()) {
+        document.getElementById('scanStatus').textContent = 'No registration found for this QR code.';
+        document.getElementById('scanStatus').className = 'scan-status error';
+        lastScannedId = null; // allow rescan
+        return;
+      }
+      document.getElementById('scanStatus').textContent = 'Registration found — confirm below';
+      document.getElementById('scanStatus').className = 'scan-status success';
+      renderResult('scanResult', regId, snap.val());
+    } catch(e) {
+      document.getElementById('scanStatus').textContent = 'Lookup failed: ' + e.message;
+      document.getElementById('scanStatus').className = 'scan-status error';
+      lastScannedId = null;
+    }
+  }
+
+  // ── Text search ──
   window.doSearch = async function() {
     const q = document.getElementById('searchInput').value.trim().toLowerCase();
     if (!q) return;
 
-    document.getElementById('loader').classList.add('active');
-    document.getElementById('resultArea').classList.remove('active');
+    document.getElementById('searchLoader').classList.add('active');
+    document.getElementById('searchResult').classList.remove('active');
+    document.getElementById('searchResult').innerHTML = '';
 
     const snap = await get(ref(db, 'vbr2026/registrations'));
-    const all = snap.val() || {};
+    const all  = snap.val() || {};
 
     const matches = Object.entries(all).filter(([k, v]) =>
       (v.email && v.email.toLowerCase().includes(q)) || k.toLowerCase() === q
     );
 
-    document.getElementById('loader').classList.remove('active');
-    document.getElementById('resultArea').classList.add('active');
+    document.getElementById('searchLoader').classList.remove('active');
 
     if (!matches.length) {
-      document.getElementById('resultContent').innerHTML =
-        `<div class="alert alert-error">No registration found for "${q}".</div>`;
+      document.getElementById('searchResult').classList.add('active');
+      document.getElementById('searchResult').innerHTML = `<div class="alert alert-error">No registration found for "${q}".</div>`;
       return;
     }
 
-    document.getElementById('resultContent').innerHTML = matches.map(([k, v]) => {
-      const p = v.participant || {};
-      const done = v.checkedIn;
-      return `
-        <div class="reg-card">
-          <div class="reg-card-header">
-            <div>
-              <div class="reg-card-email">${v.email}</div>
-              <div class="reg-card-id">REG # ${k}</div>
-            </div>
-            <span class="badge ${done ? 'badge-done' : 'badge-pending'}">${done ? '✓ Checked In' : 'Pending'}</span>
-          </div>
-          <div class="participant-list">
-            <div class="participant-row">
-              <span class="p-name">${p.name || '—'}</span>
-              <span class="p-meta">${p.idType || ''} ${p.idNumber || ''} · ${p.size || ''}</span>
-            </div>
-            <div class="participant-row" style="border-bottom:none;">
-              <span class="p-meta" style="color:var(--grey-500);">📱 ${v.mobile || '—'}</span>
-            </div>
-          </div>
-          <button class="btn-checkin ${done ? 'done' : ''}" ${done ? 'disabled' : ''} onclick="doCheckin('${k}')">
-            ${done ? '✓ Already Checked In' : '✓ Confirm Check-in'}
-          </button>
-        </div>`;
-    }).join('');
+    const [regId, data] = matches[0];
+    renderResult('searchResult', regId, data);
   };
 
-  window.doCheckin = async function(regId) {
-    const btn = document.querySelector(`[onclick="doCheckin('${regId}')"]`);
-    if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
-
-    try {
-      await set(ref(db, `vbr2026/registrations/${regId}/checkedIn`), true);
-      await set(ref(db, `vbr2026/registrations/${regId}/checkedInAt`), new Date().toISOString());
-      if (btn) {
-        btn.textContent = '✓ Checked In';
-        btn.classList.add('done');
-        const badge = btn.closest('.reg-card').querySelector('.badge');
-        if (badge) { badge.textContent = '✓ Checked In'; badge.className = 'badge badge-done'; }
-      }
-    } catch (e) {
-      if (btn) { btn.disabled = false; btn.textContent = '✓ Confirm Check-in'; }
-      alert('Check-in failed: ' + e.message);
-    }
+  // ── Tab switching ──
+  window.switchTab = function(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+    if (tab !== 'scan' && scanning) stopCamera();
   };
 </script>
 </body>
