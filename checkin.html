@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>VBR 2026 — Check-in</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
@@ -15,109 +15,79 @@
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'DM Sans',sans-serif;background:var(--mist);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+  .hidden{display:none!important}
 
+  /* HEADER */
   .topbar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:var(--white);padding:16px 22px;position:relative}
   .topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
   .topbar h1{font-family:'DM Serif Display',serif;font-size:1.05rem;font-weight:400}
   .topbar p{font-size:.73rem;opacity:.6;margin-top:2px}
 
+  /* STATS */
   .stats{background:var(--white);border-bottom:1px solid var(--line);display:flex;max-width:680px;margin:0 auto}
   .stat{flex:1;text-align:center;padding:13px 8px}
   .stat+.stat{border-left:1px solid var(--line)}
   .stat-v{font-size:1.55rem;font-weight:700;color:var(--navy);line-height:1;margin-bottom:3px}
   .stat-l{font-size:.7rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.05em}
 
-  main{max-width:680px;margin:0 auto;padding:20px 14px 60px;display:flex;flex-direction:column;gap:16px}
+  /* MAIN */
+  main{max-width:480px;margin:0 auto;padding:20px 14px 60px}
   .card{background:var(--white);border-radius:12px;box-shadow:0 4px 24px rgba(12,31,63,.09);overflow:hidden}
 
-  .tabs{display:flex;border-bottom:1px solid var(--line);background:var(--mist)}
-  .tab{flex:1;padding:13px;text-align:center;font-size:.82rem;font-weight:600;color:var(--text-sec);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none}
-  .tab.active{color:var(--saffron);border-bottom-color:var(--saffron);background:var(--white)}
-  .tab-panel{display:none}
-  .tab-panel.active{display:block}
+  /* MODE BUTTONS */
+  .mode-bar{display:flex;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line);background:var(--mist)}
+  .mode-btn{flex:1;padding:10px;border:1.5px solid var(--line);border-radius:8px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;color:var(--text-sec);cursor:pointer;transition:all .15s}
+  .mode-btn.mode-active{background:var(--saffron);color:var(--white);border-color:var(--saffron)}
 
-  /* ── CAMERA SCANNER ── */
-  .scan-wrap{padding:18px 20px}
-  .scan-wrap h2{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:3px}
-  .scan-wrap p{font-size:.78rem;color:var(--text-sec);margin-bottom:14px}
-
-  .video-wrap{
-    position:relative;width:100%;max-width:420px;margin:0 auto 14px;
-    background:#000;border-radius:10px;overflow:hidden;
-    aspect-ratio:4/3;
+  /* SCAN PANEL */
+  .scan-label{padding:14px 18px 10px;font-size:.82rem;color:var(--text-sec);text-align:center;line-height:1.5}
+  .scanner-wrap{position:relative;background:#000;border-radius:12px;overflow:hidden;margin:0 18px 14px}
+  #qr-reader{width:100%}
+  #qr-reader video{width:100%!important;border-radius:12px}
+  .scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+  .scan-frame{
+    width:56%;aspect-ratio:1;position:relative;
   }
-  #camVideo{width:100%;height:100%;object-fit:cover;display:block}
-  .scan-box{
-    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:56%;aspect-ratio:1;pointer-events:none;
+  .scan-frame::before,.scan-frame::after,.scan-frame span::before,.scan-frame span::after{
+    content:'';position:absolute;width:22px;height:22px;border-color:var(--saffron);border-style:solid;
   }
-  .scan-box::before,.scan-box::after,
-  .scan-box span::before,.scan-box span::after{
-    content:'';position:absolute;width:22px;height:22px;
-    border-color:var(--saffron);border-style:solid;
-  }
-  .scan-box::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
-  .scan-box::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
-  .scan-box span::before{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
-  .scan-box span::after{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
-  .scan-line{
-    position:absolute;left:5%;right:5%;height:2px;
-    background:linear-gradient(90deg,transparent,var(--saffron),transparent);
-    animation:sweep 2s ease-in-out infinite;top:0;
-  }
+  .scan-frame::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+  .scan-frame::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
+  .scan-frame span::before{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
+  .scan-frame span::after{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+  .scan-line{position:absolute;left:5%;right:5%;height:2px;background:linear-gradient(90deg,transparent,var(--saffron),transparent);animation:sweep 2s ease-in-out infinite}
   @keyframes sweep{0%,100%{top:5%}50%{top:90%}}
 
-  .cam-placeholder{
-    position:absolute;inset:0;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    color:rgba(255,255,255,.5);gap:10px;font-size:.82rem;
-  }
-  .cam-placeholder svg{opacity:.4}
+  /* KEYBOARD PANEL */
+  .kb-wrap{padding:16px 18px}
+  .kb-display{background:var(--mist);border:1.5px solid var(--line);border-radius:8px;padding:14px;text-align:center;font-size:1.4rem;font-weight:700;color:var(--navy);letter-spacing:.08em;margin-bottom:12px;min-height:54px}
+  .kb-hint{font-size:.75rem;color:var(--text-sec);text-align:center;margin-bottom:12px}
+  .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .kp-btn{padding:16px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all .12s;text-align:center}
+  .kp-btn:active{background:var(--mist);transform:scale(.96)}
+  .kp-del{font-size:1.3rem;color:var(--error)}
+  .kp-enter{background:var(--navy);color:#fff;border-color:var(--navy);font-size:1.3rem}
+  .kp-enter:active{background:#001a45}
 
-  .btn-scan{display:block;width:100%;max-width:420px;margin:0 auto;background:var(--saffron);color:var(--white);border:none;border-radius:8px;padding:13px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s}
-  .btn-scan:hover{background:var(--saffron-dark)}
-  .btn-scan.stop{background:var(--navy)}
-  .btn-scan.stop:hover{background:var(--navy-mid)}
-  .btn-scan:disabled{background:var(--line);color:var(--text-sec);cursor:not-allowed}
-
-  .scan-status{text-align:center;margin-top:10px;font-size:.8rem;color:var(--text-sec);min-height:18px;padding:0 8px}
-  .scan-status.ok{color:var(--green);font-weight:600}
-  .scan-status.err{color:var(--error);font-weight:600}
-
-  /* ── SEARCH ── */
-  .search-wrap{padding:18px 20px 14px}
-  .search-wrap h2{font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:3px}
-  .search-wrap p{font-size:.78rem;color:var(--text-sec);margin-bottom:14px}
-  .search-row{display:flex;gap:8px}
-  .search-row input{flex:1;padding:11px 13px;border:1.5px solid var(--line);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink)}
-  .search-row input:focus{outline:none;border-color:var(--saffron)}
-  .btn-srch{background:var(--saffron);color:var(--white);border:none;border-radius:8px;padding:11px 16px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
-  .btn-srch:hover{background:var(--saffron-dark)}
-
-  /* ── RESULTS ── */
-  .divider{height:1px;background:var(--line)}
-  .result{padding:0 20px 18px;display:none}
-  .result.show{display:block}
-  .alert-err{padding:11px 14px;border-radius:8px;font-size:.82rem;background:#FDECEA;color:var(--error);border-left:3px solid var(--error);margin-bottom:12px}
-  .reg-box{border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
-  .reg-head{background:var(--mist);padding:13px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
-  .reg-name{font-size:.98rem;font-weight:700;color:var(--navy)}
-  .reg-email{font-size:.73rem;color:var(--text-sec);margin-top:2px}
-  .badge{font-size:.7rem;font-weight:700;padding:4px 11px;border-radius:20px;white-space:nowrap;flex-shrink:0}
-  .badge-pend{background:var(--saffron-light);color:var(--saffron-dark)}
-  .badge-done{background:var(--green-light);color:var(--green)}
-  .reg-body{padding:13px 15px}
-  .drow{display:flex;gap:8px;font-size:.82rem;padding:5px 0;border-bottom:1px solid var(--line)}
-  .drow:last-child{border-bottom:none}
-  .dlbl{color:var(--text-sec);font-weight:500;width:72px;flex-shrink:0}
-  .dval{color:var(--ink);font-weight:600;word-break:break-all}
-  .btn-ci{width:100%;background:var(--green);color:var(--white);border:none;border-radius:8px;padding:13px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:12px;transition:background .15s}
-  .btn-ci:hover{background:#145526}
-  .btn-ci.done,.btn-ci:disabled{background:var(--line);color:var(--text-sec);cursor:default}
-  .loader{display:none;text-align:center;padding:16px;color:var(--text-sec);font-size:.82rem}
-  .loader.show{display:block}
-  .spinner{width:20px;height:20px;border:2.5px solid var(--line);border-top-color:var(--saffron);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 6px}
-  @keyframes spin{to{transform:rotate(360deg)}}
+  /* RESULT SCREENS */
+  .result-screen{padding:24px 20px;text-align:center;display:none}
+  .result-screen.show{display:block}
+  .result-icon{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
+  .icon-ok{background:var(--green-light)}
+  .icon-warn{background:#FEF3C7}
+  .icon-err{background:#FDECEA}
+  .result-title{font-family:'DM Serif Display',serif;font-size:1.15rem;font-weight:400;color:var(--navy);margin-bottom:6px}
+  .result-sub{font-size:.82rem;color:var(--text-sec);margin-bottom:18px;line-height:1.6}
+  .result-meta{background:var(--mist);border-radius:10px;padding:14px 16px;margin-bottom:18px;text-align:left}
+  .meta-row{display:flex;gap:8px;font-size:.82rem;padding:5px 0;border-bottom:1px solid var(--line)}
+  .meta-row:last-child{border-bottom:none}
+  .meta-lbl{color:var(--text-sec);font-weight:500;width:80px;flex-shrink:0}
+  .meta-val{color:var(--ink);font-weight:600;word-break:break-all}
+  .btn-confirm{width:100%;background:var(--green);color:var(--white);border:none;border-radius:8px;padding:14px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:10px;transition:background .15s}
+  .btn-confirm:hover{background:#145526}
+  .btn-ghost{width:100%;background:var(--white);color:var(--text-sec);border:1.5px solid var(--line);border-radius:8px;padding:12px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+  .btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
+  .countdown{font-size:.75rem;color:var(--text-sec);margin-top:10px;min-height:18px}
 </style>
 </head>
 <body>
@@ -134,66 +104,84 @@
 </div>
 
 <main>
-  <div class="card">
+  <div class="card" id="mainCard">
 
-    <div class="tabs">
-      <div class="tab active" id="tab-scan"   onclick="switchTab('scan')">Camera Scan</div>
-      <div class="tab"        id="tab-search" onclick="switchTab('search')">Search / USB Scanner</div>
+    <!-- MODE BAR -->
+    <div class="mode-bar">
+      <button id="modeQR" class="mode-btn mode-active" onclick="setMode('qr')">📷 QR Camera</button>
+      <button id="modeKB" class="mode-btn"             onclick="setMode('kb')">🔢 Keyboard / USB</button>
     </div>
 
-    <!-- CAMERA TAB -->
-    <div class="tab-panel active" id="panel-scan">
-      <div class="scan-wrap">
-        <h2>Scan QR code on participant's pass</h2>
-        <p>Press Start. Allow camera access. Hold the QR code steady inside the frame. For USB scanner — use the Search tab.</p>
-
-        <div class="video-wrap">
-          <video id="camVideo" autoplay playsinline muted></video>
-          <div class="scan-box"><span></span><div class="scan-line"></div></div>
-          <div class="cam-placeholder" id="camPlaceholder">
-            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-              <rect x="3" y="10" width="42" height="32" rx="5" stroke="white" stroke-width="2"/>
-              <circle cx="24" cy="26" r="8" stroke="white" stroke-width="2"/>
-              <path d="M16 10V8a3 3 0 013-3h10a3 3 0 013 3v2" stroke="white" stroke-width="2"/>
-            </svg>
-            Camera not started
-          </div>
-        </div>
-
-        <button class="btn-scan" id="btnScan" onclick="toggleCam()">Start Camera</button>
-        <div class="scan-status" id="scanStatus">Press Start Camera to begin</div>
+    <!-- QR PANEL -->
+    <div id="panelQR">
+      <div class="scan-label">
+        Point camera at participant's QR code<br>
+        <span style="font-size:12px;opacity:.7">USB / Bluetooth scanner also works here</span>
       </div>
-      <div class="divider"></div>
-      <div class="result" id="scanResult"></div>
+      <div class="scanner-wrap">
+        <div id="qr-reader"></div>
+        <div class="scan-overlay"><div class="scan-frame"><span></span><div class="scan-line"></div></div></div>
+      </div>
     </div>
 
-    <!-- SEARCH TAB -->
-    <div class="tab-panel" id="panel-search">
-      <div class="search-wrap">
-        <h2>Search or USB Scanner</h2>
-        <p>Click the box below, then scan with the USB barcode scanner or type an email address. The scanner auto-submits on read.</p>
-        <div class="search-row">
-          <input type="text" id="searchInput" placeholder="Scan QR or type email…" autofocus
-            onkeydown="if(event.key==='Enter'||event.keyCode===13)doSearch()">
-          <button class="btn-srch" onclick="doSearch()">Search</button>
+    <!-- KEYBOARD / USB PANEL -->
+    <div id="panelKB" class="hidden">
+      <div class="kb-wrap">
+        <div class="kb-display" id="kbDisplay">—</div>
+        <div class="kb-hint">Type registration ID or use USB scanner, then press ↵</div>
+        <div class="keypad">
+          <button class="kp-btn" onclick="kbKey('1')">1</button>
+          <button class="kp-btn" onclick="kbKey('2')">2</button>
+          <button class="kp-btn" onclick="kbKey('3')">3</button>
+          <button class="kp-btn" onclick="kbKey('4')">4</button>
+          <button class="kp-btn" onclick="kbKey('5')">5</button>
+          <button class="kp-btn" onclick="kbKey('6')">6</button>
+          <button class="kp-btn" onclick="kbKey('7')">7</button>
+          <button class="kp-btn" onclick="kbKey('8')">8</button>
+          <button class="kp-btn" onclick="kbKey('9')">9</button>
+          <button class="kp-btn kp-del" onclick="kbKey('del')">⌫</button>
+          <button class="kp-btn" onclick="kbKey('0')">0</button>
+          <button class="kp-btn kp-enter" onclick="kbKey('enter')">↵</button>
         </div>
       </div>
-      <div class="loader" id="searchLoader"><div class="spinner"></div>Looking up…</div>
-      <div class="divider"></div>
-      <div class="result" id="searchResult"></div>
+    </div>
+
+    <!-- RESULT: CONFIRM -->
+    <div class="result-screen" id="screenConfirm">
+      <div class="result-icon icon-ok">✓</div>
+      <div class="result-title">Hand Over T-Shirt</div>
+      <div class="result-meta" id="confirmMeta"></div>
+      <button class="btn-confirm" id="btnConfirm" onclick="doCheckin()">✓ Confirm Check-in</button>
+      <button class="btn-ghost" onclick="cancelResult()">Cancel — Scan Next</button>
+    </div>
+
+    <!-- RESULT: ALREADY CHECKED IN -->
+    <div class="result-screen" id="screenDone">
+      <div class="result-icon icon-warn">✗</div>
+      <div class="result-title">Already Checked In</div>
+      <div class="result-meta" id="doneMeta"></div>
+      <button class="btn-ghost" onclick="cancelResult()">Scan Next</button>
+      <div class="countdown" id="countdownDone"></div>
+    </div>
+
+    <!-- RESULT: NOT FOUND -->
+    <div class="result-screen" id="screenErr">
+      <div class="result-icon icon-err">!</div>
+      <div class="result-title">Not Found</div>
+      <div class="result-sub">This QR code was not found in the system.<br>Check the pass and try again.</div>
+      <button class="btn-ghost" onclick="cancelResult()">Scan Next</button>
     </div>
 
   </div>
 </main>
 
-<!-- ZXing — Google's QR/barcode library, used in production worldwide -->
-<script src="https://unpkg.com/@zxing/browser@0.1.4/umd/index.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const app = initializeApp({
+<script>
+// ── Firebase ──
+firebase.initializeApp({
   apiKey:            "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
   authDomain:        "viksitbharatrunbkk2026.firebaseapp.com",
   databaseURL:       "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -202,221 +190,221 @@ const app = initializeApp({
   messagingSenderId: "732438557121",
   appId:             "1:732438557121:web:c41053238a31f5c2af3f40"
 });
-const db = getDatabase(app);
+const db = firebase.database();
+
+// ── Helpers ──
+function el(id){ return document.getElementById(id); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // ── Live stats ──
-onValue(ref(db,'vbr2026/registrations'), snap => {
+db.ref('vbr2026/registrations').on('value', snap => {
   const all     = snap.val() || {};
   const regs    = Object.values(all);
   const total   = regs.length;
   const checked = regs.filter(r => r.checkedIn).length;
-  document.getElementById('csTotal').textContent   = total;
-  document.getElementById('csChecked').textContent = checked;
-  document.getElementById('csPending').textContent = total - checked;
+  el('csTotal').textContent   = total;
+  el('csChecked').textContent = checked;
+  el('csPending').textContent = total - checked;
 });
 
-// ── Status ──
-function setStatus(msg, type) {
-  const el = document.getElementById('scanStatus');
-  if (!el) return;
-  el.textContent = msg;
-  el.className = 'scan-status' + (type==='ok'?' ok':type==='err'?' err':'');
+// ── Scanner (exactly IDY 2027 logic) ──
+let qrScanner = null;
+
+function startScanner() {
+  stopScanner(); // clear any stale instance first
+  qrScanner = new Html5Qrcode('qr-reader');
+  qrScanner.start(
+    { facingMode: 'environment' },
+    { fps: 12, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 },
+    onQrSuccess,
+    () => {} // per-frame errors are normal — ignore silently
+  ).catch(() => {
+    el('qr-reader').innerHTML =
+      '<div style="padding:40px;text-align:center;color:#6B7280;font-size:14px;">' +
+      'Camera not available.<br>Switch to Keyboard / USB mode.</div>';
+  });
 }
 
-// ── Render result ──
-function renderResult(containerId, regId, data) {
-  const p    = data.participant || {};
-  const done = !!data.checkedIn;
-  const el   = document.getElementById(containerId);
-  el.classList.add('show');
-  el.innerHTML = `
-    <div class="reg-box">
-      <div class="reg-head">
-        <div>
-          <div class="reg-name">${esc(p.name||'—')}</div>
-          <div class="reg-email">${esc(data.email||'')}</div>
-        </div>
-        <span class="badge ${done?'badge-done':'badge-pend'}" id="badge-${regId}">
-          ${done?'✓ Checked In':'Pending'}
-        </span>
-      </div>
-      <div class="reg-body">
-        <div class="drow"><span class="dlbl">Mobile</span><span class="dval">${esc(data.mobile||'—')}</span></div>
-        <div class="drow"><span class="dlbl">ID</span><span class="dval">${esc((p.idType||'')+' '+(p.idNumber||''))}</span></div>
-        <div class="drow"><span class="dlbl">T-Shirt</span><span class="dval">${esc(p.size||'—')}</span></div>
-        ${done&&data.checkedInAt?`<div class="drow"><span class="dlbl">Time</span><span class="dval">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>`:''}
-      </div>
-    </div>
-    <button class="btn-ci${done?' done':''}" id="btn-${regId}" ${done?'disabled':''}
-      onclick="window._ci('${regId}')">
-      ${done?'✓ Already Checked In':'✓ Confirm Check-in'}
-    </button>`;
+function stopScanner() {
+  if (qrScanner) { qrScanner.stop().catch(() => {}); qrScanner = null; }
 }
 
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function pauseScanner()  { if (qrScanner) qrScanner.pause(true); }
+function resumeScanner() { if (qrScanner) qrScanner.resume(); }
 
-// ── Check-in ──
-window._ci = async function(regId) {
-  const btn = document.getElementById('btn-'+regId);
-  if(btn){btn.disabled=true;btn.textContent='Processing…';}
-  try {
-    await set(ref(db,`vbr2026/registrations/${regId}/checkedIn`), true);
-    await set(ref(db,`vbr2026/registrations/${regId}/checkedInAt`), new Date().toISOString());
-    if(btn){btn.textContent='✓ Checked In';btn.classList.add('done');}
-    const badge = document.getElementById('badge-'+regId);
-    if(badge){badge.textContent='✓ Checked In';badge.className='badge badge-done';}
-    setStatus('✓ Checked in — ready for next scan','ok');
-    setTimeout(()=>{
-      const r=document.getElementById('scanResult');
-      if(r){r.classList.remove('show');r.innerHTML='';}
-      lastId=null;
-      setStatus('Scanning…','ok');
-    },4000);
-  } catch(e) {
-    if(btn){btn.disabled=false;btn.textContent='✓ Confirm Check-in';}
-    alert('Check-in failed: '+e.message);
+async function onQrSuccess(qrText) {
+  pauseScanner();
+  await processQR(qrText.trim());
+}
+
+// ── Mode toggle ──
+let scanMode = 'qr';
+let kbBuf    = '';
+
+function setMode(mode) {
+  scanMode = mode;
+  el('modeQR').classList.toggle('mode-active', mode === 'qr');
+  el('modeKB').classList.toggle('mode-active', mode === 'kb');
+  if (mode === 'qr') {
+    el('panelQR').classList.remove('hidden');
+    el('panelKB').classList.add('hidden');
+    startScanner();
+  } else {
+    el('panelQR').classList.add('hidden');
+    el('panelKB').classList.remove('hidden');
+    stopScanner();
+    kbBuf = '';
+    updateKbDisplay();
   }
-};
+  hideAllResults();
+}
 
-// ── ZXing Camera Scanner ──
-let reader  = null;
-let running = false;
-let lastId  = null;
+// ── Keyboard / USB ──
+function updateKbDisplay() {
+  el('kbDisplay').textContent = kbBuf.length > 0 ? kbBuf : '—';
+}
 
-window.toggleCam = async function() {
-  if(running){ stopCam(); } else { await startCam(); }
-};
+function kbKey(key) {
+  if (key === 'del')   { kbBuf = kbBuf.slice(0, -1); updateKbDisplay(); return; }
+  if (key === 'enter') { if (kbBuf.length >= 3) { processQR(kbBuf); kbBuf = ''; updateKbDisplay(); } return; }
+  kbBuf += key;
+  updateKbDisplay();
+}
 
-async function startCam() {
-  const btn = document.getElementById('btnScan');
-  btn.disabled = true;
-  setStatus('Starting camera…','');
+// USB scanner fires keypresses — capture them globally in KB mode
+document.addEventListener('keydown', e => {
+  if (scanMode !== 'kb') return;
+  if (e.key === 'Enter' || e.keyCode === 13) { kbKey('enter'); return; }
+  if (e.key === 'Backspace') { kbKey('del'); return; }
+  if (/^[-A-Za-z0-9_]$/.test(e.key)) { kbBuf += e.key; updateKbDisplay(); }
+});
 
-  // Must be HTTPS or localhost
-  if(location.protocol!=='https:' && location.hostname!=='localhost'){
-    setStatus('Camera requires HTTPS. Open via the live website URL.','err');
-    btn.disabled=false; return;
-  }
+// ── Process QR / ID ──
+let currentRegId  = null;
+let currentRegData = null;
+let countdownTimer = null;
+
+async function processQR(text) {
+  text = String(text).trim();
+  if (!text) return;
+
+  hideAllResults();
 
   try {
-    const video = document.getElementById('camVideo');
-    const placeholder = document.getElementById('camPlaceholder');
+    // Look up by regNumber (numeric 1001+) or email fallback
+    const allSnap = await db.ref('vbr2026/registrations').once('value');
+    const all = allSnap.val() || {};
+    let foundKey = null;
+    let foundData = null;
 
-    // Use ZXing BrowserMultiFormatReader — reads QR and all barcodes
-    reader = new ZXingBrowser.BrowserMultiFormatReader();
+    // Try matching regNumber first (what QR contains)
+    const numericText = parseInt(text);
+    if (!isNaN(numericText)) {
+      const hit = Object.entries(all).find(([k,v]) => v.regNumber === numericText);
+      if (hit) { foundKey = hit[0]; foundData = hit[1]; }
+    }
 
-    // Get devices
-    const devices = await ZXingBrowser.BrowserMultiFormatReader.listVideoInputDevices();
-    if(!devices || devices.length===0) throw new Error('No camera found on this device.');
+    // Try email match (USB scanner might scan email field)
+    if (!foundKey && text.includes('@')) {
+      const hit = Object.entries(all).find(([k,v]) => v.email && v.email.toLowerCase() === text.toLowerCase());
+      if (hit) { foundKey = hit[0]; foundData = hit[1]; }
+    }
 
-    // Prefer rear/environment camera
-    const cam = devices.find(d => /back|rear|environment/i.test(d.label)) || devices[devices.length-1];
+    // Try direct Firebase key as last resort
+    if (!foundKey && all[text]) { foundKey = text; foundData = all[text]; }
 
-    await reader.decodeFromVideoDevice(cam.deviceId, video, (result, err) => {
-      if(result) {
-        const text = result.getText();
-        if(text && text !== lastId) {
-          lastId = text;
-          if(navigator.vibrate) navigator.vibrate(120);
-          handleScan(text);
-        }
-      }
-      // err here just means no QR in current frame — normal, ignore
-    });
+    if (!foundKey) {
+      showScreen('screenErr');
+      return;
+    }
 
-    running = true;
-    placeholder.style.display = 'none';
-    btn.textContent = 'Stop Camera';
-    btn.classList.add('stop');
-    btn.disabled = false;
-    const r = document.getElementById('scanResult');
-    r.classList.remove('show'); r.innerHTML='';
-    setStatus('Scanning — hold QR code inside the frame','ok');
+    currentRegId   = foundKey;
+    currentRegData = foundData;
+    const p = currentRegData.participant || {};
 
-  } catch(e) {
-    running = false;
-    reader = null;
-    const btn2 = document.getElementById('btnScan');
-    btn2.disabled = false;
-    if(/permission|denied|notallowed/i.test(String(e))){
-      setStatus('Camera permission denied. Allow camera for this site in browser settings, then try again.','err');
-    } else if(/notfound|no camera/i.test(String(e))) {
-      setStatus('No camera found. Use the Search / USB Scanner tab.','err');
+    if (currentRegData.checkedIn) {
+      // Already checked in
+      el('doneMeta').innerHTML = metaHTML(p, currentRegData);
+      showScreen('screenDone');
+      startCountdown('countdownDone', 5, cancelResult);
     } else {
-      setStatus('Camera error: '+e.message+'. Use Search tab instead.','err');
+      // Ready to check in
+      el('confirmMeta').innerHTML = metaHTML(p, currentRegData);
+      showScreen('screenConfirm');
     }
-  }
-}
 
-function stopCam() {
-  if(reader){ try{ reader.reset(); }catch(e){} reader=null; }
-  running = false;
-  const video = document.getElementById('camVideo');
-  video.srcObject = null;
-  document.getElementById('camPlaceholder').style.display = 'flex';
-  const btn = document.getElementById('btnScan');
-  btn.textContent='Start Camera'; btn.classList.remove('stop'); btn.disabled=false;
-  setStatus('Camera stopped.','');
-}
+    if (navigator.vibrate) navigator.vibrate(120);
 
-async function handleScan(regId) {
-  setStatus('QR detected — looking up…','');
-  const r=document.getElementById('scanResult');
-  r.classList.remove('show'); r.innerHTML='';
-  try {
-    const snap = await get(ref(db,`vbr2026/registrations/${regId}`));
-    if(!snap.exists()){
-      setStatus('No registration found for this QR. Check the pass.','err');
-      setTimeout(()=>{ lastId=null; },3000);
-      return;
-    }
-    setStatus('Found — confirm check-in below','ok');
-    renderResult('scanResult', regId, snap.val());
   } catch(e) {
-    setStatus('Lookup error: '+e.message,'err');
-    setTimeout(()=>{ lastId=null; },2000);
+    showScreen('screenErr');
   }
 }
 
-// ── Search / USB ──
-window.doSearch = async function() {
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  if(!q) return;
-  const sl=document.getElementById('searchLoader');
-  const sr=document.getElementById('searchResult');
-  sl.classList.add('show');
-  sr.classList.remove('show'); sr.innerHTML='';
-  try {
-    const snap = await get(ref(db,'vbr2026/registrations'));
-    const all  = snap.val() || {};
-    // Match exact reg ID or email
-    const hit  = Object.entries(all).find(([k,v])=>
-      k===q || k.toLowerCase()===q ||
-      (v.email && v.email.toLowerCase()===q)
-    );
-    sl.classList.remove('show');
-    if(!hit){
-      sr.classList.add('show');
-      sr.innerHTML=`<div class="alert-err">No registration found for "${document.getElementById('searchInput').value.trim()}".</div>`;
-      return;
-    }
-    renderResult('searchResult', hit[0], hit[1]);
-  } catch(e) {
-    sl.classList.remove('show');
-    sr.classList.add('show');
-    sr.innerHTML=`<div class="alert-err">Error: ${e.message}</div>`;
-  }
-};
+function metaHTML(p, data) {
+  return `
+    <div class="meta-row"><span class="meta-lbl">Name</span><span class="meta-val">${esc(p.name||'—')}</span></div>
+    <div class="meta-row"><span class="meta-lbl">T-Shirt</span><span class="meta-val">${esc(p.size||'—')}</span></div>
+    <div class="meta-row"><span class="meta-lbl">ID</span><span class="meta-val">${esc((p.idType||'')+' '+(p.idNumber||''))}</span></div>
+    <div class="meta-row"><span class="meta-lbl">Email</span><span class="meta-val">${esc(data.email||'')}</span></div>
+    <div class="meta-row"><span class="meta-lbl">Mobile</span><span class="meta-val">${esc(data.mobile||'')}</span></div>
+    ${data.checkedInAt?`<div class="meta-row"><span class="meta-lbl">Checked in</span><span class="meta-val">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>`:''}`;
+}
 
-// ── Tab switch ──
-window.switchTab = function(tab) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  document.getElementById('panel-'+tab).classList.add('active');
-  if(tab!=='scan' && running) stopCam();
-  if(tab==='search') setTimeout(()=>document.getElementById('searchInput').focus(),100);
-};
+// ── Confirm check-in ──
+async function doCheckin() {
+  if (!currentRegId) return;
+  const btn = el('btnConfirm');
+  btn.disabled = true; btn.textContent = 'Processing…';
+  try {
+    await db.ref('vbr2026/registrations/' + currentRegId).update({
+      checkedIn: true,
+      checkedInAt: new Date().toISOString()
+    });
+    cancelResult();
+  } catch(e) {
+    btn.disabled = false; btn.textContent = '✓ Confirm Check-in';
+    alert('Check-in failed: ' + e.message);
+  }
+}
+
+// ── Cancel / reset ──
+function cancelResult() {
+  clearTimeout(countdownTimer);
+  currentRegId = null; currentRegData = null;
+  hideAllResults();
+  kbBuf = ''; updateKbDisplay();
+  if (scanMode === 'qr') resumeScanner();
+}
+
+function hideAllResults() {
+  ['screenConfirm','screenDone','screenErr'].forEach(id => {
+    el(id).classList.remove('show');
+  });
+  el('btnConfirm').disabled = false;
+  el('btnConfirm').textContent = '✓ Confirm Check-in';
+  clearTimeout(countdownTimer);
+}
+
+function showScreen(id) {
+  hideAllResults();
+  el(id).classList.add('show');
+}
+
+function startCountdown(elId, seconds, cb) {
+  clearTimeout(countdownTimer);
+  let remaining = seconds;
+  function tick() {
+    const e = el(elId);
+    if (e) e.textContent = `Returning to scanner in ${remaining}s…`;
+    if (remaining <= 0) { cb(); return; }
+    remaining--;
+    countdownTimer = setTimeout(tick, 1000);
+  }
+  tick();
+}
+
+// ── Start in QR mode ──
+setMode('qr');
 </script>
 </body>
 </html>
