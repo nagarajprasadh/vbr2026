@@ -24,11 +24,8 @@
 
   /* HERO */
   .hero{background:#fff;line-height:0;border-bottom:3px solid var(--saffron)}
-  .hero img{
-    display:block;width:100%;max-width:960px;margin:0 auto;
-    height:auto;
-  }
-  @media(max-width:600px){.hero img{max-width:100%}}
+  .hero img{display:block;width:100%;height:auto}
+  @media(min-width:960px){.hero img{max-width:960px;margin:0 auto;display:block}}
 
   /* EVENT STRIP */
   .es{background:var(--navy);color:rgba(255,255,255,.88);padding:11px 24px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
@@ -697,7 +694,7 @@ function showSuccess(data) {
     </div>`;
 
   // Generate QR — pure black on white, directly into the div
-  if (window.QRCode && regId) {
+  if (window.QRCode && regNumber) {
     try {
       new QRCode(document.getElementById('qrBox'), {
         text: String(regNumber),
