@@ -128,6 +128,8 @@
   .step-i.done .step-n{background:var(--green);color:var(--white)}
 
   /* FORM */
+  .fsec-lbl{font-size:.72rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;margin-top:4px}
+  .form-div{height:1px;background:var(--line);margin:18px 0}
   .fs{padding:22px;display:none}
   .fs.active{display:block}
   .fs h2{font-family:'DM Serif Display',serif;font-size:1.05rem;font-weight:400;color:var(--navy);margin-bottom:3px}
@@ -300,7 +302,7 @@
             <div class="pillar-t">Global Reach</div><div class="pillar-d">Runs across 91 countries and 150 locations worldwide</div>
           </div>
         </div>
-        <p>Participants will take the <strong>Viksit Bharat pledge</strong> and the <strong>Aatmanirbhar Bharat pledge</strong>, connecting this morning's run to a movement of overseas Indians and their neighbours standing together for nation-building.</p>
+        <p>Participants will take the <strong>Viksit Bharat pledge</strong>, connecting this morning's run to a movement of overseas Indians and their neighbours standing together for nation-building.</p>
       </div>
     </div>
 
@@ -314,7 +316,7 @@
         <div class="sr"><div class="sl"><div class="sd"></div><div class="scon"></div></div><div class="sco"><div class="st">4:45 AM</div><div class="sl2">Registration open and T-shirt distribution at venue</div></div></div>
         <div class="sr"><div class="sl"><div class="sd"></div><div class="scon"></div></div><div class="sco"><div class="st">6:00 AM</div><div class="sl2">Flag-off by the Ambassador of India to Thailand</div></div></div>
         <div class="sr"><div class="sl"><div class="sd"></div><div class="scon"></div></div><div class="sco"><div class="st">7:30 AM</div><div class="sl2">Run concludes</div></div></div>
-        <div class="sr fin"><div class="sl"><div class="sd"></div><div class="scon"></div></div><div class="sco"><div class="st">7:30 AM onwards</div><div class="sl2">Distribution of medals, certificates and refreshments</div></div></div>
+        <div class="sr fin"><div class="sl"><div class="sd"></div><div class="scon"></div></div><div class="sco"><div class="st">7:30 AM</div><div class="sl2">Distribution of medals and refreshments. Certificates will be sent to your registered email address.</div></div></div>
       </div>
     </div>
 
@@ -351,20 +353,14 @@
       <div style="text-align:center;margin-top:10px"><a href="#" style="font-size:.78rem;color:#7A4A00" onclick="toggleRetrieve(false)">Back to Registration</a></div>
     </div>
 
-    <div class="steps" id="stepsBar">
-      <div class="step-i active" id="st-1"><span class="step-n">1</span>Contact</div>
-      <div class="step-i" id="st-2"><span class="step-n">2</span>Details</div>
-      <div class="step-i" id="st-3"><span class="step-n">3</span>Confirm</div>
-    </div>
-
-    <!-- STEP 1 -->
+    <!-- SINGLE PAGE FORM -->
     <div class="fs active" id="step-1">
-      <h2>Contact Details</h2>
-      <p class="hint">All fields marked * are required.</p>
       <div id="s1Alert"></div>
+
+      <div class="fsec-lbl">Contact Details</div>
       <div class="field" id="f-email">
         <label>Email Address *</label>
-        <input type="email" id="emailInput" placeholder="you@example.com">
+        <input type="email" id="emailInput" placeholder="you@example.com" onblur="checkDuplicate()">
         <span class="err">Please enter a valid email address.</span>
       </div>
       <div class="field" id="f-email2">
@@ -391,44 +387,56 @@
         </div>
         <span class="err">Please enter a valid mobile number.</span>
       </div>
-      <div class="btn-row"><button class="btn-next" id="step1Btn" onclick="goToStep2()">Continue</button></div>
-      <div class="ret-lnk">Already registered? <a href="#" onclick="toggleRetrieve(true)">Retrieve your pass</a></div>
-    </div>
 
-    <!-- STEP 2 -->
-    <div class="fs" id="step-2">
-      <h2>Your Details</h2>
-      <p class="hint">Enter your name, ID and T-shirt size.</p>
-      <div id="pFields"></div>
-      <div class="btn-row">
-        <button class="btn-back" onclick="goToStep(1)">Back</button>
-        <button class="btn-next" onclick="goToStep3()">Continue</button>
+      <div class="form-div"></div>
+      <div class="fsec-lbl">Your Details</div>
+
+      <div class="field" id="f-name">
+        <label>Full Name * <span style="font-weight:400;color:var(--text-sec)">(as on passport / ID)</span></label>
+        <input type="text" id="nameInput" placeholder="Full name">
+        <span class="err">Name is required.</span>
       </div>
-    </div>
+      <div class="field" id="f-idtype">
+        <label>ID Type *</label>
+        <div class="bsg">
+          <button type="button" class="bs" onclick="selBtnGroup('f-idtype','Passport')">Passport</button>
+          <button type="button" class="bs" onclick="selBtnGroup('f-idtype','National ID')">National ID</button>
+        </div>
+        <span class="err">Please select an ID type.</span>
+      </div>
+      <div class="field" id="f-idnum">
+        <label>ID / Passport Number *</label>
+        <input type="text" id="idnumInput" placeholder="e.g. A1234567" style="letter-spacing:.05em">
+        <span class="err">ID / Passport number is required.</span>
+      </div>
+      <div class="field" id="f-size">
+        <label>T-Shirt Size *</label>
+        <div class="bsg">
+          <button type="button" class="bs" onclick="selBtnGroup('f-size','S')">S</button>
+          <button type="button" class="bs" onclick="selBtnGroup('f-size','M')">M</button>
+          <button type="button" class="bs" onclick="selBtnGroup('f-size','L')">L</button>
+          <button type="button" class="bs" onclick="selBtnGroup('f-size','XL')">XL</button>
+          <button type="button" class="bs" onclick="selBtnGroup('f-size','XXL')">XXL</button>
+        </div>
+        <span class="err">Please select a size.</span>
+      </div>
 
-    <!-- STEP 3 -->
-    <div class="fs" id="step-3">
-      <h2>Confirm Registration</h2>
-      <p class="hint">Review your details and accept the declaration.</p>
-      <div id="summaryBlock"></div>
+      <div class="form-div"></div>
       <div class="decl">
-        <h4>Declaration / คำประกาศ</h4>
+        <h4>Declaration</h4>
         <p>I hereby declare that the information provided is accurate and complete. I understand that participation in the Viksit Bharat Run 2026 is voluntary and I accept all associated terms.</p><br>
-        <p>I consent to the collection, use and processing of my personal data for the purposes of this event registration, in accordance with Thailand's Personal Data Protection Act B.E. 2562 (PDPA).</p><br>
-        <p style="color:#7A5C00">ข้าพเจ้าขอยืนยันว่าข้อมูลที่ให้ไว้ถูกต้องและครบถ้วน และยินยอมให้ใช้ข้อมูลส่วนบุคคลเพื่อการลงทะเบียนกิจกรรมนี้ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562</p>
+        <p>I consent to the collection, use and processing of my personal data for the purposes of this event registration, in accordance with Thailand's Personal Data Protection Act B.E. 2562 (PDPA).</p>
       </div>
       <div class="chk-row">
         <input type="checkbox" id="declChk" onchange="document.getElementById('submitBtn').disabled=!this.checked">
-        <label for="declChk">I understand and accept the declaration / ข้าพเจ้าเข้าใจและยอมรับ</label>
+        <label for="declChk">I have read and accept the above declaration.</label>
       </div>
       <div id="s3Alert"></div>
-      <div class="btn-row">
-        <button class="btn-back" onclick="goToStep(2)">Back</button>
-        <button class="btn-next" id="submitBtn" disabled onclick="submitReg()">Complete Registration</button>
-      </div>
+      <button class="btn-next" id="submitBtn" disabled onclick="submitReg()" style="width:100%;margin-top:4px">Complete Registration</button>
+      <div class="ret-lnk" style="margin-top:14px">Already registered? <a href="#" onclick="toggleRetrieve(true)">Retrieve your pass</a></div>
     </div>
 
-    <!-- LOADER -->
+        <!-- LOADER -->
     <div class="loader" id="loader"><div class="spinner"></div>Submitting…</div>
 
     <!-- SUCCESS -->
@@ -499,112 +507,6 @@ function goToStep(n) {
 }
 window.goToStep = goToStep;
 
-async function goToStep2() {
-  const email  = document.getElementById('emailInput').value.trim().toLowerCase();
-  const email2 = document.getElementById('email2Input').value.trim().toLowerCase();
-  const mobile = document.getElementById('mobileNumber').value.trim();
-  const dial   = document.getElementById('mobileCountry').value;
-  let ok = true;
-  document.getElementById('s1Alert').innerHTML = '';
-
-  const fe = document.getElementById('f-email');
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { fe.classList.add('invalid'); ok = false; } else fe.classList.remove('invalid');
-  const fe2 = document.getElementById('f-email2');
-  if (email !== email2) { fe2.classList.add('invalid'); ok = false; } else fe2.classList.remove('invalid');
-  const fm = document.getElementById('f-mobile');
-  if (!mobile || !/^\d{6,15}$/.test(mobile.replace(/\s/g,''))) { fm.classList.add('invalid'); ok = false; } else fm.classList.remove('invalid');
-  if (!ok) return;
-
-  const btn = document.getElementById('step1Btn');
-  btn.disabled = true; btn.textContent = 'Checking…';
-  try {
-    const snap = await window._get(window._ref(window._db, 'vbr2026/registrations'));
-    const all  = snap.val() || {};
-    if (Object.values(all).some(r => r.email && r.email.toLowerCase() === email)) {
-      document.getElementById('s1Alert').innerHTML = '<div class="alert alert-err">This email is already registered. Use "Retrieve your pass" below.</div>';
-      btn.disabled = false; btn.textContent = 'Continue'; return;
-    }
-  } catch(e) {}
-  btn.disabled = false; btn.textContent = 'Continue';
-
-  regData.email  = email;
-  regData.mobile = dial + ' ' + mobile.replace(/\s/g,'');
-
-  const prev = regData.participant || {};
-  document.getElementById('pFields').innerHTML = `
-    <div class="field" id="fp-name">
-      <label>Full Name * <span>(as on passport / ID)</span></label>
-      <input type="text" id="p-name" placeholder="Full name" value="${prev.name||''}">
-      <span class="err">Name is required.</span>
-    </div>
-    <div class="field" id="fp-idt">
-      <label>ID Type *</label>
-      <div class="bsg">
-        <button type="button" class="bs${prev.idType==='Passport'?' sel':''}" onclick="selBg('fp-idt','Passport')">Passport</button>
-        <button type="button" class="bs${prev.idType==='National ID'?' sel':''}" onclick="selBg('fp-idt','National ID')">National ID</button>
-      </div>
-      <span class="err">Please select an ID type.</span>
-    </div>
-    <div class="field" id="fp-idn">
-      <label>ID / Passport Number *</label>
-      <input type="text" id="p-idn" placeholder="e.g. A1234567" value="${prev.idNumber||''}" style="letter-spacing:.05em">
-      <span class="err">ID / Passport number is required.</span>
-    </div>
-    <div class="field" id="fp-sz">
-      <label>T-Shirt Size *</label>
-      <div class="bsg">
-        ${['S','M','L','XL','XXL'].map(s=>`<button type="button" class="bs${prev.size===s?' sel':''}" onclick="selBg('fp-sz','${s}')">${s}</button>`).join('')}
-      </div>
-      <span class="err">Please select a size.</span>
-    </div>`;
-  goToStep(2);
-}
-window.goToStep2 = goToStep2;
-
-function selBg(fid, val) {
-  document.querySelector('#'+fid+' .bsg').querySelectorAll('.bs')
-    .forEach(b => b.classList.toggle('sel', b.textContent.trim() === val));
-  document.getElementById(fid).classList.remove('invalid');
-}
-window.selBg = selBg;
-
-function getBg(fid) {
-  const s = document.querySelector('#'+fid+' .bs.sel');
-  return s ? s.textContent.trim() : '';
-}
-
-function goToStep3() {
-  let ok = true;
-  const name = document.getElementById('p-name').value.trim();
-  const fn = document.getElementById('fp-name');
-  if (!name) { fn.classList.add('invalid'); ok = false; } else fn.classList.remove('invalid');
-  const idType = getBg('fp-idt');
-  const fi = document.getElementById('fp-idt');
-  if (!idType) { fi.classList.add('invalid'); ok = false; } else fi.classList.remove('invalid');
-  const idNum = document.getElementById('p-idn').value.trim();
-  const fn2 = document.getElementById('fp-idn');
-  if (!idNum) { fn2.classList.add('invalid'); ok = false; } else fn2.classList.remove('invalid');
-  const size = getBg('fp-sz');
-  const fs = document.getElementById('fp-sz');
-  if (!size) { fs.classList.add('invalid'); ok = false; } else fs.classList.remove('invalid');
-  if (!ok) return;
-
-  regData.participant = { name, idType, idNumber: idNum, size };
-  const p = regData.participant;
-  document.getElementById('summaryBlock').innerHTML = `
-    <table class="sum-tbl"><tbody>
-      <tr><td>Name</td><td>${p.name}</td></tr>
-      <tr><td>ID</td><td>${p.idType}: ${p.idNumber}</td></tr>
-      <tr><td>T-Shirt</td><td>${p.size}</td></tr>
-      <tr><td>Email</td><td>${regData.email}</td></tr>
-      <tr><td>Mobile</td><td>${regData.mobile}</td></tr>
-    </tbody></table>`;
-  document.getElementById('declChk').checked = false;
-  document.getElementById('submitBtn').disabled = true;
-  goToStep(3);
-}
-window.goToStep3 = goToStep3;
-
 // ── EmailJS confirmation ──
 // ── EmailJS — init once on load ──
 window.addEventListener('load', () => {
@@ -628,8 +530,36 @@ async function sendConfirmation(data) {
 }
 
 async function submitReg() {
-  document.getElementById('s3Alert').innerHTML = ''; // clear any previous error
-  document.getElementById('step-3').classList.remove('active');
+  const email    = document.getElementById('emailInput').value.trim().toLowerCase();
+  const email2   = document.getElementById('email2Input').value.trim().toLowerCase();
+  const mobile   = document.getElementById('mobileNumber').value.trim();
+  const dialCode = document.getElementById('mobileCountry').value;
+  const name     = document.getElementById('nameInput').value.trim();
+  const idType   = getBtnVal('f-idtype');
+  const idNum    = document.getElementById('idnumInput').value.trim();
+  const size     = getBtnVal('f-size');
+  let ok = true;
+
+  document.getElementById('s1Alert').innerHTML = '';
+  document.getElementById('s3Alert').innerHTML = '';
+  ['f-email','f-email2','f-mobile','f-name','f-idtype','f-idnum','f-size'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.classList.remove('invalid');
+  });
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('f-email').classList.add('invalid'); ok=false; }
+  if (email !== email2) { document.getElementById('f-email2').classList.add('invalid'); ok=false; }
+  if (!mobile || !/^\d{6,15}$/.test(mobile.replace(/\s/g,''))) { document.getElementById('f-mobile').classList.add('invalid'); ok=false; }
+  if (!name)   { document.getElementById('f-name').classList.add('invalid'); ok=false; }
+  if (!idType) { document.getElementById('f-idtype').classList.add('invalid'); ok=false; }
+  if (!idNum)  { document.getElementById('f-idnum').classList.add('invalid'); ok=false; }
+  if (!size)   { document.getElementById('f-size').classList.add('invalid'); ok=false; }
+  if (!ok) return;
+
+  regData.email       = email;
+  regData.mobile      = dialCode + ' ' + mobile.replace(/\s/g,'');
+  regData.participant = { name, idType, idNumber: idNum, size };
+
+  document.getElementById('step-1').style.display = 'none';
   document.getElementById('loader').classList.add('active');
   try {
     const cSnap   = await window._get(window._ref(window._db,'vbr2026/counter'));
@@ -639,7 +569,7 @@ async function submitReg() {
     const payload = {
       email: regData.email, mobile: regData.mobile,
       participant: regData.participant,
-      regNumber: regNumber,
+      regNumber,
       registeredAt: new Date().toISOString(), checkedIn: false, event: 'VBR2026'
     };
     const nr = await window._push(window._ref(window._db,'vbr2026/registrations'), payload);
