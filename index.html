@@ -606,9 +606,13 @@ function goToStep3() {
 window.goToStep3 = goToStep3;
 
 // ── EmailJS confirmation ──
+// ── EmailJS — init once on load ──
+window.addEventListener('load', () => {
+  if (window.emailjs) emailjs.init('BFS6Fuly_QXtu0-AH');
+});
+
 async function sendConfirmation(data) {
   const p = data.participant || {};
-  emailjs.init('BFS6Fuly_QXtu0-AH');
   await emailjs.send('service_43t3nlp', 'template_al8xsim', {
     to_email:  data.email    || '',
     to_name:   p.name        || '',
