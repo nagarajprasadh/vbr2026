@@ -240,11 +240,11 @@
         const t = new Date(r.registeredAt);
         const name = (r.participant && r.participant.name) ? r.participant.name.split(' ')[0] : '—';
         const time = t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-        return `<li><span class="feed-dot"></span><span>${name}</span><span class="feed-time">${time}</span></li>`;
+        return `<li><span class="feed-dot"></span><span>#${r.regNumber||'?'} ${name}</span><span class="feed-time">${time}</span></li>`;
       };
       const fmtChk = (r) => {
         const name = (r.participant && r.participant.name) ? r.participant.name.split(' ')[0] : '—';
-        return `<li><span class="feed-dot green"></span><span>${name}</span><span class="feed-time">✓</span></li>`;
+        return `<li><span class="feed-dot green"></span><span>#${r.regNumber||'?'} ${name}</span><span class="feed-time">✓</span></li>`;
       };
       const recent    = [...feedReg].sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt)).slice(0, 8);
       const recentChk = [...feedChk].slice(-8).reverse();

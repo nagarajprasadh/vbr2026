@@ -170,6 +170,7 @@
           <thead>
             <tr>
               <th>#</th>
+              <th>Reg No.</th>
               <th>Name</th>
               <th>Email / Mobile</th>
               <th>ID</th>
@@ -249,7 +250,7 @@ onValue(ref(db, 'vbr2026/registrations'), snap => {
 function renderTable(regs) {
   const tbody = document.getElementById('tBody');
   if (!regs.length) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-sec);padding:24px">No registrations found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--text-sec);padding:24px">No registrations found.</td></tr>`;
     document.getElementById('tCount').textContent = '';
     return;
   }
@@ -261,6 +262,7 @@ function renderTable(regs) {
     const esc     = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     return `<tr id="row-${r.id}">
       <td style="color:var(--text-sec);width:32px">${i+1}</td>
+      <td><strong style="color:var(--navy)">${r.regNumber||'—'}</strong></td>
       <td><div style="font-weight:600">${esc(p.name||'—')}</div></td>
       <td>
         <div style="font-size:.78rem">${esc(r.email||'')}</div>
@@ -354,11 +356,11 @@ window.confirmAction = async function() {
 
 // ── CSV export ──
 window.exportCSV = function() {
-  const rows = [['Reg ID','Name','Email','Mobile','ID Type','ID Number','Size','Registered At','Checked In','Check-in Time']];
+  const rows = [['Reg No.','Name','Email','Mobile','ID Type','ID Number','Size','Registered At','Checked In','Check-in Time']];
   allRegs.forEach(r => {
     const p = r.participant || {};
     const safe = s => String(s||'').replace(/^[=+\-@]/,"'$&");
-    rows.push([r.id, safe(p.name), safe(r.email), safe(r.mobile), p.idType||'', p.idNumber||'', p.size||'', r.registeredAt||'', r.checkedIn?'Yes':'No', r.checkedInAt||'']);
+    rows.push([r.regNumber||'', safe(p.name), safe(r.email), safe(r.mobile), p.idType||'', p.idNumber||'', p.size||'', r.registeredAt||'', r.checkedIn?'Yes':'No', r.checkedInAt||'']);
   });
   const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type:'text/csv' });
