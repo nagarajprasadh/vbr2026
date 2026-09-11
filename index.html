@@ -182,23 +182,22 @@
   .succ p{font-size:.85rem;color:var(--text-sec);margin-bottom:18px}
 
   /* PASS CARD — fully light, scannable */
-  .pass{background:var(--white);border-radius:var(--r);border:1px solid var(--line);box-shadow:0 4px 20px rgba(12,31,63,.1);overflow:hidden;margin:0 auto 16px;max-width:340px}
+  .pass{background:var(--white);border-radius:var(--r);border:1px solid var(--line);box-shadow:0 4px 20px rgba(12,31,63,.1);overflow:hidden;margin:0 auto 16px;max-width:380px}
   .pass-tc{height:4px;background:linear-gradient(90deg,var(--saffron) 33.33%,#fff 33.33%,#fff 66.66%,var(--green) 66.66%)}
-  .pass-top{padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);background:var(--white)}
+  .pass-top{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);background:var(--white)}
   .pass-logo{width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
   .pass-logo img{width:100%;height:100%;object-fit:contain;display:block}
   .pass-top-txt .pt-title{font-size:.78rem;font-weight:700;color:var(--navy);letter-spacing:.02em;line-height:1.3}
   .pass-top-txt .pt-sub{font-size:.68rem;color:var(--text-sec);margin-top:2px}
-  .pass-body{padding:14px;display:flex;gap:12px;align-items:flex-start;background:var(--white)}
+  .pass-body{padding:14px 16px;display:flex;gap:14px;align-items:flex-start;background:var(--white)}
   .pass-det{flex:1;min-width:0}
   .pass-name{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--navy);margin-bottom:10px;line-height:1.25}
   .prow{display:flex;gap:6px;font-size:.72rem;margin-bottom:4px}
   .prow-l{color:var(--text-sec);font-weight:500;width:50px;flex-shrink:0}
   .prow-v{color:var(--ink);font-weight:600;word-break:break-all}
   .pass-qr{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px}
-  /* QR container — white background, clear border for scanners */
-  #qrBox{width:90px;height:90px;background:#fff;border:2px solid #e0e0e0;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  #qrBox img,#qrBox canvas{width:82px!important;height:82px!important;display:block!important}
+  #qrBox{width:100px;height:100px;background:#fff;padding:5px;border:1.5px solid #ddd;border-radius:4px;box-sizing:border-box}
+  #qrBox img{width:90px;height:90px;display:block}
   .pass-qr-lbl{font-size:.58rem;color:var(--text-sec);text-align:center;letter-spacing:.04em;text-transform:uppercase}
   .pass-foot{background:var(--navy);padding:7px 14px;display:flex;justify-content:space-between;align-items:center}
   .pf-lbl{font-size:.6rem;color:rgba(255,255,255,.45);letter-spacing:.06em;text-transform:uppercase}
@@ -664,16 +663,31 @@ function showSuccess(data) {
   // Generate QR — pure black on white, directly into the div
   // Generate QR from regNumber — deferred to ensure DOM is ready
   setTimeout(() => {
+    // Generate QR as data URL then place as <img> — avoids all canvas/overflow issues
     if (window.QRCode && regNumber) {
       try {
-        new QRCode(document.getElementById('qrBox'), {
+        const tmp = document.createElement('div');
+        tmp.style.cssText = 'position:absolute;left:-9999px;top:-9999px;visibility:hidden';
+        document.body.appendChild(tmp);
+        new QRCode(tmp, {
           text: String(regNumber),
-          width: 82, height: 82,
-          colorDark:  '#000000',
-          colorLight: '#ffffff',
+          width: 90, height: 90,
+          colorDark: '#000000', colorLight: '#ffffff',
           correctLevel: QRCode.CorrectLevel.H
         });
-      } catch(e) { document.getElementById('qrBox').textContent = regNumber; }
+        setTimeout(() => {
+          const cv = tmp.querySelector('canvas');
+          if (cv) {
+            const img = document.createElement('img');
+            img.src = cv.toDataURL('image/png');
+            img.width = 90; img.height = 90;
+            document.getElementById('qrBox').appendChild(img);
+          }
+          document.body.removeChild(tmp);
+        }, 200);
+      } catch(e) {
+        document.getElementById('qrBox').textContent = regNumber;
+      }
     }
   }, 300);
 }
