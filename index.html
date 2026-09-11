@@ -618,7 +618,8 @@ async function sendConfirmation(data) {
     mobile:    data.mobile   || '',
     reg_id:    String(data.regNumber || data.regId || ''),
     date:      '30 September 2026 (Wednesday)',
-    venue:     'Suan Luang Rama IX, Bangkok'
+    venue:     'Suan Luang Rama IX, Bangkok',
+    pass_url:  'https://nagarajprasadh.github.io/vbr2026/pass.html?reg=' + String(data.regNumber || '')
   });
 }
 

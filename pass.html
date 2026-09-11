@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VBR 2026 — Your Pass</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+  :root{
+    --saffron:#E8500A; --green:#1A6B2F; --green-light:#EBF5EE;
+    --navy:#0C1F3F; --navy-mid:#162E58;
+    --ink:#1C2333; --mist:#F4F6F9; --line:#E4E8EF;
+    --text-sec:#5C6478; --white:#FFFFFF; --error:#C0392B;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--mist);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 16px 60px;-webkit-font-smoothing:antialiased}
+
+  .topbar{width:100%;max-width:420px;background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:12px;padding:16px 20px;margin-bottom:20px;position:relative}
+  .topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%);border-radius:12px 12px 0 0}
+  .topbar h1{font-family:'DM Serif Display',serif;font-size:1rem;font-weight:400;color:#fff}
+  .topbar p{font-size:.72rem;opacity:.6;color:#fff;margin-top:2px}
+
+  /* PASS */
+  .pass{width:100%;max-width:420px;background:var(--white);border-radius:12px;border:1px solid var(--line);box-shadow:0 4px 24px rgba(12,31,63,.1);overflow:hidden;margin-bottom:16px}
+  .pass-top{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:14px 18px;position:relative}
+  .pass-top::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
+  .pass-top-inner{display:flex;align-items:center;gap:12px}
+  .pass-logo{width:52px;height:52px;flex-shrink:0;background:#fff;border-radius:8px;padding:4px;display:flex;align-items:center;justify-content:center}
+  .pass-logo img{width:100%;height:100%;object-fit:contain}
+  .pass-event-title{font-size:.72rem;font-weight:700;color:#fff;letter-spacing:.06em;text-transform:uppercase;line-height:1.3}
+  .pass-event-sub{font-size:.68rem;color:rgba(255,255,255,.6);margin-top:2px}
+
+  .pass-body{padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
+  .pass-details{flex:1;min-width:0}
+  .pass-name{font-family:'DM Serif Display',serif;font-size:1.15rem;font-weight:400;color:var(--navy);margin-bottom:10px;line-height:1.2}
+  .pass-row{display:flex;gap:6px;font-size:.75rem;margin-bottom:5px}
+  .pass-row-label{color:var(--text-sec);font-weight:500;width:54px;flex-shrink:0}
+  .pass-row-val{color:var(--ink);font-weight:600;word-break:break-all}
+  .pass-qr{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .pass-qr canvas{display:block;border-radius:4px;border:1px solid var(--line)}
+  .pass-qr-lbl{font-size:.6rem;color:var(--text-sec);text-align:center}
+  .pass-foot{background:var(--mist);border-top:1px solid var(--line);padding:8px 18px;display:flex;justify-content:space-between;align-items:center}
+  .pf-lbl{font-size:.65rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.05em}
+  .pf-val{font-size:.85rem;font-weight:700;color:var(--navy)}
+
+  /* BUTTONS */
+  .btn{display:block;width:100%;max-width:420px;padding:13px;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;text-align:center;margin-bottom:8px;transition:all .15s}
+  .btn-dl{background:var(--green);color:#fff}
+  .btn-dl:hover{background:#145526}
+  .btn-print{background:var(--mist);color:var(--navy);border:1.5px solid var(--line)}
+  .btn-print:hover{border-color:var(--navy)}
+
+  /* STATES */
+  .state{width:100%;max-width:420px;text-align:center;padding:40px 20px}
+  .state-icon{font-size:2.5rem;margin-bottom:12px}
+  .state h2{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:6px}
+  .state p{font-size:.85rem;color:var(--text-sec);line-height:1.6}
+  .spinner{width:32px;height:32px;border:3px solid var(--line);border-top-color:var(--saffron);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* PRINT */
+  @media print{
+    body{padding:0;background:#fff}
+    .btn,.topbar{display:none}
+    .pass{box-shadow:none;border:none;max-width:100%}
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>Viksit Bharat Run 2026</h1>
+  <p>30 September 2026 · Suan Luang Rama IX, Bangkok</p>
+</div>
+
+<div id="stateLoading" class="state">
+  <div class="spinner"></div>
+  <p>Loading your pass…</p>
+</div>
+
+<div id="stateError" class="state" style="display:none">
+  <div class="state-icon">⚠️</div>
+  <h2>Pass Not Found</h2>
+  <p>This link may be invalid or expired. Please use the link sent to your registered email address.</p>
+</div>
+
+<div id="passWrap" style="display:none;width:100%;max-width:420px">
+  <div class="pass" id="passCard">
+    <div class="pass-top">
+      <div class="pass-top-inner">
+        <div class="pass-logo"><img src="vbr-logo.png" id="logoImg" alt="VBR"></div>
+        <div>
+          <div class="pass-event-title">Viksit Bharat Run 2026</div>
+          <div class="pass-event-sub">30 Sep 2026 · Suan Luang Rama IX, Bangkok</div>
+        </div>
+      </div>
+    </div>
+    <div class="pass-body">
+      <div class="pass-details" id="passDetails"></div>
+      <div class="pass-qr">
+        <div id="qrBox"></div>
+        <div class="pass-qr-lbl">SCAN AT CHECK-IN</div>
+      </div>
+    </div>
+    <div class="pass-foot">
+      <span class="pf-lbl">Registration No.</span>
+      <span class="pf-val" id="regNoDisplay"></span>
+    </div>
+  </div>
+
+  <button class="btn btn-dl" onclick="downloadPass()">Download Pass</button>
+  <button class="btn btn-print" onclick="window.print()">Print Pass</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:            "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
+  authDomain:        "viksitbharatrunbkk2026.firebaseapp.com",
+  databaseURL:       "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "viksitbharatrunbkk2026",
+  storageBucket:     "viksitbharatrunbkk2026.firebasestorage.app",
+  messagingSenderId: "732438557121",
+  appId:             "1:732438557121:web:c41053238a31f5c2af3f40"
+});
+const db = firebase.database();
+
+// Read reg number from URL ?reg=1001
+const params    = new URLSearchParams(window.location.search);
+const regParam  = params.get('reg');
+
+async function loadPass() {
+  if (!regParam) { showError(); return; }
+
+  const num = parseInt(regParam);
+  if (isNaN(num)) { showError(); return; }
+
+  try {
+    const snap = await db.ref('vbr2026/registrations').once('value');
+    const all  = snap.val() || {};
+    const hit  = Object.entries(all).find(([k,v]) => v.regNumber === num);
+    if (!hit) { showError(); return; }
+
+    const [key, data] = hit;
+    const p = data.participant || {};
+
+    // Render details
+    document.getElementById('passDetails').innerHTML = `
+      <div class="pass-name">${esc(p.name||'')}</div>
+      <div class="pass-row"><span class="pass-row-label">T-Shirt</span><span class="pass-row-val">${esc(p.size||'')}</span></div>
+      <div class="pass-row"><span class="pass-row-label">${esc(p.idType||'ID')}</span><span class="pass-row-val">${esc(p.idNumber||'')}</span></div>
+      <div class="pass-row"><span class="pass-row-label">Email</span><span class="pass-row-val">${esc(data.email||'')}</span></div>
+      <div class="pass-row"><span class="pass-row-label">Mobile</span><span class="pass-row-val">${esc(data.mobile||'')}</span></div>`;
+
+    document.getElementById('regNoDisplay').textContent = num;
+    document.title = 'VBR 2026 Pass — ' + (p.name||'') + ' #' + num;
+
+    // Show pass
+    document.getElementById('stateLoading').style.display = 'none';
+    document.getElementById('passWrap').style.display = 'block';
+
+    // Generate QR after DOM ready
+    setTimeout(() => {
+      new QRCode(document.getElementById('qrBox'), {
+        text:         String(num),
+        width:        82,
+        height:       82,
+        colorDark:    '#000000',
+        colorLight:   '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }, 200);
+
+  } catch(e) {
+    showError();
+  }
+}
+
+function showError() {
+  document.getElementById('stateLoading').style.display = 'none';
+  document.getElementById('stateError').style.display   = 'block';
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function downloadPass() {
+  const card = document.getElementById('passCard');
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+  s.onload = () => {
+    html2canvas(card, { scale:3, backgroundColor:'#ffffff', useCORS:true, logging:false }).then(canvas => {
+      const a = document.createElement('a');
+      a.download = 'VBR2026-Pass-' + regParam + '.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    });
+  };
+  document.head.appendChild(s);
+}
+
+loadPass();
+</script>
+</body>
+</html>
