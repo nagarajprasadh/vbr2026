@@ -99,7 +99,7 @@
   .mc-foot a{color:var(--saffron);text-decoration:none;font-weight:600}
 
   /* REG CARD */
-  .rc{background:var(--white);border-radius:var(--rl);box-shadow:var(--shl);position:sticky;top:24px;border:1px solid var(--line)}
+  .rc{background:var(--white);border-radius:var(--rl);box-shadow:var(--shl);overflow:hidden;position:sticky;top:24px;border:1px solid var(--line)}
   .rc-head{background:linear-gradient(140deg,var(--navy) 0%,var(--navy-mid) 100%);padding:18px 22px;position:relative;display:flex;align-items:center;gap:14px}
   .rc-head::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.33%,#fff 33.33%,#fff 66.66%,var(--green) 66.66%)}
   .rc-logo{width:56px;height:56px;flex-shrink:0;background:var(--white);border-radius:8px;padding:5px;display:flex;align-items:center;justify-content:center}
@@ -625,7 +625,7 @@ const LOGO_B64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoUAAAKBCAYAAAAh
 
 function showSuccess(data) {
   document.getElementById('loader').classList.remove('active');
-  
+  document.getElementById('step-1').style.display = 'none';
   document.getElementById('succSection').classList.add('active');
   const p         = data.participant || {};
   const regNumber = data.regNumber || data.regId || '';
