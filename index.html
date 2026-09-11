@@ -23,17 +23,12 @@
   .tc{height:4px;background:linear-gradient(90deg,var(--saffron) 33.33%,#fff 33.33%,#fff 66.66%,var(--green) 66.66%)}
 
   /* HERO */
-  .hero{background:var(--navy);line-height:0;padding:16px 20px 12px}
+  .hero{background:#fff;line-height:0;border-bottom:3px solid var(--saffron)}
   .hero img{
-    display:block;width:100%;max-width:1240px;margin:0 auto;
-    height:auto;max-height:220px;
-    object-fit:cover;object-position:60% top;
-    border-radius:12px;box-shadow:0 4px 20px rgba(12,31,63,.18);
+    display:block;width:100%;max-width:960px;margin:0 auto;
+    height:auto;
   }
-  @media(max-width:600px){
-    .hero{padding:10px 12px 0}
-    .hero img{max-height:140px;border-radius:8px}
-  }
+  @media(max-width:600px){.hero img{max-width:100%}}
 
   /* EVENT STRIP */
   .es{background:var(--navy);color:rgba(255,255,255,.88);padding:11px 24px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
