@@ -23,9 +23,17 @@
   .tc{height:4px;background:linear-gradient(90deg,var(--saffron) 33.33%,#fff 33.33%,#fff 66.66%,var(--green) 66.66%)}
 
   /* HERO */
-  .hero{width:100%;background:#fff;line-height:0}
-  .hero img{width:100%;display:block;max-height:200px;object-fit:cover;object-position:65% top}
-  @media(max-width:600px){.hero img{max-height:120px}}
+  .hero{background:var(--navy);line-height:0;padding:16px 20px 12px}
+  .hero img{
+    display:block;width:100%;max-width:1240px;margin:0 auto;
+    height:auto;max-height:220px;
+    object-fit:cover;object-position:60% top;
+    border-radius:12px;box-shadow:0 4px 20px rgba(12,31,63,.18);
+  }
+  @media(max-width:600px){
+    .hero{padding:10px 12px 0}
+    .hero img{max-height:140px;border-radius:8px}
+  }
 
   /* EVENT STRIP */
   .es{background:var(--navy);color:rgba(255,255,255,.88);padding:11px 24px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
@@ -223,7 +231,6 @@
 <div class="hero">
   <img src="hero.jpg" alt="Viksit Bharat Run 2026 — Bangkok, Thailand">
 </div>
-<div class="tc"></div>
 
 <!-- EVENT STRIP -->
 <div class="es">
