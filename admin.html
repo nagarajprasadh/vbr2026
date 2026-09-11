@@ -356,11 +356,12 @@ window.confirmAction = async function() {
 
 // ── CSV export ──
 window.exportCSV = function() {
-  const rows = [['Reg No.','Name','Email','Mobile','ID Type','ID Number','Size','Registered At','Checked In','Check-in Time']];
+  const rows = [['Reg No.','Name','Email','Mobile','ID Type','ID Number','Size','Registered At','Checked In','Check-in Time','Pass URL']];
   allRegs.forEach(r => {
     const p = r.participant || {};
     const safe = s => String(s||'').replace(/^[=+\-@]/,"'$&");
-    rows.push([r.regNumber||'', safe(p.name), safe(r.email), safe(r.mobile), p.idType||'', p.idNumber||'', p.size||'', r.registeredAt||'', r.checkedIn?'Yes':'No', r.checkedInAt||'']);
+    const passUrl = r.regNumber ? `https://nagarajprasadh.github.io/vbr2026/pass.html?reg=${r.regNumber}` : '';
+    rows.push([r.regNumber||'', safe(p.name), safe(r.email), safe(r.mobile), p.idType||'', p.idNumber||'', p.size||'', r.registeredAt||'', r.checkedIn?'Yes':'No', r.checkedInAt||'', passUrl]);
   });
   const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob = new Blob([csv], { type:'text/csv' });
