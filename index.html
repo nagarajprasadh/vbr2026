@@ -623,6 +623,7 @@ async function sendConfirmation(data) {
 }
 
 async function submitReg() {
+  document.getElementById('s3Alert').innerHTML = ''; // clear any previous error
   document.getElementById('step-3').classList.remove('active');
   document.getElementById('loader').classList.add('active');
   try {
@@ -694,17 +695,20 @@ function showSuccess(data) {
     </div>`;
 
   // Generate QR — pure black on white, directly into the div
-  if (window.QRCode && regNumber) {
-    try {
-      new QRCode(document.getElementById('qrBox'), {
-        text: String(regNumber),
-        width: 82, height: 82,
-        colorDark:  '#000000',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    } catch(e) { document.getElementById('qrBox').textContent = regNumber; }
-  }
+  // Generate QR from regNumber — deferred to ensure DOM is ready
+  setTimeout(() => {
+    if (window.QRCode && regNumber) {
+      try {
+        new QRCode(document.getElementById('qrBox'), {
+          text: String(regNumber),
+          width: 82, height: 82,
+          colorDark:  '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      } catch(e) { document.getElementById('qrBox').textContent = regNumber; }
+    }
+  }, 300);
 }
 
 window.dlPass = function() {
