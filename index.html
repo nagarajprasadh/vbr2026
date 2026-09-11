@@ -478,7 +478,7 @@
     const c = snap.val() || {};
     if (c.regOpen === false) {
       document.getElementById('closedBanner').style.display = 'block';
-      document.getElementById('stepsBar').style.display = 'none';
+      
       document.getElementById('step-1').style.display = 'none';
     }
     window._maxReg = c.maxReg || 500;
@@ -491,7 +491,6 @@ let regData = {};
 
 function toggleRetrieve(show) {
   document.getElementById('retPanel').style.display  = show ? 'block' : 'none';
-  document.getElementById('stepsBar').style.display  = show ? 'none'  : 'flex';
   document.getElementById('step-1').style.display    = show ? 'none'  : 'block';
 }
 window.toggleRetrieve = toggleRetrieve;
@@ -616,7 +615,7 @@ async function submitReg() {
     showSuccess(regData);
   } catch(e) {
     document.getElementById('loader').classList.remove('active');
-    document.getElementById('step-3').classList.add('active');
+    document.getElementById('step-1').style.display = 'block';
     document.getElementById('s3Alert').innerHTML = `<div class="alert alert-err">${e.message}</div>`;
   }
 }
@@ -626,7 +625,7 @@ const LOGO_B64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoUAAAKBCAYAAAAh
 
 function showSuccess(data) {
   document.getElementById('loader').classList.remove('active');
-  document.getElementById('stepsBar').style.display = 'none';
+  
   document.getElementById('succSection').classList.add('active');
   const p         = data.participant || {};
   const regNumber = data.regNumber || data.regId || '';
