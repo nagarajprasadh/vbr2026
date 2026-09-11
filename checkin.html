@@ -6,181 +6,162 @@
 <title>VBR 2026 — Check-in</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
-  :root {
-    --saffron:#E8500A; --saffron-dark:#B83E08; --saffron-light:#FDF1EB;
+  :root{
+    --saffron:#E8500A; --saffron-dark:#B83E08;
     --green:#1A6B2F; --green-light:#EBF5EE;
     --navy:#0C1F3F; --navy-mid:#162E58;
     --ink:#1C2333; --mist:#F4F6F9; --line:#E4E8EF;
     --text-sec:#5C6478; --white:#FFFFFF; --error:#C0392B;
+    --warn-bg:#FEF3C7; --warn:#92400E;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'DM Sans',sans-serif;background:var(--mist);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
-  .hidden{display:none!important}
+  html,body{height:100%;overflow:hidden}
+  body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--ink);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 
-  /* HEADER */
-  .topbar{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:var(--white);padding:16px 22px;position:relative}
-  .topbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
-  .topbar h1{font-family:'DM Serif Display',serif;font-size:1.05rem;font-weight:400}
-  .topbar p{font-size:.73rem;opacity:.6;margin-top:2px}
+  /* HEADER — compact */
+  .hdr{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:10px 16px;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
+  .hdr-title{font-family:'DM Serif Display',serif;font-size:.9rem;font-weight:400;color:#fff}
+  .hdr-stats{display:flex;gap:14px;flex-shrink:0}
+  .hdr-stat{text-align:center}
+  .hdr-stat-v{font-size:1.1rem;font-weight:700;color:#fff;line-height:1}
+  .hdr-stat-l{font-size:.58rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.04em}
 
-  /* STATS */
-  .stats{background:var(--white);border-bottom:1px solid var(--line);display:flex;max-width:680px;margin:0 auto}
-  .stat{flex:1;text-align:center;padding:13px 8px}
-  .stat+.stat{border-left:1px solid var(--line)}
-  .stat-v{font-size:1.55rem;font-weight:700;color:var(--navy);line-height:1;margin-bottom:3px}
-  .stat-l{font-size:.7rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.05em}
+  /* BODY */
+  .body{flex:1;overflow:hidden;display:flex;flex-direction:column;background:var(--mist)}
 
-  /* MAIN */
-  main{max-width:480px;margin:0 auto;padding:20px 14px 60px}
-  .card{background:var(--white);border-radius:12px;box-shadow:0 4px 24px rgba(12,31,63,.09);overflow:hidden}
-
-  /* MODE BUTTONS */
-  .mode-bar{display:flex;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line);background:var(--mist)}
-  .mode-btn{flex:1;padding:10px;border:1.5px solid var(--line);border-radius:8px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;color:var(--text-sec);cursor:pointer;transition:all .15s}
-  .mode-btn.mode-active{background:var(--saffron);color:var(--white);border-color:var(--saffron)}
+  /* TABS */
+  .tabs{display:flex;background:var(--white);border-bottom:1px solid var(--line);flex-shrink:0}
+  .tab{flex:1;padding:10px 8px;text-align:center;font-size:.78rem;font-weight:600;color:var(--text-sec);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none}
+  .tab.active{color:var(--saffron);border-bottom-color:var(--saffron);background:var(--white)}
+  .tab-panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+  .tab-panel.active{display:flex}
 
   /* SCAN PANEL */
-  .scan-label{padding:14px 18px 10px;font-size:.82rem;color:var(--text-sec);text-align:center;line-height:1.5}
-  .scanner-wrap{position:relative;background:#000;border-radius:12px;overflow:hidden;margin:0 18px 14px}
-  #qr-reader{width:100%}
-  #qr-reader video{width:100%!important;border-radius:12px}
-  .scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-  .scan-frame{
-    width:56%;aspect-ratio:1;position:relative;
+  #qr-reader{flex:1;overflow:hidden;background:#000;position:relative}
+  #qr-reader video{width:100%!important;height:100%!important;object-fit:cover}
+  /* Html5Qrcode default button override */
+  #qr-reader__scan_region{height:100%!important}
+  #qr-reader__dashboard{padding:8px!important;background:rgba(0,0,0,.6)!important}
+  #qr-reader__dashboard button{
+    background:var(--saffron)!important;color:#fff!important;border:none!important;
+    border-radius:6px!important;padding:7px 14px!important;font-family:'DM Sans',sans-serif!important;
+    font-size:.8rem!important;font-weight:600!important;cursor:pointer!important
   }
-  .scan-frame::before,.scan-frame::after,.scan-frame span::before,.scan-frame span::after{
-    content:'';position:absolute;width:22px;height:22px;border-color:var(--saffron);border-style:solid;
+  #qr-reader__camera_selection{
+    font-family:'DM Sans',sans-serif!important;font-size:.78rem!important;
+    padding:5px 8px!important;border-radius:6px!important;
+    border:1.5px solid rgba(255,255,255,.3)!important;
+    background:rgba(0,0,0,.5)!important;color:#fff!important;width:100%!important;margin-bottom:6px!important
   }
-  .scan-frame::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
-  .scan-frame::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
-  .scan-frame span::before{bottom:0;left:0;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
-  .scan-frame span::after{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
-  .scan-line{position:absolute;left:5%;right:5%;height:2px;background:linear-gradient(90deg,transparent,var(--saffron),transparent);animation:sweep 2s ease-in-out infinite}
-  @keyframes sweep{0%,100%{top:5%}50%{top:90%}}
+  #qr-reader img[alt="Info icon"]{display:none!important}
 
-  /* KEYBOARD PANEL */
-  .kb-wrap{padding:16px 18px}
-  .kb-display{background:var(--mist);border:1.5px solid var(--line);border-radius:8px;padding:14px;text-align:center;font-size:1.4rem;font-weight:700;color:var(--navy);letter-spacing:.08em;margin-bottom:12px;min-height:54px}
-  .kb-hint{font-size:.75rem;color:var(--text-sec);text-align:center;margin-bottom:12px}
-  .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .kp-btn{padding:16px 8px;border:1.5px solid var(--line);border-radius:8px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all .12s;text-align:center}
-  .kp-btn:active{background:var(--mist);transform:scale(.96)}
+  /* KB PANEL */
+  #panel-kb{flex-direction:column;padding:12px}
+  .kb-display{background:var(--white);border:1.5px solid var(--line);border-radius:8px;padding:12px;text-align:center;font-size:1.6rem;font-weight:700;color:var(--navy);letter-spacing:.1em;margin-bottom:8px;min-height:52px}
+  .kb-hint{font-size:.72rem;color:var(--text-sec);text-align:center;margin-bottom:10px}
+  .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;flex:1}
+  .kp-btn{border:1.5px solid var(--line);border-radius:8px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:1.2rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center}
+  .kp-btn:active{background:var(--mist);transform:scale(.95)}
   .kp-del{font-size:1.3rem;color:var(--error)}
   .kp-enter{background:var(--navy);color:#fff;border-color:var(--navy);font-size:1.3rem}
   .kp-enter:active{background:#001a45}
 
-  /* RESULT SCREENS */
-  .result-screen{padding:24px 20px;text-align:center;display:none}
-  .result-screen.show{display:block}
-  .result-icon{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
-  .icon-ok{background:var(--green-light)}
-  .icon-warn{background:#FEF3C7}
-  .icon-err{background:#FDECEA}
-  .result-title{font-family:'DM Serif Display',serif;font-size:1.15rem;font-weight:400;color:var(--navy);margin-bottom:6px}
-  .result-sub{font-size:.82rem;color:var(--text-sec);margin-bottom:18px;line-height:1.6}
-  .result-meta{background:var(--mist);border-radius:10px;padding:14px 16px;margin-bottom:18px;text-align:left}
-  .meta-row{display:flex;gap:8px;font-size:.82rem;padding:5px 0;border-bottom:1px solid var(--line)}
-  .meta-row:last-child{border-bottom:none}
-  .meta-lbl{color:var(--text-sec);font-weight:500;width:80px;flex-shrink:0}
-  .meta-val{color:var(--ink);font-weight:600;word-break:break-all}
-  .btn-confirm{width:100%;background:var(--green);color:var(--white);border:none;border-radius:8px;padding:14px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:10px;transition:background .15s}
-  .btn-confirm:hover{background:#145526}
-  .btn-ghost{width:100%;background:var(--white);color:var(--text-sec);border:1.5px solid var(--line);border-radius:8px;padding:12px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
-  .btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
-  .countdown{font-size:.75rem;color:var(--text-sec);margin-top:10px;min-height:18px}
+  /* RESULT BANNER — overlays bottom of screen */
+  .result-banner{
+    position:fixed;bottom:0;left:0;right:0;
+    padding:14px 16px;z-index:100;
+    transform:translateY(100%);transition:transform .25s ease;
+    border-radius:14px 14px 0 0;
+    box-shadow:0 -4px 24px rgba(0,0,0,.2);
+  }
+  .result-banner.show{transform:translateY(0)}
+  .result-banner.ok{background:var(--green)}
+  .result-banner.warn{background:var(--warn-bg);border-top:3px solid #D97706}
+  .result-banner.err{background:#FDECEA;border-top:3px solid var(--error)}
+
+  .rb-inner{display:flex;align-items:center;gap:12px}
+  .rb-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;font-weight:700}
+  .ok .rb-icon{background:rgba(255,255,255,.2);color:#fff}
+  .warn .rb-icon{background:#FDE68A;color:var(--warn)}
+  .err .rb-icon{background:#FECACA;color:var(--error)}
+  .rb-body{flex:1;min-width:0}
+  .rb-title{font-size:.92rem;font-weight:700;line-height:1.2}
+  .ok .rb-title{color:#fff}
+  .warn .rb-title{color:var(--warn)}
+  .err .rb-title{color:var(--error)}
+  .rb-sub{font-size:.75rem;margin-top:2px;opacity:.8;line-height:1.4}
+  .ok .rb-sub{color:rgba(255,255,255,.85)}
+  .warn .rb-sub{color:var(--warn)}
+  .err .rb-sub{color:var(--error)}
+  .rb-dismiss{font-size:.7rem;font-weight:600;cursor:pointer;opacity:.7;color:inherit;white-space:nowrap;align-self:flex-start;padding:2px 0}
+  .rb-dismiss:hover{opacity:1}
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <h1>Viksit Bharat Run 2026 — Check-in</h1>
-  <p>Wednesday, 30 September 2026 · Suan Luang Rama IX, Bangkok</p>
-</div>
-
-<div class="stats">
-  <div class="stat"><div class="stat-v" id="csTotal">—</div><div class="stat-l">Registered</div></div>
-  <div class="stat"><div class="stat-v" id="csChecked">—</div><div class="stat-l">Checked In</div></div>
-  <div class="stat"><div class="stat-v" id="csPending">—</div><div class="stat-l">Pending</div></div>
-</div>
-
-<main>
-  <div class="card" id="mainCard">
-
-    <!-- MODE BAR -->
-    <div class="mode-bar">
-      <button id="modeQR" class="mode-btn mode-active" onclick="setMode('qr')">📷 QR Camera</button>
-      <button id="modeKB" class="mode-btn"             onclick="setMode('kb')">🔢 Keyboard / USB</button>
-    </div>
-
-    <!-- QR PANEL -->
-    <div id="panelQR">
-      <div class="scan-label">
-        Point camera at participant's QR code<br>
-        <span style="font-size:12px;opacity:.7">USB / Bluetooth scanner also works here</span>
-      </div>
-      <div class="scanner-wrap">
-        <div id="qr-reader"></div>
-        <div class="scan-overlay"><div class="scan-frame"><span></span><div class="scan-line"></div></div></div>
-      </div>
-    </div>
-
-    <!-- KEYBOARD / USB PANEL -->
-    <div id="panelKB" class="hidden">
-      <div class="kb-wrap">
-        <div class="kb-display" id="kbDisplay">—</div>
-        <div class="kb-hint">Type registration ID or use USB scanner, then press ↵</div>
-        <div class="keypad">
-          <button class="kp-btn" onclick="kbKey('1')">1</button>
-          <button class="kp-btn" onclick="kbKey('2')">2</button>
-          <button class="kp-btn" onclick="kbKey('3')">3</button>
-          <button class="kp-btn" onclick="kbKey('4')">4</button>
-          <button class="kp-btn" onclick="kbKey('5')">5</button>
-          <button class="kp-btn" onclick="kbKey('6')">6</button>
-          <button class="kp-btn" onclick="kbKey('7')">7</button>
-          <button class="kp-btn" onclick="kbKey('8')">8</button>
-          <button class="kp-btn" onclick="kbKey('9')">9</button>
-          <button class="kp-btn kp-del" onclick="kbKey('del')">⌫</button>
-          <button class="kp-btn" onclick="kbKey('0')">0</button>
-          <button class="kp-btn kp-enter" onclick="kbKey('enter')">↵</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- RESULT: CONFIRM -->
-    <div class="result-screen" id="screenConfirm">
-      <div class="result-icon icon-ok">✓</div>
-      <div class="result-title">Hand Over T-Shirt</div>
-      <div class="result-meta" id="confirmMeta"></div>
-      <button class="btn-confirm" id="btnConfirm" onclick="doCheckin()">✓ Confirm Check-in</button>
-      <button class="btn-ghost" onclick="cancelResult()">Cancel — Scan Next</button>
-    </div>
-
-    <!-- RESULT: ALREADY CHECKED IN -->
-    <div class="result-screen" id="screenDone">
-      <div class="result-icon icon-warn">✗</div>
-      <div class="result-title">Already Checked In</div>
-      <div class="result-meta" id="doneMeta"></div>
-      <button class="btn-ghost" onclick="cancelResult()">Scan Next</button>
-      <div class="countdown" id="countdownDone"></div>
-    </div>
-
-    <!-- RESULT: NOT FOUND -->
-    <div class="result-screen" id="screenErr">
-      <div class="result-icon icon-err">!</div>
-      <div class="result-title">Not Found</div>
-      <div class="result-sub">This QR code was not found in the system.<br>Check the pass and try again.</div>
-      <button class="btn-ghost" onclick="cancelResult()">Scan Next</button>
-    </div>
-
+<!-- HEADER -->
+<div class="hdr">
+  <div>
+    <div class="hdr-title">VBR 2026 — Check-in</div>
+    <div style="font-size:.62rem;color:rgba(255,255,255,.45);margin-top:1px">30 Sep · Suan Luang Rama IX</div>
   </div>
-</main>
+  <div class="hdr-stats">
+    <div class="hdr-stat"><div class="hdr-stat-v" id="csTotal">—</div><div class="hdr-stat-l">Total</div></div>
+    <div class="hdr-stat"><div class="hdr-stat-v" id="csChecked">—</div><div class="hdr-stat-l">Done</div></div>
+    <div class="hdr-stat"><div class="hdr-stat-v" id="csPending">—</div><div class="hdr-stat-l">Left</div></div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body">
+  <div class="tabs">
+    <div class="tab active" id="tab-scan" onclick="switchTab('scan')">📷 Camera / USB</div>
+    <div class="tab" id="tab-kb" onclick="switchTab('kb')">🔢 Keyboard</div>
+  </div>
+
+  <!-- SCAN -->
+  <div class="tab-panel active" id="panel-scan">
+    <div id="qr-reader"></div>
+  </div>
+
+  <!-- KEYBOARD -->
+  <div class="tab-panel" id="panel-kb">
+    <div class="kb-display" id="kbDisplay">—</div>
+    <div class="kb-hint">Enter registration number then press ↵</div>
+    <div class="keypad">
+      <button class="kp-btn" onclick="kp('1')">1</button>
+      <button class="kp-btn" onclick="kp('2')">2</button>
+      <button class="kp-btn" onclick="kp('3')">3</button>
+      <button class="kp-btn" onclick="kp('4')">4</button>
+      <button class="kp-btn" onclick="kp('5')">5</button>
+      <button class="kp-btn" onclick="kp('6')">6</button>
+      <button class="kp-btn" onclick="kp('7')">7</button>
+      <button class="kp-btn" onclick="kp('8')">8</button>
+      <button class="kp-btn" onclick="kp('9')">9</button>
+      <button class="kp-btn kp-del" onclick="kp('del')">⌫</button>
+      <button class="kp-btn" onclick="kp('0')">0</button>
+      <button class="kp-btn kp-enter" onclick="kp('enter')">↵</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT BANNER -->
+<div class="result-banner" id="resultBanner">
+  <div class="rb-inner">
+    <div class="rb-icon" id="rbIcon"></div>
+    <div class="rb-body">
+      <div class="rb-title" id="rbTitle"></div>
+      <div class="rb-sub" id="rbSub"></div>
+    </div>
+    <div class="rb-dismiss" onclick="dismissBanner()">✕ Next</div>
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-
 <script>
-// ── Firebase ──
 firebase.initializeApp({
   apiKey:            "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
   authDomain:        "viksitbharatrunbkk2026.firebaseapp.com",
@@ -192,219 +173,159 @@ firebase.initializeApp({
 });
 const db = firebase.database();
 
-// ── Helpers ──
-function el(id){ return document.getElementById(id); }
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
 // ── Live stats ──
 db.ref('vbr2026/registrations').on('value', snap => {
   const all     = snap.val() || {};
   const regs    = Object.values(all);
   const total   = regs.length;
   const checked = regs.filter(r => r.checkedIn).length;
-  el('csTotal').textContent   = total;
-  el('csChecked').textContent = checked;
-  el('csPending').textContent = total - checked;
+  document.getElementById('csTotal').textContent   = total;
+  document.getElementById('csChecked').textContent = checked;
+  document.getElementById('csPending').textContent = total - checked;
 });
 
-// ── Scanner (exactly IDY 2027 logic) ──
-let qrScanner = null;
+// ── Banner ──
+let bannerTimer = null;
 
-function startScanner() {
-  stopScanner(); // clear any stale instance first
-  qrScanner = new Html5Qrcode('qr-reader');
-  qrScanner.start(
-    { facingMode: 'environment' },
-    { fps: 12, qrbox: { width: 220, height: 220 }, aspectRatio: 1.0 },
-    onQrSuccess,
-    () => {} // per-frame errors are normal — ignore silently
-  ).catch(() => {
-    el('qr-reader').innerHTML =
-      '<div style="padding:40px;text-align:center;color:#6B7280;font-size:14px;">' +
-      'Camera not available.<br>Switch to Keyboard / USB mode.</div>';
-  });
+function showBanner(type, icon, title, sub) {
+  clearTimeout(bannerTimer);
+  document.getElementById('rbIcon').textContent  = icon;
+  document.getElementById('rbTitle').textContent = title;
+  document.getElementById('rbSub').textContent   = sub;
+  const b = document.getElementById('resultBanner');
+  b.className = 'result-banner show ' + type;
+  // Auto dismiss after 4s
+  bannerTimer = setTimeout(dismissBanner, 4000);
 }
 
-function stopScanner() {
-  if (qrScanner) { qrScanner.stop().catch(() => {}); qrScanner = null; }
+function dismissBanner() {
+  clearTimeout(bannerTimer);
+  document.getElementById('resultBanner').classList.remove('show');
+  lastScanned = null;
+  kbBuf = ''; updateKb();
+  if (currentTab === 'scan') resumeScanner();
 }
 
-function pauseScanner()  { if (qrScanner) qrScanner.pause(true); }
-function resumeScanner() { if (qrScanner) qrScanner.resume(); }
+// ── Process QR / number ──
+let lastScanned = null;
+let processing  = false;
 
-async function onQrSuccess(qrText) {
-  pauseScanner();
-  await processQR(qrText.trim());
-}
-
-// ── Mode toggle ──
-let scanMode = 'qr';
-let kbBuf    = '';
-
-function setMode(mode) {
-  scanMode = mode;
-  el('modeQR').classList.toggle('mode-active', mode === 'qr');
-  el('modeKB').classList.toggle('mode-active', mode === 'kb');
-  if (mode === 'qr') {
-    el('panelQR').classList.remove('hidden');
-    el('panelKB').classList.add('hidden');
-    startScanner();
-  } else {
-    el('panelQR').classList.add('hidden');
-    el('panelKB').classList.remove('hidden');
-    stopScanner();
-    kbBuf = '';
-    updateKbDisplay();
-  }
-  hideAllResults();
-}
-
-// ── Keyboard / USB ──
-function updateKbDisplay() {
-  el('kbDisplay').textContent = kbBuf.length > 0 ? kbBuf : '—';
-}
-
-function kbKey(key) {
-  if (key === 'del')   { kbBuf = kbBuf.slice(0, -1); updateKbDisplay(); return; }
-  if (key === 'enter') { if (kbBuf.length >= 3) { processQR(kbBuf); kbBuf = ''; updateKbDisplay(); } return; }
-  kbBuf += key;
-  updateKbDisplay();
-}
-
-// USB scanner fires keypresses — capture them globally in KB mode
-document.addEventListener('keydown', e => {
-  if (scanMode !== 'kb') return;
-  if (e.key === 'Enter' || e.keyCode === 13) { kbKey('enter'); return; }
-  if (e.key === 'Backspace') { kbKey('del'); return; }
-  if (/^[-A-Za-z0-9_]$/.test(e.key)) { kbBuf += e.key; updateKbDisplay(); }
-});
-
-// ── Process QR / ID ──
-let currentRegId  = null;
-let currentRegData = null;
-let countdownTimer = null;
-
-async function processQR(text) {
+async function process(text) {
   text = String(text).trim();
-  if (!text) return;
+  if (!text || text === lastScanned || processing) return;
+  lastScanned = text;
+  processing  = true;
 
-  hideAllResults();
+  if (navigator.vibrate) navigator.vibrate(80);
 
   try {
-    // Look up by regNumber (numeric 1001+) or email fallback
     const allSnap = await db.ref('vbr2026/registrations').once('value');
     const all = allSnap.val() || {};
-    let foundKey = null;
-    let foundData = null;
+    let foundKey = null, foundData = null;
 
-    // Try matching regNumber first (what QR contains)
-    const numericText = parseInt(text);
-    if (!isNaN(numericText)) {
-      const hit = Object.entries(all).find(([k,v]) => v.regNumber === numericText);
+    // Match regNumber (numeric)
+    const num = parseInt(text);
+    if (!isNaN(num)) {
+      const hit = Object.entries(all).find(([k,v]) => v.regNumber === num);
       if (hit) { foundKey = hit[0]; foundData = hit[1]; }
     }
-
-    // Try email match (USB scanner might scan email field)
+    // Match email
     if (!foundKey && text.includes('@')) {
       const hit = Object.entries(all).find(([k,v]) => v.email && v.email.toLowerCase() === text.toLowerCase());
       if (hit) { foundKey = hit[0]; foundData = hit[1]; }
     }
-
-    // Try direct Firebase key as last resort
+    // Direct Firebase key
     if (!foundKey && all[text]) { foundKey = text; foundData = all[text]; }
 
     if (!foundKey) {
-      showScreen('screenErr');
+      showBanner('err', '!', 'Not Found', 'QR code not in system. Check the pass and try again.');
+      processing = false;
+      setTimeout(() => { lastScanned = null; if (currentTab === 'scan') resumeScanner(); }, 3000);
       return;
     }
 
-    currentRegId   = foundKey;
-    currentRegData = foundData;
-    const p = currentRegData.participant || {};
+    const p = foundData.participant || {};
+    const name = p.name || '—';
+    const size = p.size || '—';
 
-    if (currentRegData.checkedIn) {
-      // Already checked in
-      el('doneMeta').innerHTML = metaHTML(p, currentRegData);
-      showScreen('screenDone');
-      startCountdown('countdownDone', 5, cancelResult);
-    } else {
-      // Ready to check in
-      el('confirmMeta').innerHTML = metaHTML(p, currentRegData);
-      showScreen('screenConfirm');
+    if (foundData.checkedIn) {
+      const t = foundData.checkedInAt ? new Date(foundData.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : '';
+      showBanner('warn', '✓', 'Already Checked In', `${name} · ${size} · Checked in at ${t}`);
+      processing = false;
+      return;
     }
 
-    if (navigator.vibrate) navigator.vibrate(120);
-
-  } catch(e) {
-    showScreen('screenErr');
-  }
-}
-
-function metaHTML(p, data) {
-  return `
-    <div class="meta-row"><span class="meta-lbl">Name</span><span class="meta-val">${esc(p.name||'—')}</span></div>
-    <div class="meta-row"><span class="meta-lbl">T-Shirt</span><span class="meta-val">${esc(p.size||'—')}</span></div>
-    <div class="meta-row"><span class="meta-lbl">ID</span><span class="meta-val">${esc((p.idType||'')+' '+(p.idNumber||''))}</span></div>
-    <div class="meta-row"><span class="meta-lbl">Email</span><span class="meta-val">${esc(data.email||'')}</span></div>
-    <div class="meta-row"><span class="meta-lbl">Mobile</span><span class="meta-val">${esc(data.mobile||'')}</span></div>
-    ${data.checkedInAt?`<div class="meta-row"><span class="meta-lbl">Checked in</span><span class="meta-val">${new Date(data.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div>`:''}`;
-}
-
-// ── Confirm check-in ──
-async function doCheckin() {
-  if (!currentRegId) return;
-  const btn = el('btnConfirm');
-  btn.disabled = true; btn.textContent = 'Processing…';
-  try {
-    await db.ref('vbr2026/registrations/' + currentRegId).update({
+    // Auto check-in immediately — no confirm needed
+    await db.ref('vbr2026/registrations/' + foundKey).update({
       checkedIn: true,
       checkedInAt: new Date().toISOString()
     });
-    cancelResult();
+
+    showBanner('ok', '✓', `${name} — ${size}`, `Reg #${foundData.regNumber || ''} · Checked in ✓`);
+
   } catch(e) {
-    btn.disabled = false; btn.textContent = '✓ Confirm Check-in';
-    alert('Check-in failed: ' + e.message);
+    showBanner('err', '!', 'Error', e.message);
+    setTimeout(() => { lastScanned = null; }, 2000);
   }
+  processing = false;
 }
 
-// ── Cancel / reset ──
-function cancelResult() {
-  clearTimeout(countdownTimer);
-  currentRegId = null; currentRegData = null;
-  hideAllResults();
-  kbBuf = ''; updateKbDisplay();
-  if (scanMode === 'qr') resumeScanner();
-}
+// ── Scanner ──
+let qrScanner = null;
+let currentTab = 'scan';
 
-function hideAllResults() {
-  ['screenConfirm','screenDone','screenErr'].forEach(id => {
-    el(id).classList.remove('show');
+function startScanner() {
+  stopScanner();
+  qrScanner = new Html5Qrcode('qr-reader');
+  qrScanner.start(
+    { facingMode: 'environment' },
+    { fps: 12, qrbox: { width: 200, height: 200 }, aspectRatio: 1.333 },
+    (text) => { pauseScanner(); process(text); },
+    () => {}
+  ).catch(() => {
+    document.getElementById('qr-reader').innerHTML =
+      '<div style="padding:30px;text-align:center;color:rgba(255,255,255,.6);font-size:.82rem">Camera unavailable.<br>Use Keyboard tab instead.</div>';
   });
-  el('btnConfirm').disabled = false;
-  el('btnConfirm').textContent = '✓ Confirm Check-in';
-  clearTimeout(countdownTimer);
 }
 
-function showScreen(id) {
-  hideAllResults();
-  el(id).classList.add('show');
+function stopScanner()   { if (qrScanner) { qrScanner.stop().catch(()=>{}); qrScanner = null; } }
+function pauseScanner()  { if (qrScanner) qrScanner.pause(true); }
+function resumeScanner() { if (qrScanner) qrScanner.resume(); }
+
+// ── Keyboard / USB ──
+let kbBuf = '';
+
+function updateKb() {
+  document.getElementById('kbDisplay').textContent = kbBuf || '—';
 }
 
-function startCountdown(elId, seconds, cb) {
-  clearTimeout(countdownTimer);
-  let remaining = seconds;
-  function tick() {
-    const e = el(elId);
-    if (e) e.textContent = `Returning to scanner in ${remaining}s…`;
-    if (remaining <= 0) { cb(); return; }
-    remaining--;
-    countdownTimer = setTimeout(tick, 1000);
-  }
-  tick();
+function kp(key) {
+  if (key === 'del')   { kbBuf = kbBuf.slice(0,-1); updateKb(); return; }
+  if (key === 'enter') { if (kbBuf.length >= 1) { process(kbBuf); } return; }
+  kbBuf += key; updateKb();
 }
 
-// ── Start in QR mode ──
-setMode('qr');
+// Physical keyboard / USB scanner
+document.addEventListener('keydown', e => {
+  if (currentTab !== 'kb') return;
+  if (e.key === 'Enter' || e.keyCode === 13) { kp('enter'); return; }
+  if (e.key === 'Backspace') { kp('del'); return; }
+  if (/^[-A-Za-z0-9_@.]$/.test(e.key)) { kbBuf += e.key; updateKb(); }
+});
+
+// ── Tab switch ──
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+  dismissBanner();
+  if (tab === 'scan') startScanner(); else stopScanner();
+}
+
+// ── Start ──
+startScanner();
 </script>
 </body>
 </html>
