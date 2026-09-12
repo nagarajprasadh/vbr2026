@@ -37,11 +37,11 @@
   .pass-row-val{color:var(--ink);font-weight:600;word-break:break-all}
   .pass-qr{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:5px}
   .qr-wrap{width:100px;height:100px;background:#fff;border:2px solid #ccc;border-radius:4px;padding:5px;display:flex;align-items:center;justify-content:center}
-  .qr-wrap img{width:90px;height:90px;display:block;image-rendering:pixelated}
+  .qr-wrap img{width:90px;height:90px;display:block}
   .pass-qr-lbl{font-size:.6rem;color:var(--text-sec);text-align:center;text-transform:uppercase;letter-spacing:.04em}
-  .pass-foot{background:var(--navy);padding:10px 18px;display:flex;justify-content:space-between;align-items:center}
-  .pf-lbl{font-size:.65rem;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.06em}
-  .pf-val{font-size:1.3rem;font-weight:700;color:#fff;letter-spacing:.05em}
+  .pass-foot{background:var(--mist);border-top:2px solid var(--navy);padding:10px 18px;display:flex;justify-content:space-between;align-items:center}
+  .pf-lbl{font-size:.65rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.06em}
+  .pf-val{font-size:1.4rem;font-weight:700;color:var(--navy);letter-spacing:.05em}
 
   /* BUTTONS */
   .btn{display:block;width:100%;max-width:420px;padding:13px;border-radius:8px;border:none;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;text-align:center;margin-bottom:8px;transition:all .15s}
@@ -81,14 +81,14 @@
   <p>This link may be invalid. Please use the link from your registration confirmation email.</p>
 </div>
 
+<!-- SCREENSHOT BANNER -->
+<div class="scr-banner" id="scrBanner" style="display:none">
+  <div class="scr-title">📸 Screenshot or Download Your Pass</div>
+  <div class="scr-sub">Show the QR code or Registration No. at check-in.<br>You can also open this link again anytime.</div>
+</div>
+
 <!-- PASS WRAP — hidden until loaded -->
 <div id="passWrap" style="display:none;width:100%;max-width:420px">
-
-  <!-- SCREENSHOT BANNER -->
-  <div class="scr-banner">
-    <div class="scr-title">📸 Screenshot or Download Your Pass</div>
-    <div class="scr-sub">Show the QR code or Registration No. at check-in.<br>You can also open this link again anytime.</div>
-  </div>
 
   <!-- PASS CARD -->
   <div class="pass" id="passCard">
@@ -158,7 +158,7 @@ function generateQR(num) {
         const img = document.createElement('img');
         img.src = cv.toDataURL('image/png');
         img.width = 90; img.height = 90;
-        img.style.cssText = 'display:block;image-rendering:pixelated';
+        img.style.cssText = 'display:block';
         document.getElementById('qrBox').appendChild(img);
       }
       document.body.removeChild(tmp);
@@ -190,7 +190,8 @@ async function loadPass() {
     document.getElementById('regNoDisplay').textContent = num;
     document.title = 'VBR 2026 — ' + (p.name||'') + ' #' + num;
     document.getElementById('stateLoading').style.display = 'none';
-    document.getElementById('passWrap').style.display     = 'block';
+    document.getElementById('passWrap').style.display = 'block';
+    document.getElementById('scrBanner').style.display = 'block';
     generateQR(num);
   } catch(e) {
     showError();
