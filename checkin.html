@@ -7,162 +7,269 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
   :root{
-    --saffron:#E8500A; --saffron-dark:#B83E08;
-    --green:#1A6B2F; --green-light:#EBF5EE;
-    --navy:#0C1F3F; --navy-mid:#162E58;
-    --ink:#1C2333; --mist:#F4F6F9; --line:#E4E8EF;
-    --text-sec:#5C6478; --white:#FFFFFF; --error:#C0392B;
-    --warn-bg:#FEF3C7; --warn:#92400E;
+    --bg:#1A1A2E; --surface:#16213E; --surface2:#0F3460;
+    --amber:#F5A623; --green:#2ECC71; --green-dark:#0a2e1a;
+    --saffron:#E8500A; --red:#E74C3C; --warn:#F39C12;
+    --ink:#E8E8F0; --ink-dim:#8892A4; --line:#253358;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;overflow:hidden;background:#111827}
-  body{font-family:'DM Sans',sans-serif;color:var(--ink);display:flex;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased}
-  .app{width:100%;max-width:420px;height:100%;max-height:840px;display:flex;flex-direction:column;overflow:hidden;border-radius:0;box-shadow:0 8px 48px rgba(0,0,0,.5);position:relative}
-  @media(min-width:421px){.app{border-radius:16px}}
+  html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
 
-  /* HEADER — compact */
-  .hdr{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:10px 16px;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  /* LIGHT MODE */
+  body.light{--bg:#F4F6F9;--surface:#FFFFFF;--surface2:#EEF1F6;--ink:#1C2333;--ink-dim:#5C6478;--line:#E4E8EF;--green-dark:#EBF5EE}
+  body.light .hdr{background:linear-gradient(135deg,#0C1F3F,#162E58)}
+  body.light #scanInput{background:#fff;color:#0C1F3F;border-color:#D97706}
+  body.light .scan-bar{background:#FEF3C7;border-bottom-color:#D97706}
+  body.light .scan-bar label{color:#92400E}
+  body.light .scan-hint{color:#92400E}
+  body.light th{background:#EEF1F6;color:#5C6478}
+  body.light td{color:#1C2333}
+  body.light tr:hover td{background:rgba(0,0,0,.03)}
+  body.light .badge-n{background:#F4F6F9;border-color:#E4E8EF}
+  body.light .result-banner.ok{background:#EBF5EE}
+  body.light .result-banner.warn{background:#FEF3C7}
+  body.light .result-banner.err{background:#FDECEA}
+  body.light .result-banner.confirm{background:#EEF1F6}
+  body.light .scan-log-item{background:rgba(0,0,0,.03)}
+
+  .layout{display:flex;flex-direction:column;height:100vh}
+
+  /* HEADER */
+  .hdr{background:linear-gradient(135deg,#0C1F3F,#162E58);color:#fff;padding:10px 18px;position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
   .hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
-  .hdr-title{font-family:'DM Serif Display',serif;font-size:.9rem;font-weight:400;color:#fff}
-  .hdr-stats{display:flex;gap:14px;flex-shrink:0}
-  .hdr-stat{text-align:center}
-  .hdr-stat-v{font-size:1.1rem;font-weight:700;color:#fff;line-height:1}
-  .hdr-stat-l{font-size:.58rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.04em}
-  .body{flex:1;overflow:hidden;display:flex;flex-direction:column;background:var(--mist)}
+  .hdr-left h1{font-family:'DM Serif Display',serif;font-size:.9rem;font-weight:400}
+  .hdr-left p{font-size:.6rem;opacity:.5;margin-top:1px}
+  .hdr-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .hdr-stats{display:flex;gap:14px}
+  .stat{text-align:center}
+  .stat-v{font-size:1.25rem;font-weight:700;line-height:1;color:var(--amber)}
+  .stat-l{font-size:.55rem;opacity:.6;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+  .mode-toggle{background:transparent;border:1px solid rgba(255,255,255,.25);border-radius:6px;color:rgba(255,255,255,.7);padding:5px 10px;font-size:.7rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+  .mode-toggle:hover{border-color:rgba(255,255,255,.6);color:#fff}
+
+  /* LIVE BADGE */
+  .live-badge{display:flex;align-items:center;gap:5px;font-size:.62rem;font-weight:700;color:var(--green);flex-shrink:0}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.4s ease-in-out infinite;flex-shrink:0}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
   /* TABS */
-  .tabs{display:flex;background:var(--white);border-bottom:1px solid var(--line);flex-shrink:0}
-  .tab{flex:1;padding:10px 8px;text-align:center;font-size:.78rem;font-weight:600;color:var(--text-sec);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none}
-  .tab.active{color:var(--saffron);border-bottom-color:var(--saffron);background:var(--white)}
-  .tab-panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+  .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+  .tab{flex:1;padding:9px 8px;text-align:center;font-size:.78rem;font-weight:600;color:var(--ink-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none}
+  .tab.active{color:var(--amber);border-bottom-color:var(--amber);background:var(--surface2)}
+  .tab-panel{display:none;flex:1;flex-direction:column;overflow:hidden}
   .tab-panel.active{display:flex}
 
-  /* SCAN PANEL */
-  #qr-reader{flex:1;overflow:hidden;background:#000;position:relative}
+  /* SCAN BAR */
+  .scan-bar{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--line)}
+  .scan-bar label{font-size:.72rem;font-weight:700;color:var(--amber);white-space:nowrap;flex-shrink:0}
+  #scanInput{width:155px;flex-shrink:0;font-size:1.4rem;font-weight:700;color:var(--amber);border:2px solid var(--amber);border-radius:8px;padding:7px 12px;font-family:'DM Sans',sans-serif;background:#0a1929;outline:none;letter-spacing:.08em}
+  #scanInput:focus{border-color:var(--saffron);box-shadow:0 0 0 3px rgba(232,80,10,.2)}
+  .scan-hint{font-size:.7rem;color:var(--ink-dim);flex:1}
+
+  /* RESULT BANNER */
+  .result-banner{display:none;flex-shrink:0;align-items:center;gap:12px;padding:10px 16px;font-weight:600;border-bottom:1px solid var(--line)}
+  .result-banner.show{display:flex}
+  .result-banner.ok{background:var(--green-dark);color:var(--green)}
+  .result-banner.warn{background:#2b1f00;color:var(--warn)}
+  .result-banner.err{background:#2b0d0d;color:var(--red)}
+  .result-banner.confirm{background:#0a2040;color:var(--amber);border-bottom-color:var(--amber)}
+  .rb-icon{font-size:1.1rem;flex-shrink:0}
+  .rb-name{font-size:.88rem;font-weight:700}
+  .rb-detail{font-size:.72rem;font-weight:400;margin-top:1px;opacity:.85}
+
+  /* TABLE */
+  .tbl-zone{flex:1;overflow:hidden;display:flex;flex-direction:column}
+  .tbl-wrap{flex:1;overflow-y:auto;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:.8rem}
+  thead{position:sticky;top:0;z-index:5}
+  th{text-align:left;padding:8px 12px;font-size:.65rem;font-weight:700;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--line);white-space:nowrap;background:var(--surface)}
+  td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:middle;color:var(--ink)}
+  tr:hover td{background:rgba(255,255,255,.03)}
+  tr.attended td{opacity:.35}
+  tr.attended td:first-child{border-left:3px solid var(--green)}
+  tr.highlight td{animation:flash .8s ease}
+  @keyframes flash{0%{background:var(--green-dark)}100%{background:transparent}}
+  .badge-y{background:var(--green-dark);color:var(--green);font-weight:700;font-size:.68rem;padding:2px 8px;border-radius:20px;border:1px solid #1a5c38;display:inline-flex;align-items:center;gap:3px}
+  .badge-n{background:var(--surface);color:var(--ink-dim);font-size:.68rem;padding:2px 8px;border-radius:20px;border:1px solid var(--line)}
+  .reg-no{font-weight:500;color:var(--ink-dim);font-size:.8rem}
+
+  /* FOOTER */
+  .tbl-foot{flex-shrink:0;padding:5px 16px;background:var(--surface);border-top:1px solid var(--line);font-size:.7rem;color:var(--ink-dim)}
+
+  /* RECENT SCANS LOG */
+  .scan-log{flex-shrink:0;background:var(--surface);border-top:1px solid var(--line);padding:5px 12px}
+  .scan-log-title{font-size:.6rem;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+  .scan-log-list{display:flex;flex-direction:column;gap:2px}
+  .scan-log-item{display:flex;align-items:center;gap:8px;font-size:.72rem;padding:2px 5px;border-radius:4px;background:rgba(255,255,255,.03)}
+  .scan-log-item.ok{border-left:2px solid var(--green)}
+  .scan-log-item.warn{border-left:2px solid var(--warn)}
+  .scan-log-item.err{border-left:2px solid var(--red)}
+  .sli-icon{font-size:.75rem;flex-shrink:0;width:14px;text-align:center}
+  .sli-name{flex:1;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sli-reg{color:var(--ink-dim);flex-shrink:0;font-size:.66rem}
+  .sli-time{color:var(--ink-dim);flex-shrink:0;font-size:.64rem}
+
+  /* CAMERA PANEL */
+  #camPanel{background:#000;position:relative;flex:1;display:flex;flex-direction:column}
+  .cam-result{flex-shrink:0}
+  #qr-reader{flex:1}
   #qr-reader video{width:100%!important;height:100%!important;object-fit:cover}
-  /* Html5Qrcode default button override */
-  #qr-reader__scan_region{height:100%!important}
-  #qr-reader__dashboard{padding:8px!important;background:rgba(0,0,0,.6)!important}
-  #qr-reader__dashboard button{
-    background:var(--saffron)!important;color:#fff!important;border:none!important;
-    border-radius:6px!important;padding:7px 14px!important;font-family:'DM Sans',sans-serif!important;
-    font-size:.8rem!important;font-weight:600!important;cursor:pointer!important
-  }
-  #qr-reader__camera_selection{
-    font-family:'DM Sans',sans-serif!important;font-size:.78rem!important;
-    padding:5px 8px!important;border-radius:6px!important;
-    border:1.5px solid rgba(255,255,255,.3)!important;
-    background:rgba(0,0,0,.5)!important;color:#fff!important;width:100%!important;margin-bottom:6px!important
-  }
+  #qr-reader__dashboard{padding:8px!important;background:rgba(0,0,0,.6)!important;position:absolute;bottom:0;left:0;right:0}
+  #qr-reader__dashboard button{background:var(--saffron)!important;color:#fff!important;border:none!important;border-radius:6px!important;padding:7px 14px!important;font-family:'DM Sans',sans-serif!important;font-size:.8rem!important;font-weight:600!important;cursor:pointer!important}
+  #qr-reader__camera_selection{font-family:'DM Sans',sans-serif!important;font-size:.75rem!important;padding:5px 8px!important;border-radius:6px!important;border:1.5px solid rgba(255,255,255,.3)!important;background:rgba(0,0,0,.5)!important;color:#fff!important;width:100%!important;margin-bottom:6px!important}
   #qr-reader img[alt="Info icon"]{display:none!important}
 
-  /* KB PANEL */
-  #panel-kb{flex-direction:column;padding:12px}
-  .kb-display{background:var(--white);border:1.5px solid var(--line);border-radius:8px;padding:12px;text-align:center;font-size:1.6rem;font-weight:700;color:var(--navy);letter-spacing:.1em;margin-bottom:8px;min-height:52px}
-  .kb-hint{font-size:.72rem;color:var(--text-sec);text-align:center;margin-bottom:10px}
-  .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;flex:1}
-  .kp-btn{border:1.5px solid var(--line);border-radius:8px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:1.2rem;font-weight:600;color:var(--ink);cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center}
-  .kp-btn:active{background:var(--mist);transform:scale(.95)}
-  .kp-del{font-size:1.3rem;color:var(--error)}
-  .kp-enter{background:var(--navy);color:#fff;border-color:var(--navy);font-size:1.3rem}
-  .kp-enter:active{background:#001a45}
+  /* FLOATING SPLASH */
+  .splash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0a2e1a;border:2px solid var(--green);border-radius:20px;padding:34px 46px;text-align:center;min-width:280px;box-shadow:0 0 80px rgba(46,204,113,.3);z-index:200;pointer-events:none;opacity:0;transition:opacity .2s ease}
+  .splash.show{opacity:1}
+  .splash.warn{background:#2b1a00;border-color:var(--warn);box-shadow:0 0 80px rgba(243,156,18,.25)}
+  .splash-icon{font-size:2.8rem;margin-bottom:8px;line-height:1}
+  .splash-name{font-size:1.6rem;font-weight:700;color:var(--green);line-height:1.2;margin-bottom:6px}
+  .splash.warn .splash-name{color:var(--warn)}
+  .splash-size{font-size:1rem;color:#a8f0c6;font-weight:600;margin-bottom:4px}
+  .splash.warn .splash-size{color:#f0c060}
+  .splash-reg{font-size:.78rem;color:#4a8c62;letter-spacing:.06em;text-transform:uppercase}
+  .splash.warn .splash-reg{color:#7a5a10}
 
-  /* RESULT BANNER — overlays bottom of screen */
-  .result-banner{
-    position:absolute;bottom:0;left:0;right:0;
-    padding:14px 16px;z-index:100;
-    transform:translateY(100%);transition:transform .25s ease;
-    border-radius:14px 14px 0 0;
-    box-shadow:0 -4px 24px rgba(0,0,0,.2);
-  }
-  .result-banner.show{transform:translateY(0)}
-  .result-banner.ok{background:var(--green)}
-  .result-banner.warn{background:var(--warn-bg);border-top:3px solid #D97706}
-  .result-banner.err{background:#FDECEA;border-top:3px solid var(--error)}
+  /* MATCH PICKER */
+  .picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:center;justify-content:center}
+  .picker-overlay.show{display:flex}
+  .picker-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;width:90%;max-width:440px;max-height:70vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+  .picker-head{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .picker-title{font-size:.85rem;font-weight:700;color:var(--ink)}
+  .picker-sub{font-size:.72rem;color:var(--ink-dim);margin-top:2px}
+  .picker-close{background:transparent;border:none;color:var(--ink-dim);font-size:1.2rem;cursor:pointer;padding:4px 8px;line-height:1}
+  .picker-list{overflow-y:auto;flex:1}
+  .picker-item{padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background .12s}
+  .picker-item:last-child{border-bottom:none}
+  .picker-item:hover{background:rgba(255,255,255,.06)}
+  .picker-item.attended{opacity:.4}
+  .pi-name{font-size:.88rem;font-weight:700;color:var(--ink)}
+  .pi-detail{font-size:.72rem;color:var(--ink-dim);margin-top:2px}
+  .pi-badge{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0}
+  .pi-badge.done{background:var(--green-dark);color:var(--green);border:1px solid #1a5c38}
+  .pi-badge.pend{background:var(--surface2);color:var(--ink-dim);border:1px solid var(--line)}
 
-  .rb-inner{display:flex;align-items:center;gap:12px}
-  .rb-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;font-weight:700}
-  .ok .rb-icon{background:rgba(255,255,255,.2);color:#fff}
-  .warn .rb-icon{background:#FDE68A;color:var(--warn)}
-  .err .rb-icon{background:#FECACA;color:var(--error)}
-  .rb-body{flex:1;min-width:0}
-  .rb-title{font-size:.92rem;font-weight:700;line-height:1.2}
-  .ok .rb-title{color:#fff}
-  .warn .rb-title{color:var(--warn)}
-  .err .rb-title{color:var(--error)}
-  .rb-sub{font-size:.75rem;margin-top:2px;opacity:.8;line-height:1.4}
-  .ok .rb-sub{color:rgba(255,255,255,.85)}
-  .warn .rb-sub{color:var(--warn)}
-  .err .rb-sub{color:var(--error)}
-  .rb-dismiss{font-size:.7rem;font-weight:600;cursor:pointer;opacity:.7;color:inherit;white-space:nowrap;align-self:flex-start;padding:2px 0}
-  .rb-dismiss:hover{opacity:1}
+  /* LOADING */
+  .loading-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--ink-dim);font-size:.85rem}
+  .spinner{width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--amber);border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
-<div class="app">
 
-<!-- HEADER -->
-<div class="hdr">
-  <div>
-    <div class="hdr-title">VBR 2026 — Check-in</div>
-    <div style="font-size:.62rem;color:rgba(255,255,255,.45);margin-top:1px">23 Oct · Suan Luang Rama IX</div>
-  </div>
-  <div class="hdr-stats">
-    <div class="hdr-stat"><div class="hdr-stat-v" id="csTotal">—</div><div class="hdr-stat-l">Total</div></div>
-    <div class="hdr-stat"><div class="hdr-stat-v" id="csChecked">—</div><div class="hdr-stat-l">Done</div></div>
-    <div class="hdr-stat"><div class="hdr-stat-v" id="csPending">—</div><div class="hdr-stat-l">Left</div></div>
-  </div>
-</div>
+<div class="layout">
 
-<!-- BODY -->
-<div class="body">
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <h1>VBR 2026 — Check-in · 23 Oct 2026</h1>
+      <p>Suan Luang Rama IX, Bangkok · Live Firebase</p>
+    </div>
+    <div class="hdr-right">
+      <div class="live-badge"><div class="live-dot"></div><span id="liveStatus">Connecting…</span></div>
+      <button class="mode-toggle" id="modeToggle" onclick="toggleMode()">☀ Light</button>
+      <div class="hdr-stats">
+        <div class="stat"><div class="stat-v" id="stTotal">—</div><div class="stat-l">Total</div></div>
+        <div class="stat"><div class="stat-v" id="stDone">—</div><div class="stat-l">Done</div></div>
+        <div class="stat"><div class="stat-v" id="stLeft">—</div><div class="stat-l">Left</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
   <div class="tabs">
-    <div class="tab active" id="tab-scan" onclick="switchTab('scan')">📷 Camera</div>
-    <div class="tab" id="tab-kb" onclick="switchTab('kb')">🔢 USB / Keyboard</div>
+    <div class="tab active" id="tab-search" onclick="switchTab('search')">🔢 USB / Search</div>
+    <div class="tab"        id="tab-cam"    onclick="switchTab('cam')">📷 Camera</div>
   </div>
 
-  <!-- SCAN -->
-  <div class="tab-panel active" id="panel-scan">
-    <div id="qr-reader"></div>
-  </div>
+  <!-- USB / SEARCH TAB -->
+  <div class="tab-panel active" id="panel-search">
 
-  <!-- KEYBOARD -->
-  <div class="tab-panel" id="panel-kb">
-    <div class="kb-display" id="kbDisplay">—</div>
-    <div class="kb-hint">USB scanner auto-submits. Or type number and press ↵</div>
-    <div class="keypad">
-      <button class="kp-btn" onclick="kp('1')">1</button>
-      <button class="kp-btn" onclick="kp('2')">2</button>
-      <button class="kp-btn" onclick="kp('3')">3</button>
-      <button class="kp-btn" onclick="kp('4')">4</button>
-      <button class="kp-btn" onclick="kp('5')">5</button>
-      <button class="kp-btn" onclick="kp('6')">6</button>
-      <button class="kp-btn" onclick="kp('7')">7</button>
-      <button class="kp-btn" onclick="kp('8')">8</button>
-      <button class="kp-btn" onclick="kp('9')">9</button>
-      <button class="kp-btn kp-del" onclick="kp('del')">⌫</button>
-      <button class="kp-btn" onclick="kp('0')">0</button>
-      <button class="kp-btn kp-enter" onclick="kp('enter')">↵</button>
+    <div class="scan-bar">
+      <label>SCAN / TYPE →</label>
+      <input type="text" id="scanInput" placeholder="1001" autocomplete="off"
+        oninput="onScanInput()"
+        onkeydown="handleKeydown(event)">
+      <div class="scan-hint">USB scanner · reg no · name · ID · email</div>
     </div>
+
+    <div class="result-banner" id="resultBanner">
+      <div class="rb-icon" id="rbIcon"></div>
+      <div>
+        <div class="rb-name"   id="rbName"></div>
+        <div class="rb-detail" id="rbDetail"></div>
+      </div>
+    </div>
+
+    <div class="tbl-zone">
+      <div id="loadingScreen" class="loading-screen">
+        <div class="spinner"></div>
+        Connecting to Firebase…
+      </div>
+      <div class="tbl-wrap" id="tblWrap" style="display:none">
+        <table>
+          <thead>
+            <tr><th>Reg #</th><th>Name</th><th>ID</th><th>Size</th><th>Status</th></tr>
+          </thead>
+          <tbody id="tBody"></tbody>
+        </table>
+      </div>
+      <div class="tbl-foot" id="tblFoot" style="display:none"></div>
+      <div class="scan-log" id="scanLog" style="display:none">
+        <div class="scan-log-title">Last 6 Scans</div>
+        <div class="scan-log-list" id="scanLogList"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CAMERA TAB -->
+  <div class="tab-panel" id="panel-cam">
+    <div id="camPanel">
+      <div class="result-banner cam-result" id="camResultBanner">
+        <div class="rb-icon" id="camRbIcon"></div>
+        <div>
+          <div class="rb-name"   id="camRbName"></div>
+          <div class="rb-detail" id="camRbDetail"></div>
+        </div>
+      </div>
+      <div id="qr-reader"></div>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<!-- FLOATING SPLASH -->
+<div class="splash" id="splash">
+  <div class="splash-icon" id="splashIcon">✈</div>
+  <div class="splash-name" id="splashName"></div>
+  <div class="splash-size" id="splashSize"></div>
+  <div class="splash-reg"  id="splashReg"></div>
+</div>
+
+<!-- MATCH PICKER -->
+<div class="picker-overlay" id="pickerOverlay">
+  <div class="picker-box">
+    <div class="picker-head">
+      <div>
+        <div class="picker-title" id="pickerTitle"></div>
+        <div class="picker-sub"   id="pickerSub"></div>
+      </div>
+      <button class="picker-close" onclick="closePicker()">✕</button>
+    </div>
+    <div class="picker-list" id="pickerList"></div>
   </div>
 </div>
 
-<!-- RESULT BANNER -->
-<div class="result-banner" id="resultBanner">
-  <div class="rb-inner">
-    <div class="rb-icon" id="rbIcon"></div>
-    <div class="rb-body">
-      <div class="rb-title" id="rbTitle"></div>
-      <div class="rb-sub" id="rbSub"></div>
-    </div>
-    <div class="rb-dismiss" onclick="dismissBanner()">✕ Next</div>
-  </div>
-</div>
-
+<!-- Firebase compat SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<!-- Html5Qrcode for camera -->
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
 <script>
+// ── Firebase ──
 firebase.initializeApp({
   apiKey:            "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
   authDomain:        "viksitbharatrunbkk2026.firebaseapp.com",
@@ -174,159 +281,377 @@ firebase.initializeApp({
 });
 const db = firebase.database();
 
-// ── Live stats ──
+// ── State ──
+let registrations = [];   // local mirror of Firebase data
+let recentScans   = [];
+let _scanTimer    = null;
+let _lastKeyTime  = 0;
+let _isScanner    = false;
+let _pendingReg   = null;
+let qrScanner     = null;
+
+// ── Live Firebase listener ──
 db.ref('vbr2026/registrations').on('value', snap => {
-  const all     = snap.val() || {};
-  const regs    = Object.values(all);
-  const total   = regs.length;
-  const checked = regs.filter(r => r.checkedIn).length;
-  document.getElementById('csTotal').textContent   = total;
-  document.getElementById('csChecked').textContent = checked;
-  document.getElementById('csPending').textContent = total - checked;
+  const raw = snap.val() || {};
+  registrations = Object.entries(raw).map(([k,v]) => ({ ...v, fbKey: k }));
+  sortRegs();
+  renderTable();
+  updateStats();
+  document.getElementById('liveStatus').textContent = 'LIVE';
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('tblWrap').style.display  = 'block';
+  document.getElementById('tblFoot').style.display  = 'block';
+}, err => {
+  document.getElementById('liveStatus').textContent = 'Offline';
 });
 
-// ── Banner ──
-let bannerTimer = null;
-
-function showBanner(type, icon, title, sub) {
-  clearTimeout(bannerTimer);
-  document.getElementById('rbIcon').textContent  = icon;
-  document.getElementById('rbTitle').textContent = title;
-  document.getElementById('rbSub').textContent   = sub;
-  const b = document.getElementById('resultBanner');
-  b.className = 'result-banner show ' + type;
-  // Auto dismiss after 4s
-  bannerTimer = setTimeout(dismissBanner, 4000);
+// ── Stats ──
+function updateStats() {
+  const done = registrations.filter(r => r.checkedIn).length;
+  document.getElementById('stTotal').textContent = registrations.length;
+  document.getElementById('stDone').textContent  = done;
+  document.getElementById('stLeft').textContent  = registrations.length - done;
 }
 
-function dismissBanner() {
-  clearTimeout(bannerTimer);
-  document.getElementById('resultBanner').classList.remove('show');
-  lastScanned = null;
-  kbBuf = ''; updateKb();
-  if (currentTab === 'scan') resumeScanner();
-}
-
-// ── Process QR / number ──
-let lastScanned = null;
-let processing  = false;
-
-async function process(text) {
-  text = String(text).trim();
-  if (!text || text === lastScanned || processing) return;
-  lastScanned = text;
-  processing  = true;
-
-  if (navigator.vibrate) navigator.vibrate(80);
-
-  try {
-    const allSnap = await db.ref('vbr2026/registrations').once('value');
-    const all = allSnap.val() || {};
-    let foundKey = null, foundData = null;
-
-    // Match regNumber (numeric)
-    const num = parseInt(text);
-    if (!isNaN(num)) {
-      const hit = Object.entries(all).find(([k,v]) => v.regNumber === num);
-      if (hit) { foundKey = hit[0]; foundData = hit[1]; }
-    }
-    // Match email
-    if (!foundKey && text.includes('@')) {
-      const hit = Object.entries(all).find(([k,v]) => v.email && v.email.toLowerCase() === text.toLowerCase());
-      if (hit) { foundKey = hit[0]; foundData = hit[1]; }
-    }
-    // Direct Firebase key
-    if (!foundKey && all[text]) { foundKey = text; foundData = all[text]; }
-
-    if (!foundKey) {
-      showBanner('err', '!', 'Not Found', 'QR code not in system. Check the pass and try again.');
-      processing = false;
-      setTimeout(() => { lastScanned = null; if (currentTab === 'scan') resumeScanner(); }, 3000);
-      return;
-    }
-
-    const p = foundData.participant || {};
-    const name = p.name || '—';
-    const size = p.size || '—';
-
-    if (foundData.checkedIn) {
-      const t = foundData.checkedInAt ? new Date(foundData.checkedInAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : '';
-      showBanner('warn', '✓', 'Already Checked In', `${name} · ${size} · Checked in at ${t}`);
-      processing = false;
-      return;
-    }
-
-    // Auto check-in immediately — no confirm needed
-    await db.ref('vbr2026/registrations/' + foundKey).update({
-      checkedIn: true,
-      checkedInAt: new Date().toISOString()
-    });
-
-    showBanner('ok', '✓', `${name} — ${size}`, `Reg #${foundData.regNumber || ''} · Checked in ✓`);
-
-  } catch(e) {
-    showBanner('err', '!', 'Error', e.message);
-    setTimeout(() => { lastScanned = null; }, 2000);
-  }
-  processing = false;
-}
-
-// ── Scanner ──
-let qrScanner = null;
-let currentTab = 'scan';
-
-function startScanner() {
-  stopScanner();
-  qrScanner = new Html5Qrcode('qr-reader');
-  qrScanner.start(
-    { facingMode: 'environment' },
-    { fps: 12, qrbox: { width: 200, height: 200 }, aspectRatio: 1.333 },
-    (text) => { pauseScanner(); process(text); },
-    () => {}
-  ).catch(() => {
-    document.getElementById('qr-reader').innerHTML =
-      '<div style="padding:30px;text-align:center;color:rgba(255,255,255,.6);font-size:.82rem">Camera unavailable.<br>Use Keyboard tab instead.</div>';
+// ── Sort: pending first, then by reg number ──
+function sortRegs() {
+  registrations.sort((a,b) => {
+    if (a.checkedIn !== b.checkedIn) return a.checkedIn ? 1 : -1;
+    return (a.regNumber||0) - (b.regNumber||0);
   });
 }
 
-function stopScanner()   { if (qrScanner) { qrScanner.stop().catch(()=>{}); qrScanner = null; } }
-function pauseScanner()  { if (qrScanner) qrScanner.pause(true); }
-function resumeScanner() { if (qrScanner) qrScanner.resume(); }
-
-// ── Keyboard / USB ──
-let kbBuf = '';
-
-function updateKb() {
-  document.getElementById('kbDisplay').textContent = kbBuf || '—';
+// ── Render table ──
+function renderTable() {
+  const p = r => r.participant || {};
+  document.getElementById('tBody').innerHTML = registrations.map(r =>
+    `<tr class="${r.checkedIn?'attended':''}" id="row-${r.fbKey}">
+      <td><span class="reg-no">${r.regNumber||'—'}</span></td>
+      <td><strong>${esc((p(r).name||''))}</strong></td>
+      <td style="font-size:.73rem">${esc((p(r).idType||'')+' '+(p(r).idNumber||''))}</td>
+      <td><strong>${esc(p(r).size||'')}</strong></td>
+      <td id="att-${r.fbKey}">${r.checkedIn
+        ? '<span class="badge-y">✈ Done</span>'
+        : '<span class="badge-n">—</span>'}</td>
+    </tr>`
+  ).join('');
+  document.getElementById('tblFoot').textContent =
+    registrations.length + ' registrations · ' + registrations.filter(r=>r.checkedIn).length + ' checked in';
 }
 
-function kp(key) {
-  if (key === 'del')   { kbBuf = kbBuf.slice(0,-1); updateKb(); return; }
-  if (key === 'enter') { if (kbBuf.length >= 1) { process(kbBuf); } return; }
-  kbBuf += key; updateKb();
+// ── Keyboard handler ──
+function handleKeydown(e) {
+  if (e.key === 'Escape' || e.keyCode === 27) {
+    cancelConfirm(); return;
+  }
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    if (_pendingReg) {
+      dismissBanner('resultBanner');
+      doCheckin(_pendingReg);
+      _pendingReg = null;
+      document.getElementById('scanInput').value = '';
+      document.getElementById('scanInput').focus();
+    } else {
+      clearTimeout(_scanTimer);
+      handleScan(false);
+    }
+    return false;
+  }
 }
 
-// Physical keyboard / USB scanner
-document.addEventListener('keydown', e => {
-  if (currentTab !== 'kb') return;
-  if (e.key === 'Enter' || e.keyCode === 13) { kp('enter'); return; }
-  if (e.key === 'Backspace') { kp('del'); return; }
-  if (/^[-A-Za-z0-9_@.]$/.test(e.key)) { kbBuf += e.key; updateKb(); }
-});
+// ── Smart input: detect scanner vs manual ──
+function onScanInput() {
+  const now = Date.now();
+  const gap = now - _lastKeyTime;
+  _lastKeyTime = now;
+  if (gap < 100) _isScanner = true;
+  clearTimeout(_scanTimer);
+  const val = document.getElementById('scanInput').value.trim();
+  if (!val) { _isScanner = false; return; }
+  // USB scanner fires 4-digit reg number at high speed
+  if (_isScanner && /^\d{4,}$/.test(val)) {
+    handleScan(true); return;
+  }
+  // Manual: wait 800ms of silence then search
+  if (val.length >= 3) {
+    _scanTimer = setTimeout(() => { _isScanner = false; handleScan(false); }, 800);
+  }
+}
+
+// ── Main search and match ──
+function handleScan(fromScanner) {
+  clearTimeout(_scanTimer);
+  const input = document.getElementById('scanInput');
+  const val   = input.value.trim();
+  if (!val) return;
+
+  const q     = val.toLowerCase();
+  const regNo = parseInt(val);
+
+  function clearAndFocus() { input.value = ''; input.focus(); }
+
+  // 1. Exact reg number
+  if (!isNaN(regNo)) {
+    const reg = registrations.find(r => r.regNumber === regNo);
+    if (reg) { clearAndFocus(); processCheckin(reg, !fromScanner); return; }
+  }
+  // 2. Exact email
+  if (val.includes('@')) {
+    const reg = registrations.find(r => (r.email||'').toLowerCase() === q);
+    if (reg) { clearAndFocus(); processCheckin(reg, !fromScanner); return; }
+  }
+  // 3. Exact ID number
+  const byId = registrations.filter(r => ((r.participant||{}).idNumber||'').toLowerCase() === q);
+  if (byId.length === 1) { clearAndFocus(); processCheckin(byId[0], !fromScanner); return; }
+  if (byId.length > 1)   { showPicker(byId, 'ID: ' + val); return; }
+  // 4. Name contains (partial, case-insensitive) — keep input so staff can refine
+  const byName = registrations.filter(r => ((r.participant||{}).name||'').toLowerCase().includes(q));
+  if (byName.length === 1) { clearAndFocus(); processCheckin(byName[0], true); return; }
+  if (byName.length > 1)   { showPicker(byName, '"' + val + '"'); return; }
+  // 5. Email contains
+  const byEmail = registrations.filter(r => (r.email||'').toLowerCase().includes(q));
+  if (byEmail.length === 1) { clearAndFocus(); processCheckin(byEmail[0], true); return; }
+  if (byEmail.length > 1)   { showPicker(byEmail, '"' + val + '"'); return; }
+
+  // Not found
+  clearAndFocus();
+  addToLog('err', 'Not Found — ' + val, '');
+  showBanner('resultBanner', 'err', '✗', 'Not Found — ' + val, 'Check the pass and try again.', 3000);
+}
+
+// ── Process check-in ──
+function processCheckin(reg, requireConfirm) {
+  scrollToRow(reg.fbKey);
+  if (reg.checkedIn) {
+    _pendingReg = null;
+    const p = reg.participant || {};
+    addToLog('warn', p.name||'?', reg.regNumber);
+    showSplash(p.name||'?', p.size||'', reg.regNumber, 'warn');
+    return;
+  }
+  if (requireConfirm) {
+    _pendingReg = reg;
+    showConfirmBanner(reg);
+    return;
+  }
+  _pendingReg = null;
+  doCheckin(reg);
+}
+
+function showConfirmBanner(reg) {
+  const p = reg.participant || {};
+  showBanner('resultBanner', 'confirm', '↵',
+    (p.name||'?') + ' · ' + (p.size||'') + ' · #' + reg.regNumber,
+    'Press Enter to confirm check-in · Esc to cancel', 0);
+}
+
+function cancelConfirm() {
+  _pendingReg = null;
+  dismissBanner('resultBanner');
+  document.getElementById('scanInput').value = '';
+  document.getElementById('scanInput').focus();
+}
+
+// ── Write check-in to Firebase ──
+async function doCheckin(reg) {
+  const p = reg.participant || {};
+  try {
+    await db.ref('vbr2026/registrations/' + reg.fbKey).update({
+      checkedIn:   true,
+      checkedInAt: new Date().toISOString()
+    });
+    addToLog('ok', p.name||'?', reg.regNumber);
+    showSplash(p.name||'?', p.size||'', reg.regNumber, 'ok');
+    // Table auto-refreshes via the live listener
+  } catch(e) {
+    showBanner('resultBanner', 'err', '✗', 'Check-in failed', e.message, 4000);
+  }
+}
+
+// ── Scroll to row ──
+function scrollToRow(fbKey) {
+  const row = document.getElementById('row-' + fbKey);
+  if (row) row.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// ── Camera scanner ──
+function startScanner() {
+  if (qrScanner) { qrScanner.stop().catch(()=>{}); qrScanner = null; }
+  qrScanner = new Html5Qrcode('qr-reader');
+  qrScanner.start(
+    { facingMode: 'environment' },
+    { fps: 12, qrbox: { width: 220, height: 220 }, aspectRatio: 1.333 },
+    onCamScan,
+    () => {}
+  ).catch(() => {
+    document.getElementById('qr-reader').innerHTML =
+      '<div style="padding:40px;text-align:center;color:rgba(255,255,255,.5);font-size:.82rem">Camera unavailable.<br>Use USB / Search tab.</div>';
+  });
+}
+
+function stopScanner() {
+  if (qrScanner) { qrScanner.stop().catch(()=>{}); qrScanner = null; }
+}
+
+let _lastCamScan = null;
+function onCamScan(text) {
+  if (!text || text === _lastCamScan) return;
+  _lastCamScan = text;
+  if (navigator.vibrate) navigator.vibrate(100);
+  if (qrScanner) qrScanner.pause(true);
+
+  const regNo = parseInt(text);
+  const reg   = !isNaN(regNo) ? registrations.find(r => r.regNumber === regNo) : null;
+  const p     = reg ? (reg.participant || {}) : {};
+
+  if (!reg) {
+    showCamBanner('err', '✗', 'Not Found — ' + text, 'Check the pass.', 3000);
+    setTimeout(() => { _lastCamScan = null; if(qrScanner) qrScanner.resume(); }, 3000);
+    return;
+  }
+  if (reg.checkedIn) {
+    showCamBanner('warn', '⚠', 'Already Checked In — ' + (p.name||'?'),
+      'Reg #' + reg.regNumber + ' · ' + (p.size||''), 3000);
+    showSplash(p.name||'?', p.size||'', reg.regNumber, 'warn');
+    setTimeout(() => { _lastCamScan = null; if(qrScanner) qrScanner.resume(); }, 3000);
+    return;
+  }
+  // Auto check-in from camera (no confirm)
+  doCheckin(reg).then(() => {
+    showCamBanner('ok', '✓', (p.name||'?') + ' — ' + (p.size||''),
+      'Reg #' + reg.regNumber + ' · Checked in ✓', 3000);
+    setTimeout(() => { _lastCamScan = null; if(qrScanner) qrScanner.resume(); }, 3000);
+  });
+}
+
+function showCamBanner(type, icon, name, detail, dur) {
+  const b = document.getElementById('camResultBanner');
+  b.className = 'result-banner cam-result show ' + type;
+  document.getElementById('camRbIcon').textContent   = icon;
+  document.getElementById('camRbName').textContent   = name;
+  document.getElementById('camRbDetail').textContent = detail;
+  clearTimeout(b._t);
+  if (dur > 0) b._t = setTimeout(() => b.classList.remove('show'), dur);
+}
+
+// ── Picker for multiple matches ──
+function showPicker(matches, query) {
+  document.getElementById('pickerTitle').textContent = matches.length + ' matches found';
+  document.getElementById('pickerSub').textContent   = 'Search: ' + query + ' — tap to select';
+  document.getElementById('pickerList').innerHTML = matches.map(r => {
+    const p = r.participant || {};
+    return `<div class="picker-item ${r.checkedIn?'attended':''}" onclick="pickerSelect('${r.fbKey}')">
+      <div>
+        <div class="pi-name">${esc(p.name||'—')}</div>
+        <div class="pi-detail">#${r.regNumber||'?'} · ${esc(p.idType||'')} ${esc(p.idNumber||'')} · ${esc(p.size||'')}</div>
+      </div>
+      <span class="pi-badge ${r.checkedIn?'done':'pend'}">${r.checkedIn?'✈ Done':'Pending'}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('pickerOverlay').classList.add('show');
+}
+
+function pickerSelect(fbKey) {
+  closePicker();
+  document.getElementById('scanInput').value = '';
+  const reg = registrations.find(r => r.fbKey === fbKey);
+  if (reg) processCheckin(reg, true); // always confirm from picker
+}
+
+function closePicker() {
+  document.getElementById('pickerOverlay').classList.remove('show');
+  document.getElementById('scanInput').focus();
+}
+
+// ── Banner ──
+function showBanner(id, type, icon, name, detail, dur) {
+  const b = document.getElementById(id);
+  b.className = 'result-banner show ' + type;
+  b.querySelector('.rb-icon').textContent   = icon;
+  b.querySelector('.rb-name').textContent   = name;
+  b.querySelector('.rb-detail').textContent = detail;
+  clearTimeout(b._t);
+  if (dur > 0) b._t = setTimeout(() => b.classList.remove('show'), dur);
+}
+
+function dismissBanner(id) {
+  const b = document.getElementById(id);
+  clearTimeout(b._t);
+  b.classList.remove('show');
+}
+
+// ── Splash ──
+function showSplash(name, size, regNo, type) {
+  const el = document.getElementById('splash');
+  document.getElementById('splashIcon').textContent = type === 'warn' ? '⚠' : '✈';
+  document.getElementById('splashName').textContent = name;
+  document.getElementById('splashSize').textContent = (type==='warn'?'Already Checked In · ':'T-Shirt · ') + size;
+  document.getElementById('splashReg').textContent  = 'Reg No. ' + regNo;
+  el.className = 'splash show' + (type==='warn'?' warn':'');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ── Recent scans log ──
+function addToLog(type, name, regNo) {
+  const time = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  recentScans.unshift({type,name,regNo,time});
+  if (recentScans.length > 6) recentScans.pop();
+  const icons = {ok:'✓',warn:'⚠',err:'✗'};
+  document.getElementById('scanLog').style.display = 'block';
+  document.getElementById('scanLogList').innerHTML = recentScans.map(s =>
+    `<div class="scan-log-item ${s.type}">
+      <span class="sli-icon">${icons[s.type]}</span>
+      <span class="sli-name">${esc(s.name)}</span>
+      <span class="sli-reg">${s.regNo?'#'+s.regNo:''}</span>
+      <span class="sli-time">${s.time}</span>
+    </div>`
+  ).join('');
+}
 
 // ── Tab switch ──
 function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.getElementById('panel-' + tab).classList.add('active');
-  dismissBanner();
-  if (tab === 'scan') startScanner(); else stopScanner();
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+  if (tab === 'cam') {
+    startScanner();
+  } else {
+    stopScanner();
+    setTimeout(() => document.getElementById('scanInput').focus(), 100);
+  }
 }
 
-// ── Start ──
-startScanner();
+// ── Light / dark mode ──
+function toggleMode() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('modeToggle').textContent = isLight ? '🌙 Dark' : '☀ Light';
+  try { localStorage.setItem('vbr2026ci_theme', isLight ? 'light' : 'dark'); } catch(e){}
+}
+
+// ── Escape key closes picker globally ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('pickerOverlay').classList.contains('show')) {
+      closePicker();
+    }
+  }
+});
+
+// ── Helper ──
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Init ──
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    if (localStorage.getItem('vbr2026ci_theme') === 'light') {
+      document.body.classList.add('light');
+      document.getElementById('modeToggle').textContent = '🌙 Dark';
+    }
+  } catch(e){}
+  document.getElementById('scanInput').focus();
+});
 </script>
 </body>
 </html>
