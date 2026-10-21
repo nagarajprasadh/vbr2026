@@ -103,6 +103,8 @@
   .btn-confirm{border:none;border-radius:7px;padding:9px 18px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--white)}
   .btn-confirm.danger{background:var(--error)}
   .btn-confirm.warn{background:var(--warn)}
+  .btn-reset{background:#FDECEA;color:var(--error);border:1.5px solid #FECACA;border-radius:7px;padding:9px 16px;font-size:.83rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+  .btn-reset:hover{background:#FECACA}
 </style>
 </head>
 <body>
@@ -154,7 +156,10 @@
   <div class="card">
     <div class="card-head">
       <h3>All Registrations</h3>
-      <button class="btn-csv" onclick="exportCSV()">Export CSV</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-reset" onclick="askResetAll()">↺ Reset All Check-ins</button>
+        <button class="btn-csv"   onclick="exportCSV()">Export CSV</button>
+      </div>
     </div>
     <div class="card-body">
       <div class="filter-row">
@@ -200,7 +205,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, get, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const app = initializeApp({
   apiKey:            "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
@@ -321,6 +326,19 @@ window.askUndo = function(regId, name) {
   document.getElementById('modal').classList.add('show');
 };
 
+window.askResetAll = function() {
+  const checkedCount = allRegs.filter(r => r.checkedIn).length;
+  if (checkedCount === 0) { alert('No check-ins to reset.'); return; }
+  pendingAction = { type: 'resetAll' };
+  document.getElementById('modalTitle').textContent = 'Reset All Check-ins';
+  document.getElementById('modalMsg').textContent   =
+    `This will clear check-in status for all ${checkedCount} checked-in participant${checkedCount !== 1 ? 's' : ''}. Use this only for testing. The registrations themselves are kept.`;
+  const btn = document.getElementById('modalConfirm');
+  btn.textContent = 'Reset All Check-ins';
+  btn.className   = 'btn-confirm danger';
+  document.getElementById('modal').classList.add('show');
+};
+
 window.askDelete = function(regId, name) {
   pendingAction = { type: 'delete', regId };
   document.getElementById('modalTitle').textContent = 'Delete Registration';
@@ -341,6 +359,17 @@ window.confirmAction = async function() {
       await set(ref(db, `vbr2026/registrations/${regId}/checkedIn`), false);
       await set(ref(db, `vbr2026/registrations/${regId}/checkedInAt`), null);
     } catch(e) { alert('Undo failed: ' + e.message); }
+  }
+
+  if (type === 'resetAll') {
+    try {
+      const updates = {};
+      allRegs.filter(r => r.checkedIn).forEach(r => {
+        updates[`vbr2026/registrations/${r.id}/checkedIn`]   = false;
+        updates[`vbr2026/registrations/${r.id}/checkedInAt`] = null;
+      });
+      await update(ref(db, '/'), updates);
+    } catch(e) { alert('Reset failed: ' + e.message); }
   }
 
   if (type === 'delete') {
