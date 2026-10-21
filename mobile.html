@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>VBR 2026 — Camera Check-in</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+  :root{
+    --bg:#1A1A2E; --surface:#16213E; --surface2:#0F3460;
+    --amber:#F5A623; --green:#2ECC71; --green-dark:#0a2e1a;
+    --saffron:#E8500A; --red:#E74C3C; --warn:#F39C12;
+    --ink:#E8E8F0; --ink-dim:#8892A4; --line:#253358;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;width:100%;background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+
+  .layout{display:flex;flex-direction:column;height:100vh;height:100dvh}
+
+  /* HEADER */
+  .hdr{background:linear-gradient(135deg,#0C1F3F,#162E58);color:#fff;padding:10px 16px;position:relative;flex-shrink:0}
+  .hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
+  .hdr-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .hdr-title{font-family:'DM Serif Display',serif;font-size:.98rem;font-weight:400}
+  .hdr-sub{font-size:.62rem;opacity:.5;margin-top:1px}
+  .hdr-stats{display:flex;gap:14px;align-items:center;flex-shrink:0}
+  .stat{text-align:center}
+  .stat-v{font-size:1.45rem;font-weight:700;line-height:1;color:var(--amber)}
+  .stat-l{font-size:.58rem;opacity:.6;text-transform:uppercase;letter-spacing:.05em;margin-top:1px}
+  .live-badge{display:flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;color:var(--green)}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.4s ease-in-out infinite;flex-shrink:0}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* RESULT BANNER */
+  .result-banner{display:none;flex-shrink:0;align-items:center;gap:10px;padding:10px 16px;font-weight:600}
+  .result-banner.show{display:flex}
+  .result-banner.ok  {background:var(--green-dark);border-bottom:2px solid var(--green)}
+  .result-banner.warn{background:#2b1f00;border-bottom:2px solid var(--warn)}
+  .result-banner.err {background:#2b0d0d;border-bottom:2px solid var(--red)}
+  .rb-icon{font-size:1.5rem;flex-shrink:0}
+  .rb-body{flex:1;min-width:0}
+  .rb-name{font-size:1.05rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rb-name.ok  {color:var(--green)}
+  .rb-name.warn{color:var(--warn)}
+  .rb-name.err {color:var(--red)}
+  .rb-detail{font-size:.8rem;font-weight:400;opacity:.8;margin-top:1px}
+
+  /* CAMERA ZONE */
+  .cam-zone{flex:1;position:relative;background:#000;overflow:hidden;min-height:0}
+  #reader{width:100%;height:100%}
+  /* override html5qr styles */
+  #reader video{object-fit:cover;width:100%!important;height:100%!important}
+  #reader__dashboard{display:none!important}
+
+  /* Scan frame overlay */
+  .scan-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:10}
+  .scan-box{width:220px;height:220px;position:relative}
+  .scan-box::before,.scan-box::after{content:'';position:absolute;width:36px;height:36px;border-color:var(--amber);border-style:solid;border-radius:3px}
+  .scan-box::before{top:0;left:0;border-width:3px 0 0 3px}
+  .scan-box::after {bottom:0;right:0;border-width:0 3px 3px 0}
+  .scan-line{position:absolute;left:4px;right:4px;height:2px;background:linear-gradient(90deg,transparent,var(--amber),transparent);top:50%;animation:scanline 2s ease-in-out infinite}
+  @keyframes scanline{0%{top:10%}50%{top:90%}100%{top:10%}}
+  .scan-corner-br{position:absolute;bottom:0;left:0;width:36px;height:36px;border-color:var(--amber);border-style:solid;border-radius:3px;border-width:0 0 3px 3px}
+  .scan-corner-tl{position:absolute;top:0;right:0;width:36px;height:36px;border-color:var(--amber);border-style:solid;border-radius:3px;border-width:3px 3px 0 0}
+
+  /* BOTTOM BAR */
+  .bottom-bar{flex-shrink:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .usb-link{background:var(--surface2);border:1px solid var(--line);color:var(--ink-dim);border-radius:7px;padding:7px 14px;font-size:.8rem;font-weight:600;text-decoration:none;white-space:nowrap}
+  .usb-link:hover{border-color:var(--amber);color:var(--amber)}
+  .scan-count{font-size:.78rem;color:var(--ink-dim)}
+  .scan-count strong{color:var(--amber)}
+
+  /* Camera start button (shown before permission) */
+  .start-btn{display:none;position:absolute;inset:0;background:rgba(10,10,25,.9);z-index:20;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+  .start-btn.show{display:flex}
+  .start-btn h2{font-size:1.1rem;color:var(--ink);font-weight:700}
+  .start-btn p{font-size:.82rem;color:var(--ink-dim);text-align:center;max-width:240px}
+  .start-btn button{background:var(--amber);color:#000;border:none;border-radius:10px;padding:13px 28px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-top">
+      <div>
+        <div class="hdr-title">VBR 2026 — Camera Check-in</div>
+        <div class="hdr-sub">Suan Luang Rama IX · 23 Oct 2026</div>
+      </div>
+      <div class="hdr-stats">
+        <div class="live-badge"><div class="live-dot"></div><span id="liveStatus">Connecting…</span></div>
+        <div class="stat"><div class="stat-v" id="stDone">—</div><div class="stat-l">Done</div></div>
+        <div class="stat"><div class="stat-v" id="stLeft">—</div><div class="stat-l">Left</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT BANNER -->
+  <div class="result-banner" id="resultBanner">
+    <div class="rb-icon" id="rbIcon"></div>
+    <div class="rb-body">
+      <div class="rb-name" id="rbName"></div>
+      <div class="rb-detail" id="rbDetail"></div>
+    </div>
+  </div>
+
+  <!-- CAMERA -->
+  <div class="cam-zone">
+    <div id="reader"></div>
+    <!-- scan frame corners -->
+    <div class="scan-frame">
+      <div class="scan-box">
+        <div class="scan-line"></div>
+        <div class="scan-corner-br"></div>
+        <div class="scan-corner-tl"></div>
+      </div>
+    </div>
+    <!-- start screen -->
+    <div class="start-btn" id="startScreen">
+      <h2>📷 Camera Check-in</h2>
+      <p>Tap Start to open camera and begin scanning QR codes.</p>
+      <button onclick="startCamera()">Start Camera</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <a class="usb-link" href="checkin.html">⌨ USB Scanner →</a>
+    <div class="scan-count">Scanned: <strong id="scanCount">0</strong></div>
+  </div>
+
+</div>
+
+<!-- Firebase compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<!-- Html5Qrcode -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey:            "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
+  authDomain:        "viksitbharatrunbkk2026.firebaseapp.com",
+  databaseURL:       "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "viksitbharatrunbkk2026",
+  storageBucket:     "viksitbharatrunbkk2026.firebasestorage.app",
+  messagingSenderId: "732438557121",
+  appId:             "1:732438557121:web:c41053238a31f5c2af3f40"
+});
+const db = firebase.database();
+
+let registrations = [];
+let qrScanner     = null;
+let _busy         = false;
+let _lastScanText = '';
+let _lastScanTime = 0;
+let scanCount     = 0;
+
+// ── Firebase live ──
+db.ref('vbr2026/registrations').on('value', snap => {
+  const raw = snap.val() || {};
+  registrations = Object.entries(raw).map(([k,v]) => ({ ...v, fbKey: k }));
+  updateStats();
+  document.getElementById('liveStatus').textContent = 'LIVE';
+}, () => { document.getElementById('liveStatus').textContent = 'Offline'; });
+
+function updateStats() {
+  const done = registrations.filter(r => r.checkedIn).length;
+  document.getElementById('stDone').textContent = done;
+  document.getElementById('stLeft').textContent = registrations.length - done;
+}
+
+// ── Camera ──
+function startCamera() {
+  document.getElementById('startScreen').classList.remove('show');
+  qrScanner = new Html5Qrcode('reader');
+  qrScanner.start(
+    { facingMode: 'environment' },
+    { fps: 12, qrbox: { width: 200, height: 200 }, aspectRatio: 1.0 },
+    onQrScan,
+    () => {} // ignore per-frame errors
+  ).catch(err => {
+    document.getElementById('startScreen').classList.add('show');
+    console.error('Camera error:', err);
+  });
+}
+
+function onQrScan(text) {
+  const now = Date.now();
+  // debounce: same code within 2.5 s is ignored
+  if (text === _lastScanText && now - _lastScanTime < 2500) return;
+  if (_busy) return;
+  _lastScanText = text;
+  _lastScanTime = now;
+  processScannedText(text.trim());
+}
+
+function processScannedText(raw) {
+  _busy = true;
+  const regNo = parseInt(raw);
+  const q = raw.toLowerCase();
+
+  // 1. Exact reg number
+  if (!isNaN(regNo)) {
+    const reg = registrations.find(r => r.regNumber === regNo);
+    if (reg) { doCheckin(reg); return; }
+  }
+  // 2. Exact email
+  if (raw.includes('@')) {
+    const reg = registrations.find(r => (r.email||'').toLowerCase() === q);
+    if (reg) { doCheckin(reg); return; }
+  }
+  // 3. Exact ID
+  const byId = registrations.filter(r => ((r.participant||{}).idNumber||'').toLowerCase() === q);
+  if (byId.length === 1) { doCheckin(byId[0]); return; }
+  if (byId.length > 1)   { doCheckin(byId[0]); return; } // take first match
+
+  // Not found
+  scanCount++;
+  document.getElementById('scanCount').textContent = scanCount;
+  showBanner('err', '✗', 'Not Found', raw, 2500);
+  setTimeout(() => { _busy = false; }, 2500);
+}
+
+async function doCheckin(reg) {
+  const p = reg.participant || {};
+  scanCount++;
+  document.getElementById('scanCount').textContent = scanCount;
+
+  if (reg.checkedIn) {
+    showBanner('warn', '⚠', (p.name||'?') + ' — Already Checked In',
+      'Reg #' + (reg.regNumber||'?') + ' · ' + (p.size||''), 2500);
+    setTimeout(() => { _busy = false; }, 2500);
+    return;
+  }
+
+  try {
+    await db.ref('vbr2026/registrations/' + reg.fbKey).update({
+      checkedIn:   true,
+      checkedInAt: new Date().toISOString()
+    });
+    showBanner('ok', '✈', (p.name||'?') + ' — Checked In ✓',
+      'Reg #' + (reg.regNumber||'?') + ' · T-Shirt: ' + (p.size||''), 2500);
+  } catch(e) {
+    showBanner('err', '✗', 'Write failed', e.message, 3000);
+  }
+  setTimeout(() => { _busy = false; }, 2500);
+}
+
+// ── Banner ──
+let _bannerTimer;
+function showBanner(type, icon, name, detail, dur) {
+  const b = document.getElementById('resultBanner');
+  b.className = 'result-banner show ' + type;
+  document.getElementById('rbIcon').textContent   = icon;
+  const nm = document.getElementById('rbName');
+  nm.className = 'rb-name ' + type;
+  nm.textContent = name;
+  document.getElementById('rbDetail').textContent = detail;
+  clearTimeout(_bannerTimer);
+  if (dur > 0) _bannerTimer = setTimeout(() => b.classList.remove('show'), dur);
+}
+
+// ── Init ──
+window.addEventListener('DOMContentLoaded', () => {
+  // On mobile, show start screen to let user tap (needed for camera permission flow)
+  // On desktop, can auto-start but better to wait for tap
+  document.getElementById('startScreen').classList.add('show');
+});
+</script>
+</body>
+</html>
