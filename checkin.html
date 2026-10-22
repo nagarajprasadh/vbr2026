@@ -144,6 +144,55 @@
   .pi-badge{font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0}
   .pi-badge.done{background:var(--green-dark);color:var(--green);border:1px solid #1a5c38}
   .pi-badge.pend{background:var(--surface2);color:var(--ink-dim);border:1px solid var(--line)}
+
+  /* ── MOBILE RESPONSIVE ──────────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    /* Allow scrolling on mobile */
+    html,body{overflow:auto;height:auto}
+    .layout{height:auto;min-height:100vh}
+
+    /* Compact header */
+    .hdr{flex-wrap:wrap;gap:8px;padding:8px 14px}
+    .hdr-left h1{font-size:.85rem}
+    .hdr-left p{display:none}
+    .hdr-right{width:100%;justify-content:space-between}
+    .stat-v{font-size:1.4rem}
+    .stat-l{font-size:.58rem}
+    .hdr-stats{gap:12px}
+
+    /* Scan bar — stack vertically, full-width input */
+    .scan-bar{flex-wrap:wrap;gap:8px;padding:10px 14px}
+    .scan-bar label{font-size:.85rem}
+    #scanInput{width:100%;flex-shrink:1;font-size:1.8rem;padding:10px 14px;min-width:0}
+    .scan-hint{display:none}
+    .cam-link{font-size:.75rem;padding:6px 12px}
+
+    /* Result banner — wrap text */
+    .result-banner{flex-wrap:wrap;padding:10px 14px}
+    .rb-name{font-size:1.1rem}
+    .rb-detail{font-size:.8rem}
+
+    /* Body — stack vertically; hide table on mobile */
+    .body-row{flex-direction:column;overflow:visible}
+    .tbl-zone{display:none}
+
+    /* Right panel — full width, no fixed height */
+    .right-panel{width:100%;flex:none;overflow:visible}
+    .last10{overflow:visible;max-height:none}
+    .rp-splash-zone{min-height:120px}
+
+    /* Larger touch targets for last-10 items */
+    .l10-item{padding:14px 14px}
+    .l10-name{font-size:1.1rem}
+    .l10-sub{font-size:.9rem}
+    .l10-time{font-size:.82rem}
+
+    /* Halo covers full screen on mobile */
+    .halo-overlay{right:0}
+
+    /* Picker full-width on mobile */
+    .picker-box{width:95%;max-height:80vh}
+  }
 </style>
 </head>
 <body>
@@ -537,7 +586,12 @@ document.addEventListener('keydown', e => {
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-window.addEventListener('DOMContentLoaded', () => document.getElementById('scanInput').focus());
+window.addEventListener('DOMContentLoaded', () => {
+  // Auto-focus scan input on desktop only — avoid forcing keyboard open on mobile
+  const isMobile = window.matchMedia('(max-width: 768px)').matches ||
+                   ('ontouchstart' in window && navigator.maxTouchPoints > 0);
+  if (!isMobile) document.getElementById('scanInput').focus();
+});
 </script>
 </body>
 </html>
