@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VBR 2026 — Certificate</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+  :root{
+    --bg:#0C1F3F; --surface:#16213E; --surface2:#0F3460;
+    --amber:#F5A623; --green:#2ECC71; --saffron:#E8500A;
+    --red:#E74C3C; --ink:#E8E8F0; --ink-dim:#8892A4; --line:#253358;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+  .page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
+
+  /* Header stripe */
+  .stripe{position:fixed;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:48px 40px;max-width:540px;width:100%;text-align:center;box-shadow:0 8px 48px rgba(0,0,0,.45)}
+
+  .logo-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px}
+  .logo-flag{font-size:2.2rem;line-height:1}
+  .logo-text{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--ink)}
+
+  /* States */
+  .state{display:none}
+  .state.active{display:block}
+
+  /* Loading */
+  .spinner{width:48px;height:48px;border:4px solid var(--line);border-top-color:var(--amber);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-text{color:var(--ink-dim);font-size:1rem}
+
+  /* Success */
+  .cert-icon{font-size:4.5rem;line-height:1;margin-bottom:16px}
+  .cert-label{font-size:.78rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+  .cert-name{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--ink);margin-bottom:6px;line-height:1.2}
+  .cert-reg{font-size:.9rem;color:var(--ink-dim);margin-bottom:6px;letter-spacing:.04em}
+  .cert-event{font-size:.85rem;color:var(--ink-dim);margin-bottom:32px}
+
+  .btn-download{
+    display:inline-flex;align-items:center;gap:10px;
+    background:linear-gradient(135deg,var(--saffron),#c43d00);
+    color:#fff;font-size:1.05rem;font-weight:700;
+    padding:16px 36px;border-radius:12px;border:none;cursor:pointer;
+    text-decoration:none;transition:transform .15s,box-shadow .15s;
+    box-shadow:0 4px 20px rgba(232,80,10,.4)
+  }
+  .btn-download:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(232,80,10,.55)}
+  .btn-download:active{transform:translateY(0)}
+  .btn-icon{font-size:1.2rem}
+
+  .cert-note{margin-top:20px;font-size:.78rem;color:var(--ink-dim);line-height:1.5}
+
+  /* Error */
+  .err-icon{font-size:3.5rem;margin-bottom:16px}
+  .err-title{font-size:1.3rem;font-weight:700;color:var(--red);margin-bottom:10px}
+  .err-msg{font-size:.9rem;color:var(--ink-dim);line-height:1.6}
+
+  /* Footer */
+  .footer{margin-top:32px;font-size:.72rem;color:var(--ink-dim);text-align:center;opacity:.6}
+</style>
+</head>
+<body>
+
+<div class="stripe"></div>
+
+<div class="page">
+  <div class="card">
+
+    <div class="logo-row">
+      <span class="logo-flag">🇮🇳</span>
+      <span class="logo-text">Viksit Bharat Run 2026</span>
+    </div>
+
+    <!-- Loading -->
+    <div class="state active" id="stateLoading">
+      <div class="spinner"></div>
+      <div class="loading-text">Verifying your certificate…</div>
+    </div>
+
+    <!-- Success -->
+    <div class="state" id="stateOk">
+      <div class="cert-icon">🏅</div>
+      <div class="cert-label">Certificate of Participation</div>
+      <div class="cert-name"  id="certName"></div>
+      <div class="cert-reg"   id="certReg"></div>
+      <div class="cert-event">Viksit Bharat Run 2026 · Bangkok · 23 October 2026</div>
+      <a  class="btn-download" id="btnDownload" href="#" download>
+        <span class="btn-icon">⬇</span> Download Certificate PDF
+      </a>
+      <div class="cert-note">
+        Your certificate is a personalised PDF.<br>
+        This link is unique to you — please do not share it.
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="state" id="stateErr">
+      <div class="err-icon">🔒</div>
+      <div class="err-title" id="errTitle">Invalid Link</div>
+      <div class="err-msg"   id="errMsg">
+        This certificate link is not valid or has expired.<br>
+        Please use the personalised link sent to your email.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Embassy of India, Bangkok &nbsp;·&nbsp; Viksit Bharat Run 2026
+  </div>
+</div>
+
+<!-- Firebase compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey:            "AIzaSyD10Uvnqg6Q_kAQbOdjEjhtY7QBnP8vFGc",
+  authDomain:        "viksitbharatrunbkk2026.firebaseapp.com",
+  databaseURL:       "https://viksitbharatrunbkk2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "viksitbharatrunbkk2026",
+  storageBucket:     "viksitbharatrunbkk2026.firebasestorage.app",
+  messagingSenderId: "732438557121",
+  appId:             "1:732438557121:web:c41053238a31f5c2af3f40"
+});
+const db = firebase.database();
+
+// ── Base URL where the certs/ folder is hosted on GitHub Pages ──
+const CERTS_BASE = "https://nagarajprasadh.github.io/vbr2026/certs/";
+
+function show(id) {
+  document.querySelectorAll('.state').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showError(title, msg) {
+  document.getElementById('errTitle').textContent = title || 'Invalid Link';
+  document.getElementById('errMsg').textContent   = msg   || 'This certificate link is not valid.';
+  show('stateErr');
+}
+
+async function init() {
+  // 1. Read token from URL
+  const params = new URLSearchParams(window.location.search);
+  const token  = params.get('t');
+  if (!token || token.length < 20) {
+    showError('No Certificate Token', 'Use the personalised link sent to your email.');
+    return;
+  }
+
+  // 2. Scan registrations for matching certToken
+  try {
+    const snap = await db.ref('vbr2026/registrations')
+      .orderByChild('certToken').equalTo(token).once('value');
+
+    const data = snap.val();
+    if (!data) {
+      showError('Link Not Found', 'This certificate link does not match any registration. Please use the link sent to your email.');
+      return;
+    }
+
+    // 3. Extract participant info
+    const keys = Object.keys(data);
+    const reg  = data[keys[0]];
+
+    if (!reg.checkedIn) {
+      showError('Not Yet Available', 'Your certificate is only issued to participants who attended the event.');
+      return;
+    }
+
+    const p      = reg.participant || {};
+    const name   = p.name   || 'Participant';
+    const regNo  = reg.regNumber || '';
+
+    // 4. Show success card
+    document.getElementById('certName').textContent = name;
+    document.getElementById('certReg').textContent  = regNo ? 'Reg No. ' + regNo : '';
+
+    // PDF URL: certs/<regNumber>.pdf in the same GitHub Pages repo
+    const pdfUrl = CERTS_BASE + regNo + '.pdf';
+    document.getElementById('btnDownload').href = pdfUrl;
+
+    show('stateOk');
+
+  } catch (err) {
+    showError('Verification Failed', 'Could not verify your link right now. Please try again in a moment.');
+    console.error(err);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
