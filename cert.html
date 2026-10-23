@@ -3,77 +3,125 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VBR 2026 — Certificate</title>
+<title>VBR 2026 — Your Certificate</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
   :root{
-    --bg:#0C1F3F; --surface:#16213E; --surface2:#0F3460;
-    --amber:#F5A623; --green:#2ECC71; --saffron:#E8500A;
-    --red:#E74C3C; --ink:#E8E8F0; --ink-dim:#8892A4; --line:#253358;
+    --bg:#FFF9F0;
+    --surface:#FFFFFF;
+    --saffron:#E8500A;
+    --saffron-lt:#FFF0E8;
+    --gold:#D4940A;
+    --green:#1A8C4E;
+    --green-lt:#EAF7F0;
+    --ink:#1A1A2E;
+    --ink-dim:#6B7280;
+    --line:#E5E7EB;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
 
-  .page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px}
+  /* Tricolour stripe */
+  .stripe{position:fixed;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%);z-index:100}
 
-  /* Header stripe */
-  .stripe{position:fixed;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--saffron) 33.3%,#fff 33.3%,#fff 66.6%,var(--green) 66.6%)}
+  .page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px 32px}
 
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:48px 40px;max-width:540px;width:100%;text-align:center;box-shadow:0 8px 48px rgba(0,0,0,.45)}
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:52px 44px;
+    max-width:560px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 4px 32px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04)
+  }
 
-  .logo-row{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px}
-  .logo-flag{font-size:2.2rem;line-height:1}
-  .logo-text{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--ink)}
+  .logo-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:32px}
+  .logo-flag{font-size:2.4rem;line-height:1}
+  .logo-text{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--ink);line-height:1.2}
 
   /* States */
   .state{display:none}
   .state.active{display:block}
 
   /* Loading */
-  .spinner{width:48px;height:48px;border:4px solid var(--line);border-top-color:var(--amber);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px}
+  .spinner{width:44px;height:44px;border:3px solid var(--line);border-top-color:var(--saffron);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px}
   @keyframes spin{to{transform:rotate(360deg)}}
   .loading-text{color:var(--ink-dim);font-size:1rem}
 
-  /* Success */
-  .cert-icon{font-size:4.5rem;line-height:1;margin-bottom:16px}
-  .cert-label{font-size:.78rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
-  .cert-name{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--ink);margin-bottom:6px;line-height:1.2}
-  .cert-reg{font-size:.9rem;color:var(--ink-dim);margin-bottom:6px;letter-spacing:.04em}
-  .cert-event{font-size:.85rem;color:var(--ink-dim);margin-bottom:32px}
+  /* ── SUCCESS STATE ── */
+  .confetti-banner{font-size:2.6rem;line-height:1;margin-bottom:12px;animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) both}
+  @keyframes popIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+
+  .cheer{font-size:1.1rem;font-weight:700;color:var(--saffron);text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;animation:fadeUp .5s .15s ease both}
+
+  .cert-badge{
+    display:inline-block;
+    background:linear-gradient(135deg,var(--saffron-lt),#fff5e0);
+    border:2px solid #f5c07a;
+    border-radius:14px;
+    padding:24px 32px;
+    margin-bottom:28px;
+    animation:fadeUp .5s .25s ease both;
+    width:100%
+  }
+  .cert-label{font-size:.72rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px}
+  .cert-name{font-family:'DM Serif Display',serif;font-size:2.1rem;color:var(--ink);line-height:1.2;margin-bottom:6px}
+  .cert-reg{font-size:.88rem;color:var(--ink-dim);letter-spacing:.04em;margin-bottom:4px}
+  .cert-event{font-size:.82rem;color:var(--ink-dim)}
+
+  .motivation{
+    background:var(--green-lt);
+    border-left:4px solid var(--green);
+    border-radius:0 10px 10px 0;
+    padding:14px 18px;
+    margin-bottom:28px;
+    text-align:left;
+    animation:fadeUp .5s .35s ease both
+  }
+  .motivation p{font-size:.92rem;color:var(--green);font-weight:600;line-height:1.55}
+  .motivation em{font-style:normal;opacity:.75;font-size:.82rem}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
   .btn-download{
     display:inline-flex;align-items:center;gap:10px;
-    background:linear-gradient(135deg,var(--saffron),#c43d00);
+    background:linear-gradient(135deg,var(--saffron),#bf3f00);
     color:#fff;font-size:1.05rem;font-weight:700;
     padding:16px 36px;border-radius:12px;border:none;cursor:pointer;
     text-decoration:none;transition:transform .15s,box-shadow .15s;
-    box-shadow:0 4px 20px rgba(232,80,10,.4)
+    box-shadow:0 4px 20px rgba(232,80,10,.35);
+    animation:fadeUp .5s .45s ease both
   }
-  .btn-download:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(232,80,10,.55)}
+  .btn-download:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(232,80,10,.5)}
   .btn-download:active{transform:translateY(0)}
-  .btn-icon{font-size:1.2rem}
 
-  .cert-note{margin-top:20px;font-size:.78rem;color:var(--ink-dim);line-height:1.5}
+  .cert-note{margin-top:18px;font-size:.76rem;color:var(--ink-dim);line-height:1.6;animation:fadeUp .5s .55s ease both}
 
   /* Error */
   .err-icon{font-size:3.5rem;margin-bottom:16px}
-  .err-title{font-size:1.3rem;font-weight:700;color:var(--red);margin-bottom:10px}
+  .err-title{font-size:1.3rem;font-weight:700;color:#DC2626;margin-bottom:10px}
   .err-msg{font-size:.9rem;color:var(--ink-dim);line-height:1.6}
 
   /* Footer */
-  .footer{margin-top:32px;font-size:.72rem;color:var(--ink-dim);text-align:center;opacity:.6}
+  .footer{margin-top:28px;font-size:.72rem;color:var(--ink-dim);text-align:center;opacity:.7}
+
+  /* Confetti canvas */
+  #confettiCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
 </style>
 </head>
 <body>
 
 <div class="stripe"></div>
+<canvas id="confettiCanvas"></canvas>
 
 <div class="page">
   <div class="card">
 
     <div class="logo-row">
       <span class="logo-flag">🇮🇳</span>
-      <span class="logo-text">Viksit Bharat Run 2026</span>
+      <span class="logo-text">Viksit Bharat Run 2026<br><small style="font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:400;color:var(--ink-dim)">Bangkok · 23 October 2026</small></span>
     </div>
 
     <!-- Loading -->
@@ -84,17 +132,28 @@
 
     <!-- Success -->
     <div class="state" id="stateOk">
-      <div class="cert-icon">🏅</div>
-      <div class="cert-label">Certificate of Participation</div>
-      <div class="cert-name"  id="certName"></div>
-      <div class="cert-reg"   id="certReg"></div>
-      <div class="cert-event">Viksit Bharat Run 2026 · Bangkok · 23 October 2026</div>
-      <a  class="btn-download" id="btnDownload" href="#" download>
-        <span class="btn-icon">⬇</span> Download Certificate PDF
+      <div class="confetti-banner">🎉🏅🎊</div>
+      <div class="cheer">You did it — Congratulations!</div>
+
+      <div class="cert-badge">
+        <div class="cert-label">Certificate of Participation</div>
+        <div class="cert-name" id="certName"></div>
+        <div class="cert-reg"  id="certReg"></div>
+        <div class="cert-event">Viksit Bharat Run 2026 · Bangkok · 23 October 2026</div>
+      </div>
+
+      <div class="motivation">
+        <p>Every step you ran today was a step for a stronger, prouder India. 🇮🇳<br>
+        Thank you for being part of this movement — from Bangkok, with pride.</p>
+        <em>— Embassy of India, Bangkok</em>
+      </div>
+
+      <a class="btn-download" id="btnDownload" href="#" download>
+        ⬇&nbsp; Download My Certificate
       </a>
       <div class="cert-note">
-        Your certificate is a personalised PDF.<br>
-        This link is unique to you — please do not share it.
+        This is your personalised certificate PDF.<br>
+        Share your achievement proudly!
       </div>
     </div>
 
@@ -130,10 +189,62 @@ firebase.initializeApp({
   appId:             "1:732438557121:web:c41053238a31f5c2af3f40"
 });
 const db = firebase.database();
-
-// ── Base URL where the certs/ folder is hosted on GitHub Pages ──
 const CERTS_BASE = "https://nagarajprasadh.github.io/vbr2026/";
 
+// ── Confetti ──────────────────────────────────────────────────────────────────
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const COLORS = ['#E8500A','#F5A623','#2ECC71','#1A8C4E','#3B82F6','#FBBF24','#F472B6','#ffffff'];
+  const pieces = Array.from({length: 160}, () => ({
+    x:     Math.random() * canvas.width,
+    y:     Math.random() * -canvas.height,
+    w:     6 + Math.random() * 8,
+    h:     10 + Math.random() * 6,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    rot:   Math.random() * Math.PI * 2,
+    vx:    (Math.random() - 0.5) * 3,
+    vy:    2.5 + Math.random() * 3.5,
+    vr:    (Math.random() - 0.5) * 0.18,
+    opacity: 1
+  }));
+
+  let frame;
+  let start = null;
+  const DURATION = 3800;
+
+  function draw(ts) {
+    if (!start) start = ts;
+    const elapsed = ts - start;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let allGone = true;
+    pieces.forEach(p => {
+      p.x   += p.vx;
+      p.y   += p.vy;
+      p.rot += p.vr;
+      if (elapsed > DURATION * 0.6) p.opacity = Math.max(0, p.opacity - 0.012);
+      if (p.y < canvas.height + 20) allGone = false;
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    if (!allGone && elapsed < DURATION + 1000) {
+      frame = requestAnimationFrame(draw);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  frame = requestAnimationFrame(draw);
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function show(id) {
   document.querySelectorAll('.state').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -145,8 +256,8 @@ function showError(title, msg) {
   show('stateErr');
 }
 
+// ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
-  // 1. Read token from URL
   const params = new URLSearchParams(window.location.search);
   const token  = params.get('t');
   if (!token || token.length < 20) {
@@ -154,7 +265,6 @@ async function init() {
     return;
   }
 
-  // 2. Scan registrations for matching certToken
   try {
     const snap = await db.ref('vbr2026/registrations')
       .orderByChild('certToken').equalTo(token).once('value');
@@ -165,7 +275,6 @@ async function init() {
       return;
     }
 
-    // 3. Extract participant info
     const keys = Object.keys(data);
     const reg  = data[keys[0]];
 
@@ -174,19 +283,16 @@ async function init() {
       return;
     }
 
-    const p      = reg.participant || {};
-    const name   = p.name   || 'Participant';
-    const regNo  = reg.regNumber || '';
+    const p     = reg.participant || {};
+    const name  = p.name || 'Participant';
+    const regNo = reg.regNumber || '';
 
-    // 4. Show success card
     document.getElementById('certName').textContent = name;
     document.getElementById('certReg').textContent  = regNo ? 'Reg No. ' + regNo : '';
-
-    // PDF URL: certs/<regNumber>.pdf in the same GitHub Pages repo
-    const pdfUrl = CERTS_BASE + regNo + '.pdf';
-    document.getElementById('btnDownload').href = pdfUrl;
+    document.getElementById('btnDownload').href     = CERTS_BASE + regNo + '.pdf';
 
     show('stateOk');
+    launchConfetti();
 
   } catch (err) {
     showError('Verification Failed', 'Could not verify your link right now. Please try again in a moment.');
