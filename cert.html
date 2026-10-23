@@ -71,17 +71,7 @@
   .cert-reg{font-size:.88rem;color:var(--ink-dim);letter-spacing:.04em;margin-bottom:4px}
   .cert-event{font-size:.82rem;color:var(--ink-dim)}
 
-  .motivation{
-    background:var(--green-lt);
-    border-left:4px solid var(--green);
-    border-radius:0 10px 10px 0;
-    padding:14px 18px;
-    margin-bottom:28px;
-    text-align:left;
-    animation:fadeUp .5s .35s ease both
-  }
-  .motivation p{font-size:.92rem;color:var(--green);font-weight:600;line-height:1.55}
-  .motivation em{font-style:normal;opacity:.75;font-size:.82rem}
+  .cert-checkin{font-size:.8rem;color:var(--green);font-weight:600;margin-top:4px}
 
   @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
@@ -140,12 +130,7 @@
         <div class="cert-name" id="certName"></div>
         <div class="cert-reg"  id="certReg"></div>
         <div class="cert-event">Viksit Bharat Run 2026 · Bangkok · 23 October 2026</div>
-      </div>
-
-      <div class="motivation">
-        <p>Every step you ran today was a step for a stronger, prouder India. 🇮🇳<br>
-        Thank you for being part of this movement — from Bangkok, with pride.</p>
-        <em>— Embassy of India, Bangkok</em>
+        <div class="cert-checkin" id="certCheckin"></div>
       </div>
 
       <a class="btn-download" id="btnDownload" href="#" download>
@@ -290,6 +275,13 @@ async function init() {
     document.getElementById('certName').textContent = name;
     document.getElementById('certReg').textContent  = regNo ? 'Reg No. ' + regNo : '';
     document.getElementById('btnDownload').href     = CERTS_BASE + regNo + '.pdf';
+
+    // Check-in time
+    if (reg.checkedInAt) {
+      const t = new Date(reg.checkedInAt);
+      const timeStr = t.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', timeZone:'Asia/Bangkok'});
+      document.getElementById('certCheckin').textContent = 'Checked in at ' + timeStr + ' (Bangkok time)';
+    }
 
     show('stateOk');
     launchConfetti();
